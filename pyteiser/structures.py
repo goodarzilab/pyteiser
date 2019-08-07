@@ -1,51 +1,6 @@
 import numpy as np
 
 
-# !
-# !
-# !
-# !
-# !
-# I only need a class for motif. It will contain one numpy array of uint8 for nucleotides and another one for structure
-# I don't need separate classes for sequence, phrace and nucbit
-# !
-# !
-# !
-# !
-# !
-
-
-def define_sequences():
-    _U = np.uint8(1)
-    _C = np.uint8(2)
-    _G = np.uint8(3)
-    _A = np.uint8(4)
-    _N = np.uint8(5)
-    _increment = np.uint8(1)
-
-
-def define_structures():
-    _pair = np.uint8(1)
-    _leftBulge = np.uint8(2)
-    _rightBulge = np.uint8(3)
-
-
-class s_phrase:
-
-    def __init__(self):
-        self.base = 0 # NUCBIT - byte
-        # _U | _C | _G | _A; if structure = _pair, base shows the left nucleotide in the paired bases
-        self.structure = 0 # byte: _pair ^ _leftBulge ^ _rightBulge
-
-
-class s_sequence:
-
-    def __init__(self):
-        self.name = ""
-        self.bases = "" #list of NUCBITs
-        self.length = 0
-
-
 class s_motif:
 
     def __init__(self, length):
