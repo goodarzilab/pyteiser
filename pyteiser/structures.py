@@ -15,9 +15,19 @@ import numpy as np
 # !
 
 
-class nucbit:
-    def __init__(self, character):
-        self.nucl =
+def define_sequences():
+    _U = np.uint8(1)
+    _C = np.uint8(2)
+    _G = np.uint8(3)
+    _A = np.uint8(4)
+    _N = np.uint8(5)
+    _increment = np.uint8(1)
+
+
+def define_structures():
+    _pair = np.uint8(1)
+    _leftBulge = np.uint8(2)
+    _rightBulge = np.uint8(3)
 
 
 class s_phrase:
@@ -39,7 +49,8 @@ class s_sequence:
 class s_motif:
 
     def __init__(self, length):
-        self.phrases = [] # list of s_phrase objects
+        self.sequences = np.ones(shape=length, dtype=np.uint8)
+        self.structures = np.ones(shape=length, dtype=np.uint8)
         self.num_phrases = 0
         self.linear_length = 0
 
