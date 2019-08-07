@@ -1,20 +1,24 @@
 import numpy as np
-
+import glob_var
 
 class s_motif:
 
     def __init__(self, length):
         self.sequences = np.ones(shape=length, dtype=np.uint8)
         self.structures = np.ones(shape=length, dtype=np.uint8)
-        self.num_phrases = 0
-        self.linear_length = 0
+        self.num_phrases = length
+        self.linear_length = length
+
+    def print_sequence(self):
+        string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.sequences])
+        print(string_to_print)
 
     def create_structure(self, stem_length, loop_length):
         # creates a stem-loop structure with the specified stem length and loop length
-        # all bases will be N
+        # all bases will be U
         self.num_phrases = stem_length + loop_length
         self.linear_length = (stem_length * 2) + loop_length
-        self.phrases = np.ones((2,5), dtype='Int32')
+
 
 
 # Pseudocode of lcl_create_motifs:
