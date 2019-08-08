@@ -120,7 +120,7 @@ def create_motifs_fixed_length(stem_length, loop_length,
         total_bitstring += curr_motif.bytestring
 
         if (motifs_counter % args.num_motifs_per_file) == 0:
-            next_filename = os.path.join(args.outfolder, "%s_%d.bin" % (args.prefix, motifs_counter // args.num_motifs_per_file + 1))
+            next_filename = os.path.join(args.outfolder, "%s_%d.bin" % (args.prefix, motifs_counter // args.num_motifs_per_file))
             with open(next_filename, 'wb') as wf:
                 wf.write(total_bitstring)
             total_bitstring = b''

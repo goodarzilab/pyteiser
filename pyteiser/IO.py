@@ -28,8 +28,8 @@ def decompress_motifs_from_bitstring(bitstring):
         current_motif.structure = curr_structure
         current_motif.compress()
 
-        current_motif.print_sequence()
-        current_motif.print_structure()
+        # current_motif.print_sequence()
+        # current_motif.print_structure()
 
         assert(md5_checksum == current_motif.md5)
 
@@ -45,6 +45,3 @@ def read_motif_file(inp_file):
         full_bitstring = rf.read()
         motifs_list = decompress_motifs_from_bitstring(full_bitstring)
     return motifs_list
-
-
-_ = read_motif_file('/Users/student/Documents/hani/temp/seeds_temp/python_generated_seeds/seeds_4-7_4-9_4-6_14-20_100_194.bin')
