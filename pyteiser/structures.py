@@ -43,5 +43,3 @@ class s_motif:
         motif_bytestring = motif_info + md5_checksum
         self.bytestring = motif_bytestring
         self.md5 = md5_checksum
-
-
