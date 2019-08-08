@@ -1,5 +1,6 @@
 import numpy as np
 import argparse
+import os
 
 import glob_var
 import structures
@@ -9,7 +10,9 @@ import structures
 def handler():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--outfile", type=str)
+    parser.add_argument("--outfolder", type=str)
+    parser.add_argument("--prefix", type=str)
+    parser.add_argument("--num_motifs_per_file", type=int)
     parser.add_argument("--min_stem_length", type=int)
     parser.add_argument("--max_stem_length", type=int)
     parser.add_argument("--min_loop_length", type=int)
@@ -29,7 +32,9 @@ def handler():
 
 
     parser.set_defaults(
-        outfile = '',
+        outfolder = '/Users/student/Documents/hani/temp/seeds_temp/python_generated_seeds',
+        prefix = 'seeds_4-7_4-9_4-6_14-20_100',
+        num_motifs_per_file = 100,
         min_stem_length = 4,
         max_stem_length = 7,
         min_loop_length = 4,
@@ -117,10 +122,22 @@ def create_motifs_fixed_length(stem_length, loop_length,
     if print_structures == 'y':
         curr_motif.print_structure()
 
+    motifs_counter = 0
+    total_bitstring = b''
 
     while get_next_motif(curr_motif):
         if not check_motif_criteria(curr_motif, args):
             continue
+        motifs_counter += 1
+
+        curr_motif.compress()
+        total_bitstring += curr_motif.bytestring
+
+        if (motifs_counter % args.num_motifs_per_file) == 0:
+            next_filename = os.path.join(args.outfolder, "%s_%d.bin" % (args.prefix, motifs_counter // args.num_motifs_per_file + 1))
+            with open(next_filename, 'wb') as wf:
+                wf.write(total_bitstring)
+            total_bitstring = b''
 
 
         if print_sequences == 'y':
