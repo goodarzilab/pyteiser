@@ -5,6 +5,11 @@ import os
 import glob_var
 import structures
 
+# this function generates all possible seeds with specified length of stem and loop
+# to reduce the search space, it only keeps the seeds that have a pre-specified number of informative bases (non-Ns)
+# and also that fall into a certain range of information content
+# the ones that we keep are being compressed to a bit string (see structures module) with necessary MD5 checksum
+# and then being written to series of files of specified size
 
 
 def handler():
@@ -23,12 +28,6 @@ def handler():
     parser.add_argument("--max_inf_bases", type=int)
     parser.add_argument("--minI", type=int)
     parser.add_argument("--maxI", type=int)
-    # parser.add_argument("--", type=int)
-    # parser.add_argument("--", type=int)
-    # parser.add_argument("--", type=int)
-    # parser.add_argument("--", type=int)
-    # parser.add_argument("--", type=int)
-    # parser.add_argument("--", type=int)
 
 
     parser.set_defaults(
@@ -52,12 +51,6 @@ def handler():
     return args
 
 def calculate_probability(motif):
-    # Hani's function lcl_calculate_probability in the create_motifs program contains a bug
-    # actually I am not sure if it's a bug or if it's intentional
-    # it uses bitwise comparison (motif->phrases[i].base & _U) as opposed to == sign to identify bases
-    # because of that, if N is encountered in the sequence, it satisfies the conditions for all the 4 nucleotides
-    # therefore, if this N is paired it adds -4 to the log of probability and if it's unpaired it doesn't add anything
-
   motif_probability = np.float64(0)
 
   for i in range(motif.stem_length):

@@ -20,10 +20,13 @@ _char_to_nt_mapping = {_U : 'U',
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}
 
-_paired_probabilities_dict = {_U : np.log2( 0.25 * 0.5), # U can create a base pair with either A or G
-                            _C : np.log2( 0.25 * 0.25), # C can create a base pair with G
-                            _G : np.log2( 0.25 * 0.5), # G can create a base pair with either U or C
-                            _A : np.log2( 0.25 * 0.25), # A can create a base pair with U
-                            _N : np.log2(1), # N can interact with anything
+
+_paired_probabilities_dict = {_U : -3.0, # np.log2( 0.25 * 0.5), since U can create a base pair with either A or G
+                            _C : -4.0, # np.log2( 0.25 * 0.25), since C can create a base pair with G
+                            _G : -3.0, # np.log2( 0.25 * 0.5), since G can create a base pair with either U or C
+                            _A : -4.0, # np.log2( 0.25 * 0.25), since A can create a base pair with U
+                            _N : -1.415, # np.log2(2*( 0.25 * 0.5 ) + 2*( 0.25 * 0.25 )), since N itself doesn't tell us anything,
+                                                                # but the fact that it's paired puts additional constraints,
+                                                                # therefore, sum of all the above
                             'loop': np.log2( 0.25 )
                             }
