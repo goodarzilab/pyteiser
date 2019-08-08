@@ -44,7 +44,7 @@ def handler():
         minI = 14,
         maxI = 20,
         print_sequences = 'y',
-        print_structures = 'y'
+        print_structures = 'n'
     )
 
     args = parser.parse_args()
@@ -52,6 +52,12 @@ def handler():
     return args
 
 def calculate_probability(motif):
+    # Hani's function lcl_calculate_probability in the create_motifs program contains a bug
+    # actually I am not sure if it's a bug or if it's intentional
+    # it uses bitwise comparison (motif->phrases[i].base & _U) as opposed to == sign to identify bases
+    # because of that, if N is encountered in the sequence, it satisfies the conditions for all the 4 nucleotides
+    # therefore, if this N is paired it adds -4 to the log of probability and if it's unpaired it doesn't add anything
+
   motif_probability = np.float64(0)
 
   for i in range(motif.stem_length):
@@ -83,13 +89,6 @@ def get_next_motif(motif, last_letter = glob_var._N):
     return False
 
 
-# def testing():
-#     toy_motif = structures.s_motif(length=8)
-#     toy_motif.print_sequence()
-#     for i in range(200):
-#         get_next_motif(toy_motif)
-#         toy_motif.print_sequence()
-
 def count_informative_bases(motif):
     inf_bases = np.count_nonzero(glob_var._N != motif.sequence)
     return inf_bases
@@ -115,13 +114,7 @@ def check_motif_criteria(motif, args):
 def create_motifs_fixed_length(stem_length, loop_length,
                                print_sequences, print_structures,
                                args):
-    curr_motif = structures.s_motif(stem_length, loop_length)
-
-    if print_sequences == 'y':
-        curr_motif.print_sequence()
-    if print_structures == 'y':
-        curr_motif.print_structure()
-
+    curr_motif = structures.s_motif(stem_length, loop_length) # this is a motif with all U, we are skipping it anyway
     motifs_counter = 0
     total_bitstring = b''
 
