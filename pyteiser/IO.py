@@ -39,9 +39,42 @@ def decompress_motifs_from_bitstring(bitstring):
     return motifs_list
 
 
-
 def read_motif_file(inp_file):
     with open(inp_file, 'rb') as rf:
         full_bitstring = rf.read()
         motifs_list = decompress_motifs_from_bitstring(full_bitstring)
     return motifs_list
+
+
+def read_fasta(infile):
+    tr_dict_loc = {}
+    seqs_order = []
+    with open(infile, 'r') as f:
+        split_string = f.read().split('>')
+        for entry in split_string:
+            if entry == '':
+                continue
+            seq_start = entry.find('\n')
+            annotation = entry[:seq_start]
+            sequence_string = entry[seq_start + 1:].replace('\n', '')
+            current_sequence = structures.s_sequence(len(sequence_string))
+            current_sequence.from_sequence(sequence_string)
+            tr_dict_loc[annotation] = current_sequence
+            seqs_order.append(annotation)
+
+    return tr_dict_loc, seqs_order
+
+
+def compress_named_sequences(seq_objects_dict, seqs_order):
+    seq_batch_byte_string = b''
+
+    for name in seqs_order:
+        full_length_name = name.ljust(glob_var.MAX_SEQ_NAME_LENGTH)
+        name_in_bytes = full_length_name.encode('utf-8')
+        assert(len(name_in_bytes) == glob_var.MAX_SEQ_NAME_LENGTH)
+        seq_batch_byte_string += name_in_bytes
+
+        seq_objects_dict[name].compress()
+        seq_batch_byte_string += seq_objects_dict[name].bytestring
+
+    return seq_batch_byte_string

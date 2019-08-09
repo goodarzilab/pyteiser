@@ -128,3 +128,26 @@ class s_sequence:
             return False
 
 
+    def compress(self):
+        # byte string representation of the sequence
+        # first, 4 bytes keep the length of the uint32 format
+        # then, one array (uint8 format) holds the nts array
+        # then, last 16 bytes keep MD5 checksum
+
+        length_uint32 = np.array([self.length], dtype=np.uint32)
+        length_bitstring = length_uint32.tobytes()
+
+        nts_bytes = self.nts.tobytes()
+
+        sequence_info = length_bitstring + nts_bytes
+
+        md5 = hashlib.md5()
+        md5.update(sequence_info)
+        md5_checksum = md5.digest()
+        assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
+
+        sequence_bytestring = sequence_info + md5_checksum
+        self.bytestring = sequence_bytestring
+        self.md5 = md5_checksum
+
+

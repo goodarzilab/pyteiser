@@ -37,3 +37,5 @@ _paired_probabilities_dict = {_U : -3.0, # np.log2( 0.25 * 0.5), since U can cre
                                                                 # therefore, sum of all the above
                             'loop': np.log2( 0.25 )
                             }
+
+MAX_SEQ_NAME_LENGTH = 50
