@@ -30,10 +30,10 @@ def handler():
 
 def main():
     args = handler()
-    motifs_list = IO.read_motif_file(args.seedfile)
-    sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile)
-    print("%d motifs have been loaded" % len(motifs_list))
-    print(len(sequences_dict), len(seqs_order))
+    # motifs_list = IO.read_motif_file(args.seedfile)
+    # sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile)
+    # print("%d motifs have been loaded" % len(motifs_list))
+    # print(len(sequences_dict), len(seqs_order))
 
 
 

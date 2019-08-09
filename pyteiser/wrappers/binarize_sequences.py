@@ -1,5 +1,8 @@
 import argparse
+import sys
+import os
 
+sys.path.insert(0, os.path.abspath('..'))
 import IO
 
 
@@ -25,9 +28,9 @@ def handler():
 def main():
     args = handler()
     sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile)
-    print("%d motifs have been loaded" % len(motifs_list))
-    print(len(sequences_dict), len(seqs_order))
-
+    seq_batch_byte_string = IO.compress_named_sequences(sequences_dict, seqs_order)
+    with open(args.rna_bin_file, 'wb') as wf:
+        wf.write(seq_batch_byte_string)
 
 
 
