@@ -46,6 +46,33 @@ class s_motif:
         self.bytestring = motif_bytestring
         self.md5 = md5_checksum
 
+
+    def __eq__(self, other):
+        return ((self.stem_length == other.stem_length) and
+                (self.loop_length == other.loop_length) and
+                np.array_equal(self.sequence, other.sequence) and
+                np.array_equal(self.structure, other.structure))
+
+
+    def from_string(self, string):
+        upper_string = string.upper()
+        try:
+            assert(len(upper_string) == self.length)
+        except AssertionError:
+            print("Error: the length of the string is %d and the length of the sequence object is %d" %
+                  (len(upper_string), self.length))
+            sys.exit(1) # see here https://stackoverflow.com/questions/438894/how-do-i-stop-a-program-when-an-exception-is-raised-in-python
+
+        for ind, let in enumerate(upper_string):
+            try:
+                current_nt = glob_var._nt_to_char_mapping[let]
+            except KeyError:
+                print("Error: this string contains a nucleotide that is not ACGT/U. More specifically, it's ", let)
+                print("Exiting!")
+                sys.exit(1)
+            np.put(self.sequence, ind, current_nt)
+
+
 class s_sequence:
 
     def __init__(self, length):
@@ -101,8 +128,3 @@ class s_sequence:
             return False
 
 
-
-
-aa = s_sequence(10)
-aa.from_sequence('AAuTGCuAAt')
-aa.print()
