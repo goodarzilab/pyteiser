@@ -46,12 +46,12 @@ def read_motif_file(inp_file):
     return motifs_list
 
 
-def read_fasta(infile):
+def read_fasta(infile, do_print = False, how_often_print = 1000):
     tr_dict_loc = {}
     seqs_order = []
     with open(infile, 'r') as f:
         split_string = f.read().split('>')
-        for entry in split_string:
+        for ind, entry in enumerate(split_string):
             if entry == '':
                 continue
             seq_start = entry.find('\n')
@@ -61,20 +61,31 @@ def read_fasta(infile):
             current_sequence.from_sequence(sequence_string)
             tr_dict_loc[annotation] = current_sequence
             seqs_order.append(annotation)
+            if ind % how_often_print == 0:
+                if do_print:
+                    print("Read sequence number ", ind)
 
     return tr_dict_loc, seqs_order
 
 
-def compress_named_sequences(seq_objects_dict, seqs_order):
-    seq_batch_byte_string = b''
+def compress_named_sequences(seq_objects_dict, seqs_order,
+                             do_print=False, how_often_print=1000):
 
-    for name in seqs_order:
+    seq_batch_byte_list = []
+
+    for ind, name in enumerate(seqs_order):
+        current_byte_string = b''
         full_length_name = name.ljust(glob_var.MAX_SEQ_NAME_LENGTH)
         name_in_bytes = full_length_name.encode('utf-8')
         assert(len(name_in_bytes) == glob_var.MAX_SEQ_NAME_LENGTH)
-        seq_batch_byte_string += name_in_bytes
+        current_byte_string += name_in_bytes
 
         seq_objects_dict[name].compress()
-        seq_batch_byte_string += seq_objects_dict[name].bytestring
+        current_byte_string += seq_objects_dict[name].bytestring
+        seq_batch_byte_list.append(current_byte_string)
+        if ind % how_often_print == 0:
+            if do_print:
+                print("Compressed sequence number ", ind)
+    seq_batch_byte_string = b''.join(seq_batch_byte_list)
 
     return seq_batch_byte_string

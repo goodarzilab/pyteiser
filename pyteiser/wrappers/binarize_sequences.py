@@ -27,8 +27,8 @@ def handler():
 
 def main():
     args = handler()
-    sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile)
-    seq_batch_byte_string = IO.compress_named_sequences(sequences_dict, seqs_order)
+    sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile, do_print=True)
+    seq_batch_byte_string = IO.compress_named_sequences(sequences_dict, seqs_order, do_print=True)
     with open(args.rna_bin_file, 'wb') as wf:
         wf.write(seq_batch_byte_string)
 
