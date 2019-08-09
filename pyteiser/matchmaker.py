@@ -28,9 +28,8 @@ def match_motif_seq(motif, sequence, ind):
 
 def is_there_motif_instance(motif, sequence):
     for i in range(sequence.length - motif.linear_length + 1):
-        sequence_string = sequence.print(return_string = True)
-        print(sequence_string[i : i + motif.linear_length])
-
+        # sequence_string = sequence.print(return_string = True)
+        # print(sequence_string[i : i + motif.linear_length])
         if match_motif_seq(motif, sequence, i):
             return True
     return False
@@ -40,9 +39,8 @@ def is_there_motif_instance(motif, sequence):
 def find_all_motif_instances(motif, sequence):
     motif_instances = []
     for i in range(sequence.length - motif.linear_length + 1):
-        sequence_string = sequence.print(return_string = True)
-        print(sequence_string[i : i + motif.linear_length])
-
+        # sequence_string = sequence.print(return_string = True)
+        # print(sequence_string[i : i + motif.linear_length])
         if match_motif_seq(motif, sequence, i):
             motif_instances.append(i)
     return motif_instances

@@ -11,63 +11,45 @@ import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
 
 
+def test_matchmaker():
+    # test matchmaking algorithms
+    # 3 strings listed here contain instances of 3 matches that are also listed here
 
+    test_motif_1 = structures.s_motif(4,6)
+    test_motif_2 = structures.s_motif(4,6)
+    test_motif_3 = structures.s_motif(4,6)
+    test_motif_1.from_string("GNCANCNNUU")
+    test_motif_2.from_string("AAUNNGNGNU")
+    test_motif_3.from_string("NNACGNNCUU")
+    test_motifs_list = [test_motif_1, test_motif_2, test_motif_3]
 
-def test_nts():
-    motif_1_string = "GNCANCNNUU"
-    # motif_2 = "NNNCNACGUU"
-    # motif_3 = "NGNGNGNCUU"
+    test_string_1 = 'UUUUUUUGACAACAAUUTGTCUUUUU' # instance motif_1 at 7
+    test_string_2 = "GGCAUCAGUUUUUUAAUGUGUGAUCAUUGGGUUCCCCCUUUUU" # instance motif_2 at 14
+    test_string_3 = "AAUUAAAACCCCCCCAAACGCCCUUGUUUCCCACCACGGGCUUGUGGAAAAUUUUUU" # instances motif_3 at 15 and 33
 
-# 4 6 NNACGNNCUU
-# 4 6 ANCCNNNUUU
-# 4 6 NNCNANAGUU
+    test_sequence_1 = structures.s_sequence(len(test_string_1))
+    test_sequence_2 = structures.s_sequence(len(test_string_2))
+    test_sequence_3 = structures.s_sequence(len(test_string_3))
+    test_sequence_1.from_sequence(test_string_1)
+    test_sequence_2.from_sequence(test_string_2)
+    test_sequence_3.from_sequence(test_string_3)
+    test_sequences_list = [test_sequence_1, test_sequence_2, test_sequence_3]
 
+    boolean_matchmaker_desired = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=bool)
+    boolean_matchmaker_res = np.zeros(shape=(3, 3), dtype=bool)
+    indices_matchmaker_desired = [[7],[],[],[],[14],[],[],[],[15,33]]
+    indices_matchmaker_res = []
 
+    for i, mt in enumerate(test_motifs_list):
+        for k, sq in enumerate(test_sequences_list):
+            is_match = matchmaker.is_there_motif_instance(mt, sq)
+            matching_indices = matchmaker.find_all_motif_instances(mt, sq)
+            boolean_matchmaker_res[i,k] = is_match
+            indices_matchmaker_res.append(matching_indices)
 
-def testing():
-    test_seeds_file = '/Users/student/Documents/hani/temp/seeds_temp/python_generated_seeds/seeds_4-7_4-9_4-6_14-20_100_63.bin'
-    test_seeds_list = IO.read_motif_file(test_seeds_file)
-    seed_one = test_seeds_list[0]
-    seed_two = test_seeds_list[1]
-    seed_one.print_sequence()
-    seed_one.print_structure()
-    #
-    # seed_one_cr = structures.s_motif(4,6)
-    # seed_one_cr.from_string("GNCANCNNUU")
-    # seed_one_cr.print_sequence()
-    # seed_one_cr.print_structure()
-    # if not seed_one.__eq__(seed_one_cr):
-    #     print("not equal")
-    # else:
-    #     print("equal")
-    #
-    # if not seed_two.__eq__(seed_one_cr):
-    #     print("not equal 2")
-    # else:
-    #     print("equal 2")
-    #
-
-
-
-        # test_sequence_string = 'UUUUUUUGACAACAAUUTGTCUUUUU'
-    #
-    # list_test_strings = ['UUUUUUUGACAACAAUUTGTCUUUUU',
-    #                      'UUUUUUUGACAACAAUUTGTCUUUUU',
-    #                      'UUUUUUUGACAACAAUUTGTCUUUUU']
-
-
-    # print("Searching for motif")
-    # for str in list_test_strings:
-    #     test_sequence = structures.s_sequence(len(test_sequence_string))
-    #     test_sequence.from_sequence(test_sequence_string)
-    #     if matchmaker.is_there_motif_instance(seed_one, test_sequence):
-    #         print("The sequence %s does contain the motif" % (str))
-
-
-
-
-
+    assert(np.array_equal(boolean_matchmaker_res, boolean_matchmaker_desired))
+    assert(indices_matchmaker_res == indices_matchmaker_desired)
 
 
 if __name__ == "__main__":
-    testing()
+    test_matchmaker()
