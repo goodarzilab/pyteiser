@@ -17,6 +17,13 @@ _char_to_nt_mapping = {_U : 'U',
                         _A : 'A',
                         _N : 'N'}
 
+_nt_to_char_mapping = {'U' : _U,
+                       'T' : _U,
+                       'C' : _C,
+                       'G' : _G,
+                       'A' : _A,
+                       'N' : _N}
+
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}
 
