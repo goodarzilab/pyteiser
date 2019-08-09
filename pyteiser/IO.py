@@ -135,7 +135,7 @@ def decompress_named_sequences(bitstring,
 
 def write_named_seq_to_fasta(seq_objects_dict, seq_objects_order):
     strings_list = []
-    for ind, name in seq_objects_order:
+    for ind, name in enumerate(seq_objects_order):
         seq_string = seq_objects_dict[name].print_sequence(return_string = True)
         strings_list.append(">%s\n%s\n" % (name, seq_string))
     full_string = ''.join(strings_list)
@@ -145,11 +145,7 @@ def write_named_seq_to_fasta(seq_objects_dict, seq_objects_order):
 
 
 
-binfile = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
-with open(binfile, 'rb') as rb:
-    bitstring = rb.read()
-    seq_objects_dict, seq_objects_order = decompress_named_sequences(bitstring, do_print=True)
-    seq_objects_dict[seq_objects_order[0]].print_sequence()
+
 
 
 
