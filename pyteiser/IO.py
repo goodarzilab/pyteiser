@@ -89,3 +89,68 @@ def compress_named_sequences(seq_objects_dict, seqs_order,
     seq_batch_byte_string = b''.join(seq_batch_byte_list)
 
     return seq_batch_byte_string
+
+
+def decompress_named_sequences(bitstring,
+                               do_print=False, how_often_print=10000):
+    seq_objects_dict = {}
+    seq_objects_order = []
+
+    total_length = len(bitstring)
+    current_spot = 0
+    counter = 0
+
+    while current_spot < total_length:
+        name_in_bytes = bitstring[current_spot : current_spot + glob_var.MAX_SEQ_NAME_LENGTH]
+        length_bitstring = bitstring[current_spot + glob_var.MAX_SEQ_NAME_LENGTH :
+                                        current_spot + glob_var.MAX_SEQ_NAME_LENGTH + 4]
+        seq_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+        seq_length = seq_length_np[0]
+
+        sequence_bitstring = bitstring[current_spot + glob_var.MAX_SEQ_NAME_LENGTH + 4 :
+                                        current_spot + glob_var.MAX_SEQ_NAME_LENGTH + 4 + seq_length]
+        md5_bitstring = bitstring[current_spot + glob_var.MAX_SEQ_NAME_LENGTH + 4 + seq_length :
+                                        current_spot + glob_var.MAX_SEQ_NAME_LENGTH + 4 + seq_length + 16]
+
+        current_spot += glob_var.MAX_SEQ_NAME_LENGTH + 4 + seq_length + 16
+
+        full_length_name = name_in_bytes.decode('utf-8')
+        name = full_length_name.rstrip()
+
+        current_sequence = structures.s_sequence(seq_length)
+        current_sequence.nts = np.frombuffer(sequence_bitstring, dtype = np.uint8)
+        current_sequence.compress()
+        assert (md5_bitstring == current_sequence.md5)
+
+        seq_objects_dict[name] = current_sequence
+        seq_objects_order.append(name)
+
+        counter += 1
+        if counter % how_often_print == 0:
+            if do_print:
+                print("Compressed sequence number ", counter)
+
+    return seq_objects_dict, seq_objects_order
+
+
+def write_named_seq_to_fasta(seq_objects_dict, seq_objects_order):
+    strings_list = []
+    for ind, name in seq_objects_order:
+        seq_string = seq_objects_dict[name].print_sequence(return_string = True)
+        strings_list.append(">%s\n%s\n" % (name, seq_string))
+    full_string = ''.join(strings_list)
+    return full_string
+
+
+
+
+
+binfile = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
+with open(binfile, 'rb') as rb:
+    bitstring = rb.read()
+    seq_objects_dict, seq_objects_order = decompress_named_sequences(bitstring, do_print=True)
+    seq_objects_dict[seq_objects_order[0]].print_sequence()
+
+
+
+

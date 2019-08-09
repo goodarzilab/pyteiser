@@ -150,4 +150,13 @@ class s_sequence:
         self.bytestring = sequence_bytestring
         self.md5 = md5_checksum
 
+    def print_sequence(self, beginning = 0, end = 0, return_string = False):
+        if end == 0:
+            end = self.length
+        string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.nts[beginning : end]])
+        if not return_string:
+            print(string_to_print)
+        else:
+            return string_to_print
+
 
