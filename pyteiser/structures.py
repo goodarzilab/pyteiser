@@ -188,3 +188,4 @@ class s_sequence:
             return string_to_print
 
 
+a = s_motif(4,4)

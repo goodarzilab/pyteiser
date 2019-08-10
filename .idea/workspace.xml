@@ -43,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="structures.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="77" column="12" selection-start-line="77" selection-start-column="12" selection-end-line="77" selection-end-column="12" />
+            <state relative-caret-position="225">
+              <caret line="188" column="0" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -125,7 +125,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
@@ -206,7 +206,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_IO.py" />
   </component>
-  <component name="RunManager" selected="Python.calculate_seed_profiles">
+  <component name="RunManager" selected="Python.structures">
     <configuration default="false" name="test_timing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -435,8 +435,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.calculate_seed_profiles" />
-        <item index="1" class="java.lang.String" itemvalue="Python.structures" />
+        <item index="0" class="java.lang.String" itemvalue="Python.structures" />
+        <item index="1" class="java.lang.String" itemvalue="Python.calculate_seed_profiles" />
         <item index="2" class="java.lang.String" itemvalue="Python.test_timing" />
         <item index="3" class="java.lang.String" itemvalue="Python.test_IO" />
         <item index="4" class="java.lang.String" itemvalue="Python.IO" />
@@ -611,7 +611,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565399138046</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="adddd structures.h">
+      <created>1565412923978</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1565412923978</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -946,16 +953,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="77" column="12" selection-start-line="77" selection-start-column="12" selection-end-line="77" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -980,6 +977,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="31" column="62" selection-start-line="31" selection-start-column="62" selection-end-line="31" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="188" column="0" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
