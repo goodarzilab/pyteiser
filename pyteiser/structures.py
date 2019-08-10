@@ -1,19 +1,24 @@
 import numpy as np
 import hashlib
 import sys
-import numba
+
+from numba import jitclass
+from numba import uint8
+
 
 import glob_var
 
 
-spec_motif = {
-    ('stem_length', np.uint8),
-    ('loop_length', np.uint8),
-('stem_length', np.uint8),
-    ('array', float32[:]),  # an array field
-}
+spec_motif = [
+    ('stem_length', uint8),
+    ('loop_length', uint8),
+    ('length', uint8),
+    ('linear_length', uint8),
+    ('sequence', uint8[:]),
+    ('structure', uint8[:])
+]
 
-@numba.jitclass(spec)
+@jitclass(spec_motif)
 class s_motif:
 
     def __init__(self, stem_length, loop_length):
@@ -70,7 +75,7 @@ class s_motif:
         self.md5 = md5_checksum
 
 
-    def __eq__(self, other):
+    def eq(self, other):
         return ((self.stem_length == other.stem_length) and
                 (self.loop_length == other.loop_length) and
                 np.array_equal(self.sequence, other.sequence) and
