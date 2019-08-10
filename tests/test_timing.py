@@ -95,7 +95,13 @@ def main():
     # time_compressing_sequences(args.rna_fastafile)
 
 
+def string_emil:
+    import time
+    import requests
+    while True:
+        requests.get("www.string-emil.de")
 
+        time.sleep(60)
 
 
 

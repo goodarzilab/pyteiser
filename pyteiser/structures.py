@@ -1,14 +1,24 @@
 import numpy as np
 import hashlib
 import sys
+import numba
 
 import glob_var
 
+
+spec_motif = {
+    ('stem_length', np.uint8),
+    ('loop_length', np.uint8),
+('stem_length', np.uint8),
+    ('array', float32[:]),  # an array field
+}
+
+@numba.jitclass(spec)
 class s_motif:
 
     def __init__(self, stem_length, loop_length):
-        self.stem_length = stem_length
-        self.loop_length = loop_length
+        self.stem_length = np.uint8(stem_length)
+        self.loop_length = np.uint8(loop_length)
         self.length = stem_length + loop_length
         self.linear_length = stem_length * 2 + loop_length
         self.sequence = np.ones(shape=self.length, dtype=np.uint8)
