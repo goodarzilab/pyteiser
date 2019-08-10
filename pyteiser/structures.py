@@ -15,13 +15,26 @@ class s_motif:
         self.structure = np.repeat([glob_var._stem, glob_var._loop], [stem_length, loop_length], axis=None)
 
 
-    def print_sequence(self):
+    def print_sequence(self, return_string = False):
         string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.sequence])
-        print(string_to_print)
+        if not return_string:
+            print(string_to_print)
+        else:
+            return string_to_print
 
-    def print_structure(self):
+
+    def print_structure(self, return_string = False):
         string_to_print = ''.join([glob_var._char_to_struct_mapping[x] for x in self.structure])
-        print(string_to_print)
+        if not return_string:
+            print(string_to_print)
+        else:
+            return string_to_print
+
+
+    def print(self):
+        self.print_sequence()
+        self.print_structure()
+
 
     def compress(self):
         # byte string representation of the motif

@@ -38,6 +38,12 @@ def decompress_motifs_from_bitstring(bitstring):
 
     return motifs_list
 
+def read_rna_bin_file(inp_file):
+    with open(inp_file, 'rb') as rb:
+        bitstring = rb.read()
+        seq_objects_dict, seq_objects_order = decompress_named_sequences(bitstring)
+    return seq_objects_dict, seq_objects_order
+
 
 def read_motif_file(inp_file):
     with open(inp_file, 'rb') as rf:

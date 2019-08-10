@@ -1,11 +1,12 @@
 import numpy as np
+import numba
 
 import glob_var
 import structures
 import IO
 
 
-
+@numba.jit(cache=True, nopython=True, nogil=True)
 def match_motif_seq(motif, sequence, ind):
     left_index = ind
     right_index = left_index + motif.linear_length - 1
@@ -25,7 +26,7 @@ def match_motif_seq(motif, sequence, ind):
 
 
 
-
+@numba.jit(cache=True, nopython=True, nogil=True)
 def is_there_motif_instance(motif, sequence):
     for i in range(sequence.length - motif.linear_length + 1):
         # sequence_string = sequence.print(return_string = True)
