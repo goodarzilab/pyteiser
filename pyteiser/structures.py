@@ -27,7 +27,8 @@ class s_motif:
         self.length = stem_length + loop_length
         self.linear_length = stem_length * 2 + loop_length
         self.sequence = np.ones(shape=self.length, dtype=np.uint8)
-        self.structure = np.repeat([glob_var._stem, glob_var._loop], [stem_length, loop_length], axis=None)
+        self.structure = np.repeat(np.array([glob_var._stem, glob_var._loop], dtype=np.uint8),
+                                   np.array([stem_length, loop_length], dtype=np.uint8))
 
 
     def print_sequence(self, return_string = False):
@@ -49,30 +50,6 @@ class s_motif:
     def print(self):
         self.print_sequence()
         self.print_structure()
-
-
-    def compress(self):
-        # byte string representation of the motif
-        # first, 2 bytes keep stem_length and loop_length
-        # then, two consecutive arrays hold sequence and structure
-        # then, last 16 bytes keep MD5 checksum
-
-        characteristic_numbers = np.array([self.stem_length, self.loop_length], dtype=np.uint8)
-        characteristic_numbers_bitstring = characteristic_numbers.tobytes()
-
-        sequence_bytes = self.sequence.tobytes()
-        structure_bytes = self.structure.tobytes()
-
-        motif_info = characteristic_numbers_bitstring + sequence_bytes + structure_bytes
-
-        md5 = hashlib.md5()
-        md5.update(motif_info)
-        md5_checksum = md5.digest()
-        assert(md5.digest_size == 16)# md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
-
-        motif_bytestring = motif_info + md5_checksum
-        self.bytestring = motif_bytestring
-        self.md5 = md5_checksum
 
 
     def eq(self, other):
@@ -156,28 +133,6 @@ class s_sequence:
             return False
 
 
-    def compress(self):
-        # byte string representation of the sequence
-        # first, 4 bytes keep the length of the uint32 format
-        # then, one array (uint8 format) holds the nts array
-        # then, last 16 bytes keep MD5 checksum
-
-        length_uint32 = np.array([self.length], dtype=np.uint32)
-        length_bitstring = length_uint32.tobytes()
-
-        nts_bytes = self.nts.tobytes()
-
-        sequence_info = length_bitstring + nts_bytes
-
-        md5 = hashlib.md5()
-        md5.update(sequence_info)
-        md5_checksum = md5.digest()
-        assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
-
-        sequence_bytestring = sequence_info + md5_checksum
-        self.bytestring = sequence_bytestring
-        self.md5 = md5_checksum
-
     def print_sequence(self, beginning = 0, end = 0, return_string = False):
         if end == 0:
             end = self.length
@@ -186,6 +141,3 @@ class s_sequence:
             print(string_to_print)
         else:
             return string_to_print
-
-
-a = s_motif(4,4)
