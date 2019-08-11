@@ -57,6 +57,28 @@ def test_matchmaker():
     assert(np.array_equal(boolean_matchmaker_res, boolean_matchmaker_desired))
     assert(indices_matchmaker_res == indices_matchmaker_desired)
 
+def test_current_pair(stem = 4, loop = 7,
+                      motif_str = "NGCAUNGNANN",
+                      seq_str = "UGCAUUGUAUGUGUG"):
+    test_motif = structures.w_motif(stem, loop)
+    test_motif.from_string(motif_str)
+    n_test_motif = type_conversions.w_to_n_motif(test_motif)
+
+    test_sequence = structures.w_sequence(len(seq_str))
+    test_sequence.from_sequence(seq_str)
+    n_test_sequence = type_conversions.w_to_n_sequence(test_sequence)
+    is_match = matchmaker.is_there_motif_instance(n_test_motif, n_test_sequence)
+
+    if is_match:
+        print("Sequence %s matches the motif %s" % (seq_str, motif_str))
+        motif_instances = matchmaker.find_all_motif_instances(n_test_motif, n_test_sequence)
+        print("Motif instances are: ", ", ".join([str(x) for x in motif_instances]))
+
+    else:
+        print("Sequence %s DOES NOT matches the motif %s" % (seq_str, motif_str))
+
+
+
 
 def define_constants():
     seqs_shape = (4,7)
@@ -79,7 +101,7 @@ def define_constants():
 
     bin_file_to_test = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
 
-    desired_numbers = [180, 299, 94, 206, 158, 748, 388, 13, 363, 348, 351, 132, 358, 274, 1097, 316, 93, 360, 556, 414, 82, 374, 448,
+    desired_numbers = [207, 180, 299, 94, 206, 158, 748, 388, 13, 363, 348, 351, 132, 358, 274, 1097, 316, 93, 360, 556, 414, 82, 374, 448,
      1276, 743, 158, 355, 317, 1515, 96, 51, 110, 62, 317, 488, 20, 399, 393, 1260, 443, 202, 368, 481, 1448, 1697, 422,
      1208, 1220, 4146, 2235, 672, 769, 791, 4139, 577, 295, 480, 228, 1552, 1049, 85, 608, 510, 2168, 710, 323, 403,
      547, 1890, 4206, 1353, 2155, 1984, 529, 204, 267, 128, 1097, 242, 132, 191, 80, 643, 272, 24, 363, 181, 828, 151,
@@ -89,7 +111,7 @@ def define_constants():
 
 
 
-def test_calculate_seed_profiles():
+def prepare_known_seeds():
     seqs_shape, seqs_to_test, bin_file_to_test, desired_numbers = define_constants()
 
     w_motifs_list = [0] * len(seqs_to_test)
@@ -103,12 +125,18 @@ def test_calculate_seed_profiles():
 
     n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+    return n_motifs_list, n_seqs_list
+
+
+def test_calculate_seed_profiles():
+    n_motifs_list, n_seqs_list = prepare_known_seeds()
     calculate_seed_profiles.run_matchmaker(n_motifs_list, n_seqs_list, do_print = True)
 
 
 
-
-
 if __name__ == "__main__":
-    test_calculate_seed_profiles()
-    #test_matchmaker()
+    # test individual cases
+    test_matchmaker()
+    # test that the number of instances identified is correct
+    # test_calculate_seed_profiles()
+

@@ -9,8 +9,6 @@ import IO
 
 def handler():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("--seedfile", type=str)
     parser.add_argument("--rna_fastafile", type=str)
     parser.add_argument("--rna_bin_file", type=str)
 

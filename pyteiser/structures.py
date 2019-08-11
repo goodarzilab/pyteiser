@@ -185,7 +185,7 @@ class n_motif:
         self.structure = structure
 
 spec_sequence = [
-    ('length', numba.uint8),
+    ('length', numba.uint32),
     ('nts', numba.uint8[:])
 ]
 
