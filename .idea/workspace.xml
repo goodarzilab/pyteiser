@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pyteiser/type_conversions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/IO.py" afterPath="$PROJECT_DIR$/pyteiser/IO.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/matchmaker.py" afterPath="$PROJECT_DIR$/pyteiser/matchmaker.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/seeds_generator.py" afterPath="$PROJECT_DIR$/pyteiser/seeds_generator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/structures.py" afterPath="$PROJECT_DIR$/pyteiser/structures.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_IO.py" afterPath="$PROJECT_DIR$/tests/test_IO.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_matchmaker.py" afterPath="$PROJECT_DIR$/tests/test_matchmaker.py" />
     </list>
     <ignored path="pyteiser.iws" />
@@ -34,8 +26,8 @@
       <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="758">
-              <caret line="202" column="5" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
+            <state relative-caret-position="135">
+              <caret line="35" column="34" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -87,11 +79,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="29">
-              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state relative-caret-position="-221">
+              <caret line="77" column="49" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
               <folding>
                 <element signature="e#102#111#0" expanded="true" />
               </folding>
@@ -102,8 +94,8 @@
       <file leaf-file-name="binarize_sequences.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+            <state relative-caret-position="34">
+              <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -114,7 +106,7 @@
       <file leaf-file-name="test_timing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_timing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1410">
+            <state relative-caret-position="345">
               <caret line="94" column="19" selection-start-line="94" selection-start-column="11" selection-end-line="94" selection-end-column="19" />
               <folding>
                 <element signature="e#102#111#0" expanded="true" />
@@ -123,11 +115,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="55" column="43" selection-start-line="55" selection-start-column="43" selection-end-line="55" selection-end-column="43" />
+            <state relative-caret-position="248">
+              <caret line="67" column="70" selection-start-line="67" selection-start-column="70" selection-end-line="67" selection-end-column="70" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -163,9 +155,9 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" />
         <option value="$PROJECT_DIR$/pyteiser/structures.py" />
         <option value="$PROJECT_DIR$/pyteiser/type_conversions.py" />
-        <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
         <option value="$PROJECT_DIR$/pyteiser/matchmaker.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
+        <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
       </list>
     </option>
   </component>
@@ -205,7 +197,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
   </component>
-  <component name="RunManager" selected="Python.calculate_seed_profiles">
+  <component name="RunManager" selected="Python.test_matchmaker">
     <configuration default="false" name="test_IO" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -439,8 +431,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.calculate_seed_profiles" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_matchmaker" />
+        <item index="0" class="java.lang.String" itemvalue="Python.test_matchmaker" />
+        <item index="1" class="java.lang.String" itemvalue="Python.calculate_seed_profiles" />
         <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest test_matchmaker" />
         <item index="3" class="java.lang.String" itemvalue="Python.test_IO" />
         <item index="4" class="java.lang.String" itemvalue="Python.binarize_sequences" />
@@ -636,7 +628,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565485681523</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="adddd structures.h">
+      <created>1565492145618</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1565492145618</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -656,7 +655,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28052804" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27887788" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -921,26 +920,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_timing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="94" column="19" selection-start-line="94" selection-start-column="11" selection-end-line="94" selection-end-column="19" />
-          <folding>
-            <element signature="e#102#111#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/seeds_generator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1147">
@@ -979,16 +958,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="758">
-          <caret line="202" column="5" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -997,12 +966,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_timing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state relative-caret-position="345">
+          <caret line="94" column="19" selection-start-line="94" selection-start-column="11" selection-end-line="94" selection-end-column="19" />
           <folding>
             <element signature="e#102#111#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="35" column="34" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="67" column="70" selection-start-line="67" selection-start-column="70" selection-end-line="67" selection-end-column="70" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1017,12 +1016,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="55" column="43" selection-start-line="55" selection-start-column="43" selection-end-line="55" selection-end-column="43" />
+        <state relative-caret-position="-221">
+          <caret line="77" column="49" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#102#111#0" expanded="true" />
           </folding>
         </state>
       </provider>

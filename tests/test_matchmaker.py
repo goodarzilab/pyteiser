@@ -10,6 +10,9 @@ import pyteiser.structures as structures
 import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
 import pyteiser.type_conversions as type_conversions
+import pyteiser.wrappers.calculate_seed_profiles as calculate_seed_profiles
+
+
 
 
 def test_matchmaker():
@@ -55,5 +58,56 @@ def test_matchmaker():
     assert(indices_matchmaker_res == indices_matchmaker_desired)
 
 
+def define_constants():
+    seqs_shape = (4,7)
+
+    seqs_to_test = ['NGCAUNGNANN', 'NACAUNGNANN', 'UNCAUNGNANN', 'CNCAUNGNANN', 'GNCAUNGNANN', 'ANCAUNGNANN', 'NNCAUNGNANN',
+     'NUGAUNGNANN', 'NCGAUNGNANN', 'NGGAUNGNANN', 'NAGAUNGNANN', 'UNGAUNGNANN', 'CNGAUNGNANN', 'GNGAUNGNANN',
+     'ANGAUNGNANN', 'NNGAUNGNANN', 'NUAAUNGNANN', 'NCAAUNGNANN', 'NGAAUNGNANN', 'NAAAUNGNANN', 'UNAAUNGNANN',
+     'CNAAUNGNANN', 'GNAAUNGNANN', 'ANAAUNGNANN', 'NNAAUNGNANN', 'UUNAUNGNANN', 'CUNAUNGNANN', 'GUNAUNGNANN',
+     'AUNAUNGNANN', 'NUNAUNGNANN', 'UCNAUNGNANN', 'CCNAUNGNANN', 'GCNAUNGNANN', 'ACNAUNGNANN', 'NCNAUNGNANN',
+     'UGNAUNGNANN', 'CGNAUNGNANN', 'GGNAUNGNANN', 'AGNAUNGNANN', 'NGNAUNGNANN', 'UANAUNGNANN', 'CANAUNGNANN',
+     'GANAUNGNANN', 'AANAUNGNANN', 'NANAUNGNANN', 'UNNAUNGNANN', 'CNNAUNGNANN', 'GNNAUNGNANN', 'ANNAUNGNANN',
+     'NNNAUNGNANN', 'UUUNUNGNANN', 'CUUNUNGNANN', 'GUUNUNGNANN', 'AUUNUNGNANN', 'NUUNUNGNANN', 'UCUNUNGNANN',
+     'CCUNUNGNANN', 'GCUNUNGNANN', 'ACUNUNGNANN', 'NCUNUNGNANN', 'UGUNUNGNANN', 'CGUNUNGNANN', 'GGUNUNGNANN',
+     'AGUNUNGNANN', 'NGUNUNGNANN', 'UAUNUNGNANN', 'CAUNUNGNANN', 'GAUNUNGNANN', 'AAUNUNGNANN', 'NAUNUNGNANN',
+     'UNUNUNGNANN', 'CNUNUNGNANN', 'GNUNUNGNANN', 'ANUNUNGNANN', 'UUCNUNGNANN', 'CUCNUNGNANN', 'GUCNUNGNANN',
+     'AUCNUNGNANN', 'NUCNUNGNANN', 'UCCNUNGNANN', 'CCCNUNGNANN', 'GCCNUNGNANN', 'ACCNUNGNANN', 'NCCNUNGNANN',
+     'UGCNUNGNANN', 'CGCNUNGNANN', 'GGCNUNGNANN', 'AGCNUNGNANN', 'NGCNUNGNANN', 'UACNUNGNANN', 'CACNUNGNANN',
+     'GACNUNGNANN', 'AACNUNGNANN', 'NACNUNGNANN', 'UNCNUNGNANN', 'CNCNUNGNANN', 'GNCNUNGNANN', 'ANCNUNGNANN',
+     'NNCNUNGNANN', 'UUGNUNGNANN', 'CUGNUNGNANN']
+
+    bin_file_to_test = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
+
+    desired_numbers = [180, 299, 94, 206, 158, 748, 388, 13, 363, 348, 351, 132, 358, 274, 1097, 316, 93, 360, 556, 414, 82, 374, 448,
+     1276, 743, 158, 355, 317, 1515, 96, 51, 110, 62, 317, 488, 20, 399, 393, 1260, 443, 202, 368, 481, 1448, 1697, 422,
+     1208, 1220, 4146, 2235, 672, 769, 791, 4139, 577, 295, 480, 228, 1552, 1049, 85, 608, 510, 2168, 710, 323, 403,
+     547, 1890, 4206, 1353, 2155, 1984, 529, 204, 267, 128, 1097, 242, 132, 191, 80, 643, 272, 24, 363, 181, 828, 151,
+     102, 107, 106, 461, 1169, 458, 910, 492, 2875, 850, 473]
+
+    return seqs_shape, seqs_to_test, bin_file_to_test, desired_numbers
+
+
+
+def test_calculate_seed_profiles():
+    seqs_shape, seqs_to_test, bin_file_to_test, desired_numbers = define_constants()
+
+    w_motifs_list = [0] * len(seqs_to_test)
+    for ind, seq in enumerate(seqs_to_test):
+        curr_test_motif = structures.w_motif(seqs_shape[0], seqs_shape[1])
+        curr_test_motif.from_string(seq)
+        w_motifs_list[ind] = curr_test_motif
+
+    seqs_dict, seqs_order = IO.read_rna_bin_file(bin_file_to_test)
+    w_seqs_list = [seqs_dict[name] for name in seqs_order]
+
+    n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
+    n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+    calculate_seed_profiles.run_matchmaker(n_motifs_list, n_seqs_list, do_print = True)
+
+
+
+
 if __name__ == "__main__":
-    test_matchmaker()
+    test_calculate_seed_profiles()
+    #test_matchmaker()
