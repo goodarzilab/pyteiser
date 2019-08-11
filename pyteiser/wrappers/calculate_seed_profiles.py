@@ -8,6 +8,7 @@ import glob_var
 import structures
 import IO
 import matchmaker
+import type_conversions
 
 
 def handler():
@@ -29,29 +30,53 @@ def handler():
     return args
 
 
-def aaaa(seqs_dict, seqs_order, motifs_list, do_print = False,
-         how_often_print=1000):
-    for k1, motif in enumerate(motifs_list):
+# def aaaa(seqs_dict, seqs_order, motifs_list, do_print = False,
+#          how_often_print=1000):
+#     for k1, motif in enumerate(motifs_list):
+#         current_sum = 0
+#         for k2, seq_name in enumerate(seqs_order):
+#             match = matchmaker.is_there_motif_instance(motif, seqs_dict[seq_name])
+#             if match:
+#                 current_sum += 1
+#             if k2 % how_often_print == 0:
+#                 if do_print:
+#                     print("Calculated matches for motif %d and sequence %d " % (k1, k2))
+#         curr_motif_string = motif.print_sequence(return_string = False)
+#         print("Motif %s binds %d sequences" % (curr_motif_string, current_sum))
+
+
+def run_matchmaker(n_motifs_list, n_seqs_list,
+                   do_print = False, how_often_print=1000):
+    for k1, motif in enumerate(n_motifs_list):
         current_sum = 0
-        for k2, seq_name in enumerate(seqs_order):
-            match = matchmaker.is_there_motif_instance(motif, seqs_dict[seq_name])
+        for k2, seq in enumerate(n_seqs_list):
+            match = matchmaker.is_there_motif_instance(motif, seq)
             if match:
                 current_sum += 1
-            if k2 % how_often_print == 0:
-                if do_print:
-                    print("Calculated matches for motif %d and sequence %d " % (k1, k2))
-        curr_motif_string = motif.print_sequence(return_string = False)
-        print("Motif %s binds %d sequences" % (curr_motif_string, current_sum))
+            # if k2 % how_often_print == 0:
+            #     if do_print:
+            #         print("Calculated matches for motif %d and sequence %d " % (k1, k2))
+        # curr_motif_string = motif.print_sequence(return_string = False)
+        print("Motif number %d binds %d sequences" % (k1, current_sum))
+
+
+
+def prepare_lists_for_calculations(args):
+    seqs_dict, seqs_order = IO.read_rna_bin_file(args.rna_bin_file)
+    w_motifs_list = IO.read_motif_file(args.seedfile)
+    w_seqs_list = [seqs_dict[name] for name in seqs_order]
+    n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
+    n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+    run_matchmaker(n_motifs_list, n_seqs_list, do_print = True)
 
 
 
 
 def main():
     args = handler()
-    seqs_dict, seqs_order = IO.read_rna_bin_file(args.rna_bin_file)
-    motifs_list = IO.read_motif_file(args.seedfile)
+    prepare_lists_for_calculations(args)
 
-    aaaa(seqs_dict, seqs_order, motifs_list, do_print = True)
+
 
 
 

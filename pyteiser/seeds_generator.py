@@ -4,6 +4,7 @@ import os
 
 import glob_var
 import structures
+import IO
 
 # this function generates all possible seeds with specified length of stem and loop
 # to reduce the search space, it only keeps the seeds that have a pre-specified number of informative bases (non-Ns)
@@ -107,7 +108,7 @@ def check_motif_criteria(motif, args):
 def create_motifs_fixed_length(stem_length, loop_length,
                                print_sequences, print_structures,
                                args):
-    curr_motif = structures.s_motif(stem_length, loop_length) # this is a motif with all U, we are skipping it anyway
+    curr_motif = structures.w_motif(stem_length, loop_length) # this is a motif with all U, we are skipping it anyway
     motifs_counter = 0
     total_bitstring = b''
 

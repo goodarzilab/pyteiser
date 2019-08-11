@@ -6,65 +6,6 @@ import glob_var
 import structures
 
 
-def compress_motif(motif):
-    # this function has been moved out of the s_motif because I use numba compiler
-    # for speeding up calculations and numba does not support neither numpy.tobytes()
-    # nor bytes() nor bytearray(). Since I want to compile the whole class with numba and
-    # I don't want to change the compression algorithm I will keep this as a separate function
-
-    # byte string representation of the motif
-    # first, 2 bytes keep stem_length and loop_length
-    # then, two consecutive arrays hold sequence and structure
-    # then, last 16 bytes keep MD5 checksum
-
-    characteristic_numbers = np.array([motif.stem_length, motif.loop_length], dtype=np.uint8)
-    characteristic_numbers_bitstring = characteristic_numbers.tobytes()
-
-    sequence_bytes = motif.sequence.tobytes()
-    structure_bytes = motif.structure.tobytes()
-
-    motif_info = characteristic_numbers_bitstring + sequence_bytes + structure_bytes
-
-    md5 = hashlib.md5()
-    md5.update(motif_info)
-    md5_checksum = md5.digest()
-    assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
-
-    motif_bytestring = motif_info + md5_checksum
-
-    return motif_bytestring, md5_checksum
-
-    # self.bytestring = motif_bytestring
-    # self.md5 = md5_checksum
-
-
-def compress(self):
-    # this function has also been moved out of the s_motif because I use numba compiler
-    # for speeding up calculations and numba does not support neither numpy.tobytes()
-    # nor bytes() nor bytearray(). Since I want to compile the whole class with numba and
-    # I don't want to change the compression algorithm I will keep this as a separate function
-
-    # byte string representation of the sequence
-    # first, 4 bytes keep the length of the uint32 format
-    # then, one array (uint8 format) holds the nts array
-    # then, last 16 bytes keep MD5 checksum
-
-    length_uint32 = np.array([self.length], dtype=np.uint32)
-    length_bitstring = length_uint32.tobytes()
-
-    nts_bytes = self.nts.tobytes()
-
-    sequence_info = length_bitstring + nts_bytes
-
-    md5 = hashlib.md5()
-    md5.update(sequence_info)
-    md5_checksum = md5.digest()
-    assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
-
-    sequence_bytestring = sequence_info + md5_checksum
-    self.bytestring = sequence_bytestring
-    self.md5 = md5_checksum
-
 
 def decompress_motifs_from_bitstring(bitstring):
     motifs_list = []
@@ -82,7 +23,7 @@ def decompress_motifs_from_bitstring(bitstring):
                                         current_spot + 2 + 2*full_length], dtype=np.uint8)
         md5_checksum = bitstring[current_spot + 2 + 2*full_length: current_spot + 2 + 2*full_length + 16]
 
-        current_motif = structures.s_motif(stem_length, loop_length)
+        current_motif = structures.w_motif(stem_length, loop_length)
         current_motif.sequence = curr_sequence
         current_motif.structure = curr_structure
         current_motif.compress()
@@ -122,7 +63,7 @@ def read_fasta(infile, do_print = False, how_often_print = 1000):
             seq_start = entry.find('\n')
             annotation = entry[:seq_start]
             sequence_string = entry[seq_start + 1:].replace('\n', '')
-            current_sequence = structures.s_sequence(len(sequence_string))
+            current_sequence = structures.w_sequence(len(sequence_string))
             current_sequence.from_sequence(sequence_string)
             tr_dict_loc[annotation] = current_sequence
             seqs_order.append(annotation)
@@ -146,6 +87,7 @@ def compress_named_sequences(seq_objects_dict, seqs_order,
         current_byte_string += name_in_bytes
 
         seq_objects_dict[name].compress()
+
         current_byte_string += seq_objects_dict[name].bytestring
         seq_batch_byte_list.append(current_byte_string)
         if ind % how_often_print == 0:
@@ -182,9 +124,11 @@ def decompress_named_sequences(bitstring,
         full_length_name = name_in_bytes.decode('utf-8')
         name = full_length_name.rstrip()
 
-        current_sequence = structures.s_sequence(seq_length)
+        current_sequence = structures.w_sequence(seq_length)
         current_sequence.nts = np.frombuffer(sequence_bitstring, dtype = np.uint8)
         current_sequence.compress()
+
+
         assert (md5_bitstring == current_sequence.md5)
 
         seq_objects_dict[name] = current_sequence

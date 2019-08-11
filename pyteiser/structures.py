@@ -1,25 +1,14 @@
 import numpy as np
 import hashlib
 import sys
-
-from numba import jitclass
-from numba import uint8
-
+import numba
 
 import glob_var
 
 
-spec_motif = [
-    ('stem_length', uint8),
-    ('loop_length', uint8),
-    ('length', uint8),
-    ('linear_length', uint8),
-    ('sequence', uint8[:]),
-    ('structure', uint8[:])
-]
-
-@jitclass(spec_motif)
-class s_motif:
+class w_motif:
+    # w stands for wrapper. This is an external class that is used to interact with the environment, read, write etc
+    # for fast operations, we use n_motif, an internal class that is compatible with numba
 
     def __init__(self, stem_length, loop_length):
         self.stem_length = np.uint8(stem_length)
@@ -77,11 +66,37 @@ class s_motif:
                 sys.exit(1)
             np.put(self.sequence, ind, current_nt)
 
+    def compress(self):
+        # byte string representation of the motif
+        # first, 2 bytes keep stem_length and loop_length
+        # then, two consecutive arrays hold sequence and structure
+        # then, last 16 bytes keep MD5 checksum
 
-class s_sequence:
+        characteristic_numbers = np.array([self.stem_length, self.loop_length], dtype=np.uint8)
+        characteristic_numbers_bitstring = characteristic_numbers.tobytes()
+
+        sequence_bytes = self.sequence.tobytes()
+        structure_bytes = self.structure.tobytes()
+
+        motif_info = characteristic_numbers_bitstring + sequence_bytes + structure_bytes
+
+        md5 = hashlib.md5()
+        md5.update(motif_info)
+        md5_checksum = md5.digest()
+        assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
+
+        motif_bytestring = motif_info + md5_checksum
+
+        self.bytestring = motif_bytestring
+        self.md5 = md5_checksum
+
+
+class w_sequence:
+    # w stands for wrapper. This is an external class that is used to interact with the environment, read, write etc
+    # for fast operations, we use n_motif, an internal class that is compatible with numba
 
     def __init__(self, length):
-        self.length = length
+        self.length = np.uint32(length)
         self.nts = np.zeros(shape=self.length, dtype=np.uint8)
 
     def from_sequence(self, string):
@@ -110,28 +125,6 @@ class s_sequence:
         else:
             print(string_to_print)
 
-    def is_paired(self, left_index, right_index):
-        base1 = self.nts[left_index]
-        base2 = self.nts[right_index]
-
-        if (base1 == glob_var._U and base2 == glob_var._A) or \
-            (base1 == glob_var._C and base2 == glob_var._G) or \
-            (base1 == glob_var._G and base2 == glob_var._C) or \
-            (base1 == glob_var._A and base2 == glob_var._U) or \
-            (base1 == glob_var._U and base2 == glob_var._G) or \
-            (base1 == glob_var._G and base2 == glob_var._U):
-            return True
-        return False
-
-    def nt_is_a(self, ind, nt):
-        if nt == glob_var._N:
-            return True
-        else:
-            base = self.nts[ind]
-            if nt == base:
-                return True
-            return False
-
 
     def print_sequence(self, beginning = 0, end = 0, return_string = False):
         if end == 0:
@@ -141,3 +134,91 @@ class s_sequence:
             print(string_to_print)
         else:
             return string_to_print
+
+
+    def compress(self):
+
+        # byte string representation of the sequence
+        # first, 4 bytes keep the length of the uint32 format
+        # then, one array (uint8 format) holds the nts array
+        # then, last 16 bytes keep MD5 checksum
+
+        length_uint32 = np.array([self.length], dtype=np.uint32)
+        length_bitstring = length_uint32.tobytes()
+
+        nts_bytes = self.nts.tobytes()
+
+        sequence_info = length_bitstring + nts_bytes
+
+        md5 = hashlib.md5()
+        md5.update(sequence_info)
+        md5_checksum = md5.digest()
+        assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
+
+        sequence_bytestring = sequence_info + md5_checksum
+
+        self.bytestring = sequence_bytestring
+        self.md5 = md5_checksum
+
+
+spec_motif = [
+    ('stem_length', numba.uint8),
+    ('loop_length', numba.uint8),
+    ('length', numba.uint8),
+    ('linear_length', numba.uint8),
+    ('sequence', numba.uint8[:]),
+    ('structure', numba.uint8[:])
+]
+
+@numba.jitclass(spec_motif)
+class n_motif:
+    # n stands for numba
+    # this class is used for fast calculations with numba
+    # for input/output operations, use w_motif class
+
+    def __init__(self, stem_length, loop_length, sequence, structure):
+        self.stem_length = stem_length
+        self.loop_length = loop_length
+        self.length = stem_length + loop_length
+        self.linear_length = stem_length * 2 + loop_length
+        self.sequence = sequence
+        self.structure = structure
+
+spec_sequence = [
+    ('length', numba.uint8),
+    ('nts', numba.uint8[:])
+]
+
+@numba.jitclass(spec_sequence)
+class n_sequence:
+    # n stands for numba
+    # this class is used for fast calculations with numba
+    # for input/output operations, use w_motif class
+
+    def __init__(self, length, nts):
+        self.length = length
+        self.nts = nts
+
+
+    def is_paired(self, left_index, right_index):
+        base1 = self.nts[left_index]
+        base2 = self.nts[right_index]
+
+        if (base1 == glob_var._U and base2 == glob_var._A) or \
+                (base1 == glob_var._C and base2 == glob_var._G) or \
+                (base1 == glob_var._G and base2 == glob_var._C) or \
+                (base1 == glob_var._A and base2 == glob_var._U) or \
+                (base1 == glob_var._U and base2 == glob_var._G) or \
+                (base1 == glob_var._G and base2 == glob_var._U):
+            return True
+        return False
+
+
+    def nt_is_a(self, ind, nt):
+        if nt == glob_var._N:
+            return True
+        else:
+            base = self.nts[ind]
+            if nt == base:
+                return True
+            return False
