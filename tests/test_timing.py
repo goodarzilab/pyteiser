@@ -47,10 +47,10 @@ def time_reading_fasta(fasta_file):
             seq_start = entry.find('\n')
             annotation = entry[:seq_start]
             sequence_string = entry[seq_start + 1:].replace('\n', '')
-            current_sequence = structures.s_sequence(len(sequence_string))
+            current_sequence = structures.w_sequence(len(sequence_string))
             current_sequence.from_sequence(sequence_string)
 
-            time_create_object = timeit.timeit(lambda: structures.s_sequence(len(sequence_string)), number=100)
+            time_create_object = timeit.timeit(lambda: structures.w_sequence(len(sequence_string)), number=100)
             time_fill_object = timeit.timeit(lambda: current_sequence.from_sequence(sequence_string), number=100)
             time_compress_object = timeit.timeit(lambda: current_sequence.compress(), number=100)
             time_compress_named_object = timeit.timeit(lambda: IO.compress_named_sequences({annotation: current_sequence}, [annotation]), number=100)
@@ -79,13 +79,7 @@ def time_compressing_sequences(fasta_file):
     for i in range(len(seqs_order)):
         print(seqs_order[i])
 
-# def func():
-#     var1 = 'aaa'
-#     var2 = 'aab'
-#     def closure():
-#         return var1 == var2
-#     t1 = timeit.timeit(closure, number = 10**4)
-#     print(t1)
+
 
 
 def main():
