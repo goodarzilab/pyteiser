@@ -184,29 +184,13 @@ def test_profiles_compression_decompression(args):
         bitstring = rf.read()
     decompressed_profiles_array = IO.decompress_profiles(bitstring)
 
-    # assert(np.array_equal(calculated_profiles_array, decompressed_profiles_array))
+    assert(np.array_equal(calculated_profiles_array, decompressed_profiles_array))
 
-    print(decompressed_profiles_array)
-    print(calculated_profiles_array)
+    # for i in range(decompressed_profiles_array.shape[0]):
+    #     print("Number of mathces in the %d-th array" % i, decompressed_profiles_array[i].sum())
+    # for i in range(calculated_profiles_array.shape[0]):
+    #     print("Number of mathces in the %d-th array" % i, calculated_profiles_array[i].sum())
 
-    print(decompressed_profiles_array.shape)
-    print(calculated_profiles_array.shape)
-
-    print(decompressed_profiles_array[0:3, 0:1000])
-    print(calculated_profiles_array[0:3, 0:1000])
-
-    print('-------')
-    print(decompressed_profiles_array[0:3, 55586:55592])
-    print('-------')
-
-    assert (np.array_equal(calculated_profiles_array[0:3, 0:55586], decompressed_profiles_array[0:3, 0:55586]))
-
-    for i in range(decompressed_profiles_array.shape[0]):
-        print("Number of mathces in the %d-th array" % i, decompressed_profiles_array[i].sum())
-
-
-    for i in range(calculated_profiles_array.shape[0]):
-        print("Number of mathces in the %d-th array" % i, calculated_profiles_array[i].sum())
 
 if __name__ == "__main__":
     args = handler()

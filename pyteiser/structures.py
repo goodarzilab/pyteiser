@@ -184,21 +184,9 @@ class w_profile:
         # we fill the rest of the last byte with zeros, so we can recover the length
         # of the packed array from length of unpacked array but not vice versa
         length_uint32 = np.array([self.values.shape[0]], dtype=np.uint32)
-
-        print("Length array", length_uint32)
-
-
         length_bitstring = length_uint32.tobytes()
-
         values_bytes = values_packbits.tobytes()
-
-        print("We get: ", len(values_bytes))
-
         sequence_info = length_bitstring + values_bytes
-        int1 = np.frombuffer(values_bytes[0:len(values_bytes)], dtype=np.uint8)
-        int2 = np.unpackbits(int1)
-        print("After unpacking: ", len(int2))
-
 
         md5 = hashlib.md5()
         md5.update(sequence_info)

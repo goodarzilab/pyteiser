@@ -171,22 +171,17 @@ def decompress_profiles(bitstring,
         else:
             length_packed = profile_length // 8
 
-        seq_length = length_packed
-        print("Length is ", seq_length)
+        values_bitstring = bitstring[current_spot + 4 : current_spot + 4 + length_packed]
+        md5_bitstring = bitstring[current_spot + 4 + length_packed :
+                                    current_spot + 4 + length_packed + 16]
 
-        values_bitstring = bitstring[current_spot + 4 : current_spot + 4 + seq_length]
-        md5_bitstring = bitstring[current_spot + 4 + seq_length :
-                                    current_spot + 4 + seq_length + 16]
-
-        current_spot += 4 + seq_length + 16
+        current_spot += 4 + length_packed + 16
 
         values_packed_bits = np.frombuffer(values_bitstring, dtype=np.uint8)
         values = np.unpackbits(values_packed_bits)
         values = values[0 : profile_length]
 
-        print(values.shape)
-
-        current_profile = structures.w_profile(len(values))
+        current_profile = structures.w_profile(profile_length)
         current_profile.values = values
         current_profile.compress()
 
