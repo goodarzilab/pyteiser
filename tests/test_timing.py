@@ -122,6 +122,7 @@ def time_compressing_profile():
     print("Numpy conversion takes", time_packbits)
 
     # Numpy packbits is ~13 times faster than bitarray
+    # however, apparenlty, in the nu
 
 
 def main():

@@ -174,18 +174,31 @@ class w_profile:
 
     def compress(self):
         # byte string representation of the sequence
-        # first, 4 bytes keep the length of the uint32 format
+        # first, 4 bytes keep the length of the profile in uint32 format
         # then, one array (uint8 format) holds the compressed (to bits) values array
         # then, last 16 bytes keep MD5 checksum
 
         values_packbits = np.packbits(self.values)
 
-        length_uint32 = np.array([len(values_packbits)], dtype=np.uint32)
+        # we keep the length of the actual array cause when we pack it
+        # we fill the rest of the last byte with zeros, so we can recover the length
+        # of the packed array from length of unpacked array but not vice versa
+        length_uint32 = np.array([self.values.shape[0]], dtype=np.uint32)
+
+        print("Length array", length_uint32)
+
+
         length_bitstring = length_uint32.tobytes()
 
         values_bytes = values_packbits.tobytes()
 
+        print("We get: ", len(values_bytes))
+
         sequence_info = length_bitstring + values_bytes
+        int1 = np.frombuffer(values_bytes[0:len(values_bytes)], dtype=np.uint8)
+        int2 = np.unpackbits(int1)
+        print("After unpacking: ", len(int2))
+
 
         md5 = hashlib.md5()
         md5.update(sequence_info)

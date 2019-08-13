@@ -4,6 +4,7 @@ import os
 import sys
 import numpy as np
 import numba
+import argparse
 sys.path.insert(0, os.path.abspath('..'))
 
 import pyteiser.glob_var as glob_var
@@ -12,6 +13,26 @@ import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
 import pyteiser.type_conversions as type_conversions
 import pyteiser.wrappers.calculate_seed_profiles as calculate_seed_profiles
+
+
+
+def handler():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--seeds_bin_file", type=str)
+    parser.add_argument("--profiles_bin_file", type=str)
+    parser.add_argument("--rna_bin_file", type=str)
+
+
+    parser.set_defaults(
+        seeds_bin_file = '/Users/student/Documents/hani/temp/seeds_temp/test_seeds/test_seeds.bin',
+        profiles_bin_file='/Users/student/Documents/hani/temp/profiles_temp/test_profiles/test_profiles.bin',
+        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
+    )
+
+    args = parser.parse_args()
+
+    return args
 
 
 
@@ -81,7 +102,7 @@ def test_current_pair(stem = 4, loop = 7,
 
 
 
-def define_constants():
+def define_constants(args):
     seqs_shape = (4,7)
 
     seqs_to_test = ['NGCAUNGNANN', 'NACAUNGNANN', 'UNCAUNGNANN', 'CNCAUNGNANN', 'GNCAUNGNANN', 'ANCAUNGNANN', 'NNCAUNGNANN',
@@ -100,7 +121,7 @@ def define_constants():
      'GACNUNGNANN', 'AACNUNGNANN', 'NACNUNGNANN', 'UNCNUNGNANN', 'CNCNUNGNANN', 'GNCNUNGNANN', 'ANCNUNGNANN',
      'NNCNUNGNANN', 'UUGNUNGNANN', 'CUGNUNGNANN']
 
-    bin_file_to_test = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
+    bin_file_to_test = args.rna_bin_file
 
     desired_numbers = [207, 180, 299, 94, 206, 158, 748, 388, 13, 363, 348, 351, 132, 358, 274, 1097, 316, 93, 360, 556, 414, 82, 374, 448,
      1276, 743, 158, 355, 317, 1515, 96, 51, 110, 62, 317, 488, 20, 399, 393, 1260, 443, 202, 368, 481, 1448, 1697, 422,
@@ -112,8 +133,8 @@ def define_constants():
 
 
 
-def prepare_known_seeds():
-    seqs_shape, seqs_to_test, bin_file_to_test, desired_numbers = define_constants()
+def prepare_known_seeds(args):
+    seqs_shape, seqs_to_test, bin_file_to_test, desired_numbers = define_constants(args)
 
     w_motifs_list = [0] * len(seqs_to_test)
     for ind, seq in enumerate(seqs_to_test):
@@ -130,15 +151,74 @@ def prepare_known_seeds():
 
 
 def test_calculate_seed_profiles():
-    n_motifs_list, n_seqs_list = prepare_known_seeds()
+    n_motifs_list, n_seqs_list = prepare_known_seeds(args)
     matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print = True)
 
 
 
+def compress_test_seeds(args, n_motifs_list):
+    motifs_bytestrings_list = [0] * len(n_motifs_list)
+    for i, motif in enumerate(n_motifs_list):
+        w_motif = type_conversions.n_to_w_motif(motif)
+        w_motif.compress()
+        motifs_bytestrings_list[i] = w_motif.bytestring
+    with open(args.seeds_bin_file, 'wb') as wf:
+        string_to_write = b''.join(motifs_bytestrings_list)
+        wf.write(string_to_write)
+
+
+
+
+def test_profiles_compression_decompression(args):
+    args.seedfile = args.seeds_bin_file
+    n_motifs_list, n_seqs_list = calculate_seed_profiles.prepare_lists_for_calculations(args)
+
+    n_motifs_list = n_motifs_list[0:3]
+
+    compress_test_seeds(args, n_motifs_list)
+    calculated_profiles_array = calculate_seed_profiles.calculate_write_profiles(n_motifs_list, n_seqs_list,
+                                            args.profiles_bin_file, do_print=True,
+                                            do_return=True)
+
+    with open(args.profiles_bin_file, 'rb') as rf:
+        bitstring = rf.read()
+    decompressed_profiles_array = IO.decompress_profiles(bitstring)
+
+    # assert(np.array_equal(calculated_profiles_array, decompressed_profiles_array))
+
+    print(decompressed_profiles_array)
+    print(calculated_profiles_array)
+
+    print(decompressed_profiles_array.shape)
+    print(calculated_profiles_array.shape)
+
+    print(decompressed_profiles_array[0:3, 0:1000])
+    print(calculated_profiles_array[0:3, 0:1000])
+
+    print('-------')
+    print(decompressed_profiles_array[0:3, 55586:55592])
+    print('-------')
+
+    assert (np.array_equal(calculated_profiles_array[0:3, 0:55586], decompressed_profiles_array[0:3, 0:55586]))
+
+    for i in range(decompressed_profiles_array.shape[0]):
+        print("Number of mathces in the %d-th array" % i, decompressed_profiles_array[i].sum())
+
+
+    for i in range(calculated_profiles_array.shape[0]):
+        print("Number of mathces in the %d-th array" % i, calculated_profiles_array[i].sum())
+
 if __name__ == "__main__":
+    args = handler()
+
     # test individual cases
     # test_matchmaker()
 
     # test that the number of instances identified is correct
-    test_calculate_seed_profiles()
+    # test_calculate_seed_profiles()
+
+    # test that I can
+    test_profiles_compression_decompression(args)
+
+
 

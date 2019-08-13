@@ -87,7 +87,7 @@ def calculate_profiles_list_motifs(n_motifs_list, n_seqs_list,
 
     for i, motif in enumerate(n_motifs_list):
         current_profile, time_spent = calculate_profile_one_motif(motif, n_seqs_list)
-        profiles_list[i] = current_profile
+        profiles_list[i] = current_profile.values
 
         if do_print:
             print("Motif number %d binds %d sequences. It took %.2f seconds"

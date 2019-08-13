@@ -159,9 +159,20 @@ def decompress_profiles(bitstring,
     counter = 0
 
     while current_spot < total_length:
+        # get the length of the profile
         length_bitstring = bitstring[current_spot : current_spot + 4]
-        seq_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
-        seq_length = seq_length_np[0]
+        profile_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+        profile_length = profile_length_np[0]
+
+        # figure out how long is the profile packed into bits
+        # if profile length // 8 > 0, it will take one additional byte
+        if profile_length % 8 != 0:
+            length_packed = (profile_length // 8) + 1
+        else:
+            length_packed = profile_length // 8
+
+        seq_length = length_packed
+        print("Length is ", seq_length)
 
         values_bitstring = bitstring[current_spot + 4 : current_spot + 4 + seq_length]
         md5_bitstring = bitstring[current_spot + 4 + seq_length :
@@ -171,20 +182,24 @@ def decompress_profiles(bitstring,
 
         values_packed_bits = np.frombuffer(values_bitstring, dtype=np.uint8)
         values = np.unpackbits(values_packed_bits)
+        values = values[0 : profile_length]
+
+        print(values.shape)
+
         current_profile = structures.w_profile(len(values))
         current_profile.values = values
         current_profile.compress()
 
         assert (md5_bitstring == current_profile.md5)
 
-        profiles_list.append(current_profile)
+        profiles_list.append(current_profile.values)
 
         counter += 1
         if counter % how_often_print == 0:
             if do_print:
                 print("Decompressed profile number ", counter)
 
-    profiles_array = np.array(profiles_list)
+    profiles_array = np.array(profiles_list, dtype=np.bool)
 
     return profiles_array
 
