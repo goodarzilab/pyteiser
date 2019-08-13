@@ -151,8 +151,42 @@ def write_named_seq_to_fasta(seq_objects_dict, seq_objects_order):
     return full_string
 
 
+def decompress_profiles(bitstring,
+                        do_print=False, how_often_print=10000):
+    profiles_list = []
+    total_length = len(bitstring)
+    current_spot = 0
+    counter = 0
 
+    while current_spot < total_length:
+        length_bitstring = bitstring[current_spot : current_spot + 4]
+        seq_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+        seq_length = seq_length_np[0]
 
+        values_bitstring = bitstring[current_spot + 4 : current_spot + 4 + seq_length]
+        md5_bitstring = bitstring[current_spot + 4 + seq_length :
+                                    current_spot + 4 + seq_length + 16]
+
+        current_spot += 4 + seq_length + 16
+
+        values_packed_bits = np.frombuffer(values_bitstring, dtype=np.uint8)
+        values = np.unpackbits(values_packed_bits)
+        current_profile = structures.w_profile(len(values))
+        current_profile.values = values
+        current_profile.compress()
+
+        assert (md5_bitstring == current_profile.md5)
+
+        profiles_list.append(current_profile)
+
+        counter += 1
+        if counter % how_often_print == 0:
+            if do_print:
+                print("Decompressed profile number ", counter)
+
+    profiles_array = np.array(profiles_list)
+
+    return profiles_array
 
 
 

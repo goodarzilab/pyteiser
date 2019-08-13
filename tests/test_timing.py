@@ -6,6 +6,8 @@ import argparse
 import numpy as np
 import timeit
 import numba
+import bitarray
+import random
 sys.path.insert(0, os.path.abspath('..'))
 
 import pyteiser.glob_var as glob_var
@@ -100,12 +102,35 @@ def time_iterating():
     # iterating through numpy array takes 50 times faster than iterating through a list
 
 
+def time_compressing_profile():
+    TOY_ARRAY_LENGTH = 10000
+    NUMBER_OF_ONES = 2000
+
+    ones_indices_list = random.sample(range(TOY_ARRAY_LENGTH), NUMBER_OF_ONES)
+    ones_indices_set = set(ones_indices_list)
+    toy_array = [1 if x in ones_indices_set else 0 for x in range(TOY_ARRAY_LENGTH)]
+
+    toy_bool_array = np.asarray(toy_array, dtype=bool)
+
+    toy_bitarray = bitarray.bitarray(toy_array)
+    toy_packbits_array = np.packbits(toy_bool_array)
+
+    time_bitarray = timeit.timeit(lambda: bitarray.bitarray(toy_array), number=10000)
+    time_packbits = timeit.timeit(lambda: np.packbits(toy_bool_array), number=10000)
+
+    print("Bitarray conversion takes", time_bitarray)
+    print("Numpy conversion takes", time_packbits)
+
+    # Numpy packbits is ~13 times faster than bitarray
+
+
 def main():
     args = handler()
 
     # time_reading_fasta(args.rna_fastafile)
     # time_compressing_sequences(args.rna_fastafile)
     # time_iterating()
+    # time_compressing_profile()
 
 
 

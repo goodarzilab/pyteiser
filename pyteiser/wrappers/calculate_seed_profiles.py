@@ -31,8 +31,18 @@ def handler():
     return args
 
 
+def calculate_write_profiles(n_motifs_list, n_seqs_list,
+                            out_filename, do_print=False):
+    with open(out_filename, 'w') as wf:
 
+        for i, motif in enumerate(n_motifs_list):
+            current_profile, time_spent = matchmaker.calculate_profile_one_motif(motif, n_seqs_list)
+            current_profile.compress()
+            wf.write(current_profile.bytestring)
 
+            if do_print:
+                print("Motif number %d binds %d sequences. It took %.2f seconds"
+                      % (i, current_profile.sum(), time_spent))
 
 
 def prepare_lists_for_calculations(args):
@@ -41,12 +51,15 @@ def prepare_lists_for_calculations(args):
     w_seqs_list = [seqs_dict[name] for name in seqs_order]
     n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
-    matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print = True)
+    return n_motifs_list, n_seqs_list
+
 
 
 def main():
     args = handler()
-    prepare_lists_for_calculations(args)
+    n_motifs_list, n_seqs_list = prepare_lists_for_calculations(args)
+
+    matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print=True)
 
 
 if __name__ == "__main__":

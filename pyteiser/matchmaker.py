@@ -56,6 +56,16 @@ def find_all_motif_instances(n_motif, n_sequence):
             motif_instances.append(i)
     return motif_instances
 
+# I have tried really hard to improve performance of this step with numba
+# the main problem is that I have a list of n_sequence objects and their size can vary
+# therefore, I can't pass them to function as a numpy array with any of the standard formats
+# I can mane a numpy array with an object dtyo (like dtype=structures.n_sequence) but Numba does not support it
+# for more detailed explanation, see https://stackoverflow.com/questions/14639496/how-to-create-a-numpy-array-of-arbitrary-length-strings
+# numba will deprecate standard python lists too
+# there is also numba typed list structure (from numba.typed import List) but it's an experimental feature so far so I don't want to rely on it
+# see here https://numba.pydata.org/numba-doc/dev/reference/pysupported.html
+# so there is no way to pass a bunch of variable-sized sequence objects to numba in the way that would make the iterations faster
+
 
 def calculate_profile_one_motif(motif, n_seqs_list):
     start_time = time.time()
