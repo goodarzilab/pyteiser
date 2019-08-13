@@ -1,5 +1,6 @@
 import numpy as np
 import numba
+import time
 
 import glob_var
 import structures
@@ -29,7 +30,6 @@ def match_motif_seq(n_motif, n_sequence, ind):
     return True
 
 
-
 @numba.jit(cache=True, nopython=True, nogil=True)
 def is_there_motif_instance(n_motif, n_sequence):
     # this function only works with n_motif and n_sequence classes,
@@ -57,4 +57,30 @@ def find_all_motif_instances(n_motif, n_sequence):
     return motif_instances
 
 
+def calculate_profile_one_motif(motif, n_seqs_list):
+    start_time = time.time()
 
+    current_profile = structures.w_profile(len(n_seqs_list))
+    for i, seq in enumerate(n_seqs_list):
+        match = is_there_motif_instance(motif, seq)
+        if match:
+            current_profile.values[i] = True
+    end_time = time.time()
+    time_spent = end_time - start_time
+
+    return current_profile, time_spent
+
+
+def calculate_profiles_list_motifs(n_motifs_list, n_seqs_list,
+                                   do_print=False):
+    profiles_list = [0] * len(n_motifs_list)
+
+    for i, motif in enumerate(n_motifs_list):
+        current_profile, time_spent = calculate_profile_one_motif(motif, n_seqs_list)
+        profiles_list[i] = current_profile
+
+        if do_print:
+            print("Motif number %d binds %d sequences. It took %.2f seconds"
+                  % (i, current_profile.sum(), time_spent))
+
+    return profiles_list

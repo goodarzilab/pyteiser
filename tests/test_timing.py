@@ -5,6 +5,7 @@ import sys
 import argparse
 import numpy as np
 import timeit
+import numba
 sys.path.insert(0, os.path.abspath('..'))
 
 import pyteiser.glob_var as glob_var
@@ -80,13 +81,31 @@ def time_compressing_sequences(fasta_file):
         print(seqs_order[i])
 
 
+@numba.jit(cache=True, nopython=True, nogil=True)
+def do_iterate(x):
+    a = 0
+    for i in x:
+        a = 1
+
+
+def time_iterating():
+    pr_list = [0] * 100000
+    pr_numpy = np.array(pr_list)
+    time_just_list = timeit.timeit(lambda: do_iterate(pr_list), number=10)
+    time_numpy_list = timeit.timeit(lambda: do_iterate(pr_numpy), number=10)
+
+    print("Iterating through 100k long list 10 times takes: ", time_just_list)
+    print("Iterating through 100k numpy array 10 times takes: ", time_numpy_list)
+
+    # iterating through numpy array takes 50 times faster than iterating through a list
 
 
 def main():
     args = handler()
-    # func()
-    time_reading_fasta(args.rna_fastafile)
+
+    # time_reading_fasta(args.rna_fastafile)
     # time_compressing_sequences(args.rna_fastafile)
+    # time_iterating()
 
 
 

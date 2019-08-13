@@ -3,6 +3,7 @@
 import os
 import sys
 import numpy as np
+import numba
 sys.path.insert(0, os.path.abspath('..'))
 
 import pyteiser.glob_var as glob_var
@@ -130,13 +131,14 @@ def prepare_known_seeds():
 
 def test_calculate_seed_profiles():
     n_motifs_list, n_seqs_list = prepare_known_seeds()
-    calculate_seed_profiles.run_matchmaker(n_motifs_list, n_seqs_list, do_print = True)
+    matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print = True)
 
 
 
 if __name__ == "__main__":
     # test individual cases
-    test_matchmaker()
+    # test_matchmaker()
+
     # test that the number of instances identified is correct
-    # test_calculate_seed_profiles()
+    test_calculate_seed_profiles()
 

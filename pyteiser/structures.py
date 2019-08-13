@@ -161,6 +161,33 @@ class w_sequence:
         self.md5 = md5_checksum
 
 
+class w_profile:
+    # w stands for wrapper. This is an external class that is used to interact with the environment, read, write etc
+    # for fast operations, we use n_motif, an internal class that is compatible with numba
+
+    def __init__(self, n_sequences):
+        self.values = np.zeros(n_sequences, dtype=np.bool)
+
+    def sum(self):
+        return self.values.sum()
+
+
+spec_profile = [
+    ('values', numba.uint8)
+]
+
+
+@numba.jitclass(spec_profile)
+class n_profile:
+    # n stands for numba
+    # this class is used for fast calculations with numba
+    # for input/output operations, use w_motif class
+
+    def __init__(self, values):
+        self.values = values
+
+
+
 spec_motif = [
     ('stem_length', numba.uint8),
     ('loop_length', numba.uint8),
