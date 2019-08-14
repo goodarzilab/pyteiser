@@ -32,15 +32,33 @@ import type_conversions
 def handler():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seedfile", type=str)
-    parser.add_argument("--rna_bin_file", type=str)
-    parser.add_argument("--outfile", type=str)
+    parser.add_argument("--seed_folder", help="", type=str)
+    parser.add_argument("--fasta_file", help="", type=str)
+    parser.add_argument("--out_folder", help="", type=str)
+    parser.add_argument("--inp_filename_template", help="", type=str)
+    parser.add_argument("--out_filename_template", help="", type=str)
+    parser.add_argument("--print_qstat", help="", type=str)
+    parser.add_argument("--path_to_qstat", help="", type=str)
+
 
 
     parser.set_defaults(
-        seedfile = '/Users/student/Documents/hani/temp/seeds_temp/python_generated_seeds/seeds_4-7_4-9_4-6_14-20_100_181.bin',
-        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
-        outfile = '/Users/student/Documents/hani/temp/profiles_temp/python_generated_profiles/profiles_4-7_4-9_4-6_14-20_100_181.bin',
+
+        seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_seeds',
+        out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_profiles',
+        inp_filename_template='test_seeds_101',
+        out_filename_template='test_motifs_101',
+        # seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/seeds/seeds_4-7_4-9_4-6_14-20/motifs_per_file_30k',
+        # out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
+        # inp_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
+        # out_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
+        rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+
+
+        c_command_path='/wynton/home/goodarzi/khorms/iTEISER/c_programs_new/calculate_profile_seed_june_18_mk',
+        path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
+        print_qstat='y'
+
     )
 
     args = parser.parse_args()

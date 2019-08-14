@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_timing.py" afterPath="$PROJECT_DIR$/tests/test_timing.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,7 +23,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
@@ -39,8 +36,8 @@
       <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <state relative-caret-position="60">
+              <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -48,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="qsub_calculate_seed_profiles.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="qsub_calculate_seed_profiles.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+            <state relative-caret-position="341">
+              <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
               <folding>
                 <element signature="e#267#285#0" expanded="true" />
               </folding>
@@ -90,10 +87,10 @@
         <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
         <option value="$PROJECT_DIR$/tests/test_comparisons_timing.py" />
         <option value="$PROJECT_DIR$/tests/test_IO.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" />
         <option value="$PROJECT_DIR$/tests/test_timing.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
       </list>
     </option>
   </component>
@@ -131,7 +128,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_IO.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_timing.py" />
   </component>
   <component name="RunManager" selected="Python.test_IO">
     <configuration default="false" name="test_matchmaker" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -629,7 +626,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565736574941</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="adddd structures.h">
+      <created>1565756603524</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1565756603524</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1073,32 +1077,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="15" column="14" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
-          <folding>
-            <element signature="e#267#285#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1113,13 +1097,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_timing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
+        <state relative-caret-position="401">
+          <caret line="142" column="6" selection-start-line="142" selection-start-column="6" selection-end-line="142" selection-end-column="6" />
           <folding>
             <element signature="e#102#111#0" expanded="true" />
             <element signature="e#1639#3272#0" expanded="false" />
             <element signature="e#3323#3444#0" expanded="false" />
             <element signature="e#3520#3555#0" expanded="false" />
+            <element signature="e#3584#4042#0" expanded="false" />
             <element signature="e#4081#4871#0" expanded="false" />
           </folding>
         </state>
@@ -1130,6 +1115,26 @@
         <state relative-caret-position="45">
           <caret line="3" column="12" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
+          <folding>
+            <element signature="e#267#285#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
