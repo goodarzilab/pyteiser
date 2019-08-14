@@ -159,4 +159,8 @@ def main():
 
 
 if __name__ == "__main__":
+    print("BBBBBBB")
     main()
+
+
+print("AAAAAAA")
