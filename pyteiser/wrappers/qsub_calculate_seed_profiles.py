@@ -8,6 +8,11 @@
 #$ -q short.q
 #$ -r yes
 
+# --------------------------------
+# QSUB FROM ITS PARENT FOLDER ONLY
+# SEE EXPLANATION BELOW
+# --------------------------------
+
 # for some reason qsub doesn't want to implement python scripts when I point to an inside-of-conda-environment python
 # executable, unless it's the base environment.
 # for example, if I want to run a python script through qsub in the pyteiser_env environment, I get the path to executable with
@@ -27,14 +32,21 @@ import subprocess
 import os
 import sys
 
-# to make sure relative imports work when some of the wrappers is being implemented as a script
-# see more detailed explanation in the test files
 
-current_script_path = sys.argv[0]
-subpackage_folder_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
+# when I submit an array job with qsub, SGE creates lots of individual scripts and runs them one by one
+# these individual scripts run on the cluster nodes and they don't know where is the parent script stored
+# the cluster nodes might not even have access to the submission directory. See here: https://stackoverflow.com/questions/37721931/sge-get-script-location-inside-the-script
+# therefore, my hacky solution of python relative import problem doesn't work with qsub submissions, since
+# it is based on the fact that master script knows where it has been submitted from.
+# this script is built in the way where you have to run it from the same directory where it is located
+# so usage is: (1) cd path_to_script; (2) qsub qsub_calculate_seed_profiles.py
+
+# do relative import based on current working directory
+# otherwise I have to install the package for relative import to work
+current_wd = os.getenv('SGE_O_WORKDIR')
+subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
 if subpackage_folder_path not in sys.path:
     sys.path.append(subpackage_folder_path)
-
 
 import IO
 import matchmaker
