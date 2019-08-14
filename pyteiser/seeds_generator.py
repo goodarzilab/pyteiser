@@ -117,12 +117,10 @@ def check_motif_criteria(motif, args):
     return True
 
 
-def create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
+def create_motifs_fixed_length(stem_length, loop_length, motifs_counter, total_bitstring,
                                do_print_first_motif, do_print_sequences, do_print_structures,
                                args):
     curr_motif = structures.w_motif(stem_length, loop_length) # this is a motif with all U, we are skipping it anyway
-
-    total_bitstring = b''
 
     while get_next_motif(curr_motif):
         if not check_motif_criteria(curr_motif, args):
@@ -149,7 +147,7 @@ def create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
         if do_print_structures:
             curr_motif.print_structure()
 
-    return motifs_counter
+    return motifs_counter, total_bitstring
 
 
 
@@ -172,9 +170,11 @@ def process_printing_arguments(args):
 def motif_creator_outer_loop(args):
     do_print_first_motif, do_print_sequences, do_print_structures = process_printing_arguments(args)
     motifs_counter = 0
+    total_bitstring = b''
+
     for stem_length in range(args.min_stem_length, args.max_stem_length + 1):
         for loop_length in range(args.min_loop_length, args.max_loop_length + 1):
-            motifs_counter = create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
+            motifs_counter = create_motifs_fixed_length(stem_length, loop_length, motifs_counter, total_bitstring,
                                                         do_print_first_motif, do_print_sequences, do_print_structures,
                                                         args)
 

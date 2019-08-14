@@ -1,11 +1,11 @@
 #$ -S /wynton/home/goodarzi/khorms/miniconda3/bin/python
-#$ -t 1-2
-#$ -l h_rt=00:29:00
-#$ -l mem_free=15G
-#$ -l scratch=15G
+#$ -t 1-2277
+#$ -l h_rt=90:00:00
+#$ -l mem_free=100G
+#$ -l scratch=100G
 #$ -e /wynton/scratch/khorms/logs/test_stderr.txt
 #$ -o /wynton/scratch/khorms/logs/test_stdout.txt
-#$ -q short.q
+#$ -q long.q
 #$ -r yes
 
 # --------------------------------
@@ -171,8 +171,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print("BBBBBBB")
     main()
-
-
-print("AAAAAAA")
