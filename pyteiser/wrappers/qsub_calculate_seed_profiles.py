@@ -10,6 +10,7 @@
 
 import numpy as np
 import argparse
+import subprocess
 import os
 import sys
 
@@ -22,8 +23,6 @@ if subpackage_folder_path not in sys.path:
     sys.path.append(subpackage_folder_path)
 
 
-import glob_var
-import structures
 import IO
 import matchmaker
 import type_conversions
@@ -33,7 +32,7 @@ def handler():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--seed_folder", help="", type=str)
-    parser.add_argument("--fasta_file", help="", type=str)
+    parser.add_argument("--rna_bin_file", help="", type=str)
     parser.add_argument("--out_folder", help="", type=str)
     parser.add_argument("--inp_filename_template", help="", type=str)
     parser.add_argument("--out_filename_template", help="", type=str)
@@ -66,6 +65,39 @@ def handler():
     return args
 
 
+def get_env_variables():
+    working_home_dir = os.getcwd()
+    local_scratch = os.getenv('TMPDIR')
+    task_id = os.environ["SGE_TASK_ID"]
+    job_id = os.environ["JOB_ID"]
+
+    env_variables_dict = {"working_dir": working_home_dir,
+                          "local_scratch": local_scratch,
+                          "task_id": task_id,
+                          "job_id": job_id}
+    return env_variables_dict
+
+
+def print_qstat_proc(env_variables_dict, args):
+    #subprocess.call(qstat_command, shell=False)  # qstat is an executable itself, you don't need shell to run it
+    # also subprocess doesn't want to find qstat if I provide the arguments as a string
+    # for more detail, see either the comment of jfs here https://stackoverflow.com/questions/18962785/oserror-errno-2-no-such-file-or-directory-while-using-python-subprocess-in-dj
+    # or this post https://stackoverflow.com/questions/4795190/passing-variables-to-a-subprocess-call
+
+    subprocess.call([args.path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
+
+
+def get_current_in_out_filenames(args, env_variables_dict):
+    inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, env_variables_dict["task_id"])
+    out_filename_short = "%s_%s.bin" % (args.out_filename_template, env_variables_dict["task_id"])
+    seeds_filename_full = os.path.join(args.seed_folder, inp_filename_short)
+    profiles_filename_full = os.path.join(args.out_folder, out_filename_short)
+    rna_bin_filename = args.rna_bin_file
+
+    return seeds_filename_full, profiles_filename_full, rna_bin_filename
+
+
+
 def calculate_write_profiles(n_motifs_list, n_seqs_list,
                             out_filename, do_print=False,
                              do_return = False):
@@ -89,21 +121,24 @@ def calculate_write_profiles(n_motifs_list, n_seqs_list,
         return profiles_array
 
 
-def prepare_lists_for_calculations(args):
-    seqs_dict, seqs_order = IO.read_rna_bin_file(args.rna_bin_file)
-    w_motifs_list = IO.read_motif_file(args.seedfile)
+def read_input_files(seeds_filename_full, rna_bin_filename):
+    seqs_dict, seqs_order = IO.read_rna_bin_file(rna_bin_filename)
+    w_motifs_list = IO.read_motif_file(seeds_filename_full)
     w_seqs_list = [seqs_dict[name] for name in seqs_order]
     n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+
     return n_motifs_list, n_seqs_list
 
 
 
 def main():
     args = handler()
-    n_motifs_list, n_seqs_list = prepare_lists_for_calculations(args)
-
-    matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print=True)
+    env_variables_dict = get_env_variables()
+    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict)
+    n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
+    calculate_write_profiles(n_motifs_list, n_seqs_list,
+                             profiles_filename_full, do_print=True)
 
 
 if __name__ == "__main__":
