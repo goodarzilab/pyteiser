@@ -35,6 +35,7 @@ def handler():
     parser.add_argument("--max_loop_length", type=int)
     parser.add_argument("--print_sequences", type=str)
     parser.add_argument("--print_structures", type=str)
+    parser.add_argument("--print_first_motif", type=str)
     parser.add_argument("--min_inf_bases", type=int)
     parser.add_argument("--max_inf_bases", type=int)
     parser.add_argument("--minI", type=int)
@@ -53,8 +54,9 @@ def handler():
         max_inf_bases = 6,
         minI = 14,
         maxI = 20,
-        print_sequences = 'y',
-        print_structures = 'n'
+        print_sequences = 'n',
+        print_structures = 'n',
+        print_first_motif = 'n'
     )
 
     args = parser.parse_args()
@@ -115,11 +117,11 @@ def check_motif_criteria(motif, args):
     return True
 
 
-def create_motifs_fixed_length(stem_length, loop_length,
-                               print_sequences, print_structures,
+def create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
+                               do_print_first_motif, do_print_sequences, do_print_structures,
                                args):
     curr_motif = structures.w_motif(stem_length, loop_length) # this is a motif with all U, we are skipping it anyway
-    motifs_counter = 0
+
     total_bitstring = b''
 
     while get_next_motif(curr_motif):
@@ -130,30 +132,56 @@ def create_motifs_fixed_length(stem_length, loop_length,
         curr_motif.compress()
         total_bitstring += curr_motif.bytestring
 
+        if do_print_first_motif:
+            if (motifs_counter % args.num_motifs_per_file) == 1:
+                print("In the file number %d the first motif is" % (motifs_counter // args.num_motifs_per_file))
+                curr_motif.print_sequence()
+
         if (motifs_counter % args.num_motifs_per_file) == 0:
             next_filename = os.path.join(args.outfolder, "%s_%d.bin" % (args.prefix, motifs_counter // args.num_motifs_per_file))
             with open(next_filename, 'wb') as wf:
                 wf.write(total_bitstring)
             total_bitstring = b''
 
-
-        if print_sequences == 'y':
+        if do_print_sequences:
             curr_motif.print_sequence()
-        if print_structures == 'y':
+        if do_print_structures:
             curr_motif.print_structure()
 
+    return motifs_counter
 
+
+
+def process_printing_arguments(args):
+    do_print_first_motif = False
+    do_print_sequences = False
+    do_print_structures = False
+
+    if args.print_first_motif == 'y':
+        do_print_first_motif = True
+    if args.print_sequences == 'y':
+        do_print_sequences = True
+    if args.print_structures == 'y':
+        do_print_structures = True
+
+    return do_print_first_motif, do_print_sequences, do_print_structures
+
+
+
+def motif_creator_outer_loop(args):
+    do_print_first_motif, do_print_sequences, do_print_structures = process_printing_arguments(args)
+    motifs_counter = 0
+    for stem_length in range(args.min_stem_length, args.max_stem_length + 1):
+        for loop_length in range(args.min_loop_length, args.max_loop_length + 1):
+            motifs_counter = create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
+                                                        do_print_first_motif, do_print_sequences, do_print_structures,
+                                                        args)
 
 
 
 def create_all_motifs():
     args = handler()
-
-    for stem_length in range(args.min_stem_length, args.max_stem_length + 1):
-        for loop_length in range(args.min_loop_length, args.max_loop_length + 1):
-            create_motifs_fixed_length(stem_length, loop_length,
-                                       args.print_sequences, args.print_structures,
-                                       args)
+    motif_creator_outer_loop(args)
 
 
 
