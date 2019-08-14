@@ -1,18 +1,33 @@
-# see how it's implemented here: https://www.kennethreitz.org/essays/repository-structure-and-python
-
 import os
 import sys
 import numpy as np
 import numba
 import argparse
-sys.path.insert(0, os.path.abspath('..'))
 
-import pyteiser.glob_var as glob_var
+# when you run a python file as a script and you do it from some other folder, relative import simply doesn't work
+# a simple explanations can be found here: https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
+# and here https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time/14132912#14132912
+# basically, Python discards the knowledge about where the currently running script was imported from and therefore
+# relative imports in this script won't work. Again: scripts can't import relative!
+# to solve this problem, most people use sys.path hacks. For example, here: https://stackoverflow.com/questions/6323860/sibling-package-imports
+# the common sys.path.insert(0, os.path.abspath('..')) trick is not what I want to use, since it adds the folder
+# that is one level up from the current working directory, which might be different from where the script you're running is
+# what I do instead is I add (to sys.path) the folder one level up from the script I am currently running so it can definitely
+# do a relative import
+# to find the path of python script currently being executed, see https://stackoverflow.com/questions/595305/how-do-i-get-the-path-of-the-python-script-i-am-running-in
+# to go up one folder, see https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
+
+current_script_path = sys.argv[0]
+package_home_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
+if package_home_path not in sys.path:
+    sys.path.append(package_home_path)
+
 import pyteiser.structures as structures
 import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
 import pyteiser.type_conversions as type_conversions
 import pyteiser.wrappers.calculate_seed_profiles as calculate_seed_profiles
+
 
 
 
@@ -152,7 +167,9 @@ def prepare_known_seeds(args):
 
 def test_calculate_seed_profiles():
     n_motifs_list, n_seqs_list = prepare_known_seeds(args)
+    compress_test_seeds(args, n_motifs_list)
     matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print = True)
+
 
 
 
@@ -169,13 +186,11 @@ def compress_test_seeds(args, n_motifs_list):
 
 
 
-def test_profiles_compression_decompression(args):
+def test_profiles_compression_decompression(args, do_shorten_test = True):
     args.seedfile = args.seeds_bin_file
     n_motifs_list, n_seqs_list = calculate_seed_profiles.prepare_lists_for_calculations(args)
-
-    n_motifs_list = n_motifs_list[0:3]
-
-    compress_test_seeds(args, n_motifs_list)
+    if do_shorten_test:
+        n_motifs_list = n_motifs_list[0:3]
     calculated_profiles_array = calculate_seed_profiles.calculate_write_profiles(n_motifs_list, n_seqs_list,
                                             args.profiles_bin_file, do_print=True,
                                             do_return=True)

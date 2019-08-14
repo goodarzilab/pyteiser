@@ -1,11 +1,17 @@
-# see how it's implemented here: https://www.kennethreitz.org/essays/repository-structure-and-python
-
-import os
-import sys
 import argparse
 import numpy as np
 import timeit
-sys.path.insert(0, os.path.abspath('..'))
+
+import os
+import sys
+
+# to make sure relative import works
+# for a detailed explanation, see test_matchmaker.py
+
+current_script_path = sys.argv[0]
+package_home_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
+if package_home_path not in sys.path:
+    sys.path.append(package_home_path)
 
 import pyteiser.glob_var as glob_var
 import pyteiser.structures as structures
