@@ -1,4 +1,4 @@
-#$ -S /wynton/home/goodarzi/khorms/miniconda3/envs/pyteiser_env/bin/python
+#$ -S /wynton/home/goodarzi/khorms/miniconda3/bin/python
 #$ -t 1-2
 #$ -l h_rt=00:29:00
 #$ -l mem_free=15G
@@ -7,6 +7,19 @@
 #$ -o /wynton/scratch/khorms/logs/test_stdout.txt
 #$ -q short.q
 #$ -r yes
+
+# for some reason qsub doesn't want to implement python scripts when I point to an inside-of-conda-environment python
+# executable, unless it's the base environment.
+# for example, if I want to run a python script through qsub in the pyteiser_env environment, I get the path to executable with
+# import sys
+# print(sys.executable)
+# and it gives me /wynton/home/goodarzi/khorms/miniconda3/envs/pyteiser_env/bin/python
+# however, if I put this executable in the first line of my script I get an error
+# described here https://stackoverflow.com/questions/19292957/how-can-i-troubleshoot-python-could-not-find-platform-independent-libraries-pr
+# so instead I have to point it to an executable in the base environment, namely /wynton/home/goodarzi/khorms/miniconda3/bin/python
+# it seems like it has something to do with PYTHONPATH and PYTHONHOME environmental variables, but I don't know how to fix it in a qsub script
+# see here https://stackoverflow.com/questions/19292957/how-can-i-troubleshoot-python-could-not-find-platform-independent-libraries-pr
+
 
 import numpy as np
 import argparse
@@ -139,6 +152,10 @@ def main():
     n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
     calculate_write_profiles(n_motifs_list, n_seqs_list,
                              profiles_filename_full, do_print=True)
+
+
+    if args.print_qstat == 'y':
+        print_qstat_proc(env_variables_dict, args)
 
 
 if __name__ == "__main__":
