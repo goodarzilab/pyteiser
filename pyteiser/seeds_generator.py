@@ -174,7 +174,7 @@ def motif_creator_outer_loop(args):
 
     for stem_length in range(args.min_stem_length, args.max_stem_length + 1):
         for loop_length in range(args.min_loop_length, args.max_loop_length + 1):
-            motifs_counter = create_motifs_fixed_length(stem_length, loop_length, motifs_counter, total_bitstring,
+            motifs_counter, total_bitstring = create_motifs_fixed_length(stem_length, loop_length, motifs_counter, total_bitstring,
                                                         do_print_first_motif, do_print_sequences, do_print_structures,
                                                         args)
 
