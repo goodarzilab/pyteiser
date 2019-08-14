@@ -134,7 +134,7 @@ def create_motifs_fixed_length(stem_length, loop_length, motifs_counter,
 
         if do_print_first_motif:
             if (motifs_counter % args.num_motifs_per_file) == 1:
-                print("In the file number %d the first motif is" % (motifs_counter // args.num_motifs_per_file))
+                print("In the file number %d the first motif is" % ((motifs_counter // args.num_motifs_per_file) + 1))
                 curr_motif.print_sequence()
                 sys.stdout.flush()
 
