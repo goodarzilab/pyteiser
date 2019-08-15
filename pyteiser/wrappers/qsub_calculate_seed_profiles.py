@@ -1,5 +1,5 @@
 #$ -S /wynton/home/goodarzi/khorms/miniconda3/bin/python
-#$ -t 1-2277
+#$ -t 1-650
 #$ -l h_rt=90:00:00
 #$ -l mem_free=100G
 #$ -l scratch=100G
@@ -68,18 +68,15 @@ def handler():
 
     parser.set_defaults(
 
-        seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_seeds',
-        out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_profiles',
-        inp_filename_template='test_seeds_101',
-        out_filename_template='test_motifs_101',
-        # seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/seeds/seeds_4-7_4-9_4-6_14-20/motifs_per_file_30k',
-        # out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
-        # inp_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
-        # out_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
+        # seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_seeds',
+        # out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/test_profiles',
+        # inp_filename_template='test_seeds_101',
+        # out_filename_template='test_motifs_101',
+        seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/seeds/seeds_4-7_4-9_4-6_14-20/motifs_per_file_30k',
+        out_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
+        inp_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
+        out_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
-
-
-        c_command_path='/wynton/home/goodarzi/khorms/iTEISER/c_programs_new/calculate_profile_seed_june_18_mk',
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y'
 
