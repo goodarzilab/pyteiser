@@ -153,7 +153,6 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
     return n_motifs_list, n_seqs_list
 
 
-
 def main():
     args = handler()
     env_variables_dict = get_env_variables()

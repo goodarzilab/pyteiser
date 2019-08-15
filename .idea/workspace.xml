@@ -50,8 +50,8 @@
       <file leaf-file-name="qsub_calculate_seed_profiles.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+            <state relative-caret-position="888">
+              <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
               <folding>
                 <element signature="e#1435#1453#0" expanded="true" />
               </folding>
@@ -715,7 +715,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565824275771</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="adddd structures.h">
+      <created>1565832274161</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1565832274161</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1113,8 +1120,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+        <state relative-caret-position="888">
+          <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
           <folding>
             <element signature="e#1435#1453#0" expanded="true" />
           </folding>
