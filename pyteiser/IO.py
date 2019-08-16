@@ -207,6 +207,18 @@ def decompress_profiles(bitstring,
     return profiles_array
 
 
+def decompress_exp_mask_file(bitstring):
+    length_bitstring = bitstring[0 : 4]
+    mask_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+    mask_length = mask_length_np[0]
+
+    index_bitstring = bitstring[4 : 4 + mask_length] # dtype = np.bool
+    values_bitstring = bitstring[4 + mask_length : 4 + mask_length + mask_length*4] # dtype=np.float32
+
+    index_array = np.frombuffer(index_bitstring, dtype=np.bool)
+    values_array = np.frombuffer(values_bitstring, dtype=np.float32)
+
+    return index_array, values_array
 
 
 
