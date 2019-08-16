@@ -58,10 +58,24 @@ def unpack_profiles_and_mask(args, do_print=False):
     return decompressed_profiles_array, index_array, values_array
 
 
+def quantize_values(index_array, values_array):
+    quant_values_array = values_array[index_array]
+    print(quant_values_array)
+    return quant_values_array
+
+
+
+def calculate_MI_wrapper(decompressed_profiles_array, index_array, quant_values_array):
+    for profile in decompressed_profiles_array:
+        pass
+
 
 def main():
     args = handler()
     decompressed_profiles_array, index_array, values_array = unpack_profiles_and_mask(args, do_print=False)
+    quant_values_array = quantize_values(index_array, values_array)
+    calculate_MI_wrapper(decompressed_profiles_array, index_array, quant_values_array)
+
 
 
 if __name__ == "__main__":
