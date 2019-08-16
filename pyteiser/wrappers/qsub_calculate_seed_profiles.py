@@ -1,5 +1,5 @@
 #$ -S /wynton/home/goodarzi/khorms/miniconda3/bin/python
-#$ -t 1-650
+#$ -t 1-1842
 #$ -l h_rt=90:00:00
 #$ -l mem_free=100G
 #$ -l scratch=100G
