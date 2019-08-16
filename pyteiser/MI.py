@@ -48,12 +48,15 @@
      return Rres;
 }
 
+import numpy as np
+
 def discretize_eq_freq(data, nbins):
 
     nrows = data.shape[0]
     ncols = data.shape[1]
 
     col = []
+    spl = []
 
     res = np.zeros(data.shape)
     EPSILON = 0.01
@@ -62,3 +65,44 @@ def discretize_eq_freq(data, nbins):
         N = nrows
         for s in range(nrows):
             col[s] = data[v*N + s]
+
+        col = sorted(col)
+
+        j = N-1
+        while (j > 0) and col[j] == np.nan:
+            j -= 1
+            N -= 1
+
+        freq = N / nbins
+        mod = N % nbins
+        splitpoint = freq - 1
+
+        for i in range(nbins - 1):
+            if mod > 0:
+                spl[i] = col[splitpoint+1]
+                mod -= 1
+            else:
+                spl[i] = col[splitpoint]
+            splitpoint += freq
+
+        spl[nbins - 1] = col[N - 1] + EPSILON
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
