@@ -23,6 +23,7 @@ import pyteiser.glob_var as glob_var
 import pyteiser.structures as structures
 import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
+import pyteiser.MI as MI
 
 
 
@@ -134,6 +135,13 @@ def time_compressing_profile():
     # however, apparenlty, in the nu
 
 
+def time_discretization():
+    vect_to_discr_10k = np.random.normal(size=10000)
+    time_discretization = timeit.timeit(lambda: MI.discret_eq_freq(vect_to_discr_10k, nbins=17), number=1000)
+    print("Discretization takes: ", time_discretization)
+
+
+
 def main():
     args = handler()
 
@@ -141,6 +149,8 @@ def main():
     # time_compressing_sequences(args.rna_fastafile)
     # time_iterating()
     # time_compressing_profile()
+
+    time_discretization()
 
 
 
