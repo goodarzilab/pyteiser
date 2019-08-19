@@ -1,8 +1,7 @@
 import sys
 import numpy as np
 import numba
-import scipy.stats
-import math
+
 
 
 
@@ -111,19 +110,6 @@ def discret_eq_width(inp_array, nbins):
     return res
 
 
-def entropy(labels, how, base=None):
-    value, counts = np.unique(labels, return_counts=True)
-    if how == 1:
-        _ = entropy1(counts)
-    elif how == 2:
-        _ = entropy2(counts, labels.shape[0])
-    elif how == 3:
-        _ = entropy3(counts)
-    elif how == 4:
-        _ = entropy4(counts, labels.shape[0])
-
-    return _
-
 
 
 # double entropy_empirical(std::map< std::vector<int> ,int > frequencies, int nb_samples) {
@@ -136,58 +122,13 @@ def entropy(labels, how, base=None):
 #def entropy_empirical():
 
 
-# @numba.jit(cache=True, nopython=True, nogil=True)
-def entropy1(counts, base=None):
-  return scipy.stats.entropy(counts, base=base)
-
-
-
-def entropy2(counts, total_number, base=None):
-  """ Computes entropy of label distribution. """
-
-  probs = np.divide(counts, total_number)
-  ent = 0.
-  base = math.e if base is None else base
-
-  for i in probs:
-    ent -= i * math.log(i, base)
-
-  return ent
-
-@numba.jit(cache=True, nopython=True, nogil=True)
-def entropy3(counts, base=None):
-  norm_counts = np.divide(counts, counts.sum())
-  base = math.e if base is None else base
-  return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
-
-
-
-
-
-import timeit
-
-def time_entropies():
-    vect_to_discr_10k = np.random.normal(size=10000)
-    discr_vect = discretize(vect_to_discr_10k, bins=5, disc="equalfreq")
-
-    a1 = entropy(discr_vect, how=1)
-    a2 = entropy(discr_vect, how=2)
-    a3 = entropy(discr_vect, how=3)
-    print(a1, a2, a3)
-
-    time_entr_1 = timeit.timeit(lambda: entropy(discr_vect, how = 1), number=1000)
-    time_entr_2 = timeit.timeit(lambda: entropy(discr_vect, how = 2), number=1000)
-    time_entr_3 = timeit.timeit(lambda: entropy(discr_vect, how = 3), number=1000)
-    print("Entropy 1: ", time_entr_1)
-    print("Entropy 2: ", time_entr_2)
-    print("Entropy 3: ", time_entr_3)
 
 
 
 
 
 def main():
-    time_entropies()
+    pass
 
 
 

@@ -1,7 +1,3 @@
-# see how it's implemented here: https://www.kennethreitz.org/essays/repository-structure-and-python
-
-import os
-import sys
 import argparse
 import numpy as np
 import timeit
