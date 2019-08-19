@@ -4,6 +4,8 @@
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/MI.py" afterPath="$PROJECT_DIR$/pyteiser/MI.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,7 +40,7 @@
       <file leaf-file-name="calculate_seed_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-225">
+            <state relative-caret-position="79">
               <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -50,8 +52,8 @@
       <file leaf-file-name="qsub_calculate_seed_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="857">
-              <caret line="146" column="4" selection-start-line="146" selection-start-column="4" selection-end-line="146" selection-end-column="66" />
+            <state relative-caret-position="-1400">
+              <caret line="18" column="12" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -60,8 +62,8 @@
       <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="57" column="46" selection-start-line="57" selection-start-column="46" selection-end-line="57" selection-end-column="46" />
+            <state relative-caret-position="-1093">
+              <caret line="185" column="20" selection-start-line="185" selection-start-column="20" selection-end-line="185" selection-end-column="20" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -72,8 +74,8 @@
       <file leaf-file-name="IO.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="72" column="35" selection-start-line="72" selection-start-column="32" selection-end-line="72" selection-end-column="35" />
+            <state relative-caret-position="549">
+              <caret line="218" column="68" selection-start-line="218" selection-start-column="68" selection-end-line="218" selection-end-column="68" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -84,7 +86,7 @@
       <file leaf-file-name="preprocess_expression_profile_ensembl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
+            <state relative-caret-position="623">
               <caret line="57" column="43" selection-start-line="57" selection-start-column="43" selection-end-line="57" selection-end-column="43" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -96,8 +98,8 @@
       <file leaf-file-name="calculate_MI_profiles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="72" column="11" selection-start-line="72" selection-start-column="11" selection-end-line="72" selection-end-column="11" />
+            <state relative-caret-position="561">
+              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -108,8 +110,8 @@
       <file leaf-file-name="MI.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/MI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="89" column="8" selection-start-line="89" selection-start-column="8" selection-end-line="89" selection-end-column="8" />
+            <state relative-caret-position="680">
+              <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -147,19 +149,19 @@
         <option value="$PROJECT_DIR$/tests/test_timing.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/seeds_generator.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py" />
         <option value="$PROJECT_DIR$/pyteiser/IO.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/MI.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/MI.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="701" />
+    <option name="width" value="2560" />
+    <option name="height" value="1341" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -192,7 +194,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/MI.py" />
   </component>
-  <component name="RunManager" selected="Python.calculate_MI_profiles">
+  <component name="RunManager" selected="Python.MI">
     <configuration default="false" name="test_matchmaker" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -206,23 +208,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_timing" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_timing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -274,6 +259,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="MI" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/MI.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -414,18 +416,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.test_matchmaker" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test_timing" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test_IO" />
-      <item index="3" class="java.lang.String" itemvalue="Python.preprocess_expression_profile_ensembl" />
-      <item index="4" class="java.lang.String" itemvalue="Python.calculate_MI_profiles" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test_IO" />
+      <item index="2" class="java.lang.String" itemvalue="Python.preprocess_expression_profile_ensembl" />
+      <item index="3" class="java.lang.String" itemvalue="Python.calculate_MI_profiles" />
+      <item index="4" class="java.lang.String" itemvalue="Python.MI" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.calculate_MI_profiles" />
-        <item index="1" class="java.lang.String" itemvalue="Python.preprocess_expression_profile_ensembl" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_IO" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test_matchmaker" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test_timing" />
+        <item index="0" class="java.lang.String" itemvalue="Python.MI" />
+        <item index="1" class="java.lang.String" itemvalue="Python.calculate_MI_profiles" />
+        <item index="2" class="java.lang.String" itemvalue="Python.preprocess_expression_profile_ensembl" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_IO" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test_matchmaker" />
       </list>
     </recent_temporary>
   </component>
@@ -442,13 +444,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00003" summary="addd structures.h">
-      <created>1564783559855</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1564783559855</updated>
     </task>
     <task id="LOCAL-00004" summary="adddd structures.h">
       <created>1564783570766</created>
@@ -786,7 +781,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565985452919</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="adddd structures.h">
+      <created>1565994825259</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1565994825259</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -798,7 +800,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="701" extended-state="0" />
+    <frame x="0" y="23" width="2560" height="1341" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -806,7 +808,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.57425743" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2375602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -862,13 +864,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py</url>
-          <line>62</line>
+          <line>64</line>
           <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/pyteiser/MI.py</url>
-          <line>36</line>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="5" />
@@ -1122,54 +1119,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="857">
-          <caret line="146" column="4" selection-start-line="146" selection-start-column="4" selection-end-line="146" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-225">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="57" column="43" selection-start-line="57" selection-start-column="43" selection-end-line="57" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="72" column="35" selection-start-line="72" selection-start-column="32" selection-end-line="72" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="57" column="46" selection-start-line="57" selection-start-column="46" selection-end-line="57" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="394">
@@ -1190,8 +1139,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="72" column="11" selection-start-line="72" selection-start-column="11" selection-end-line="72" selection-end-column="11" />
+        <state relative-caret-position="561">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="623">
+          <caret line="57" column="43" selection-start-line="57" selection-start-column="43" selection-end-line="57" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1400">
+          <caret line="18" column="12" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="79">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1093">
+          <caret line="185" column="20" selection-start-line="185" selection-start-column="20" selection-end-line="185" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="549">
+          <caret line="218" column="68" selection-start-line="218" selection-start-column="68" selection-end-line="218" selection-end-column="68" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -1200,8 +1197,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/MI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="89" column="8" selection-start-line="89" selection-start-column="8" selection-end-line="89" selection-end-column="8" />
+        <state relative-caret-position="680">
+          <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
           <folding />
         </state>
       </provider>

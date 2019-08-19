@@ -1,8 +1,8 @@
 #$ -S /wynton/home/goodarzi/khorms/miniconda3/bin/python
-#$ -t 1-1842
-#$ -l h_rt=90:00:00
-#$ -l mem_free=100G
-#$ -l scratch=100G
+#$ -t 1-2140
+#$ -l h_rt=60:00:00
+#$ -l mem_free=1G
+#$ -l scratch=1G
 #$ -e /wynton/scratch/khorms/logs/test_stderr.txt
 #$ -o /wynton/scratch/khorms/logs/test_stdout.txt
 #$ -q long.q

@@ -24,7 +24,9 @@ def handler():
     parser.add_argument("--exp_mask_file", help="", type=str)
 
     parser.set_defaults(
-        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
+        #profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
+        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
+
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin'
     )
 
@@ -72,7 +74,7 @@ def calculate_MI_wrapper(decompressed_profiles_array, index_array, quant_values_
 
 def main():
     args = handler()
-    decompressed_profiles_array, index_array, values_array = unpack_profiles_and_mask(args, do_print=False)
+    decompressed_profiles_array, index_array, values_array = unpack_profiles_and_mask(args, do_print=True)
     quant_values_array = quantize_values(index_array, values_array)
     calculate_MI_wrapper(decompressed_profiles_array, index_array, quant_values_array)
 

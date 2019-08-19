@@ -1,94 +1,58 @@
-{
-    const double *data;
-    const int *nrows, *ncols, *nbins;
-    int *res;
-    double *spl, *col;
-    SEXP Rres, Rspl, Rcol;
-    PROTECT(Rdata=AS_NUMERIC(Rdata));
-    PROTECT(Rnrows=AS_INTEGER(Rnrows));
-    PROTECT(Rncols=AS_INTEGER(Rncols));
-    PROTECT(Rnbins=AS_INTEGER(Rnbins));
-    data = NUMERIC_POINTER(Rdata);
-    nrows = INTEGER_POINTER(Rnrows);
-    ncols = INTEGER_POINTER(Rncols);
-    nbins = INTEGER_POINTER(Rnbins);
-    PROTECT(Rres=NEW_INTEGER((*nrows)*(*ncols)));
-    PROTECT(Rspl=NEW_NUMERIC(*nbins));
-    PROTECT(Rcol=NEW_NUMERIC(*nrows));
-    spl = NUMERIC_POINTER(Rspl);
-    col = NUMERIC_POINTER(Rcol);
-    res = INTEGER_POINTER(Rres);
-    for( int v=0; v<(*ncols); ++v )
-    {
-        int N=(*nrows);
-        for( int s=0; s<N; ++s )
-            col[s] = data[v*N+s];
-            std::sort(col,col+N);
-		//for( int j=0; ISNA(col[j]); ++j ) N--;
-        for( int j=N-1; j > 0 && ISNA(col[j]); --j ) N--;
-        int freq = N/(*nbins), mod = N%(*nbins);
-        int splitpoint=freq-1;
-        for( int i=0; i<(*nbins)-1; ++i ) {
-              if( mod>0 ) {spl[i] = col[splitpoint+1]; mod--;}
-              else spl[i]=col[splitpoint];
-              splitpoint += freq;
-         }
-         spl[(*nbins)-1] = col[N-1]+epsilon;
-         for( int s=0; s<(*nrows); ++s )
-            if( !ISNA(data[s+v*(*nrows)]) )
-            {
-                int bin = -1;
-                for( int k=0; bin==-1 && k<(*nbins); ++k )
-                   if( data[s+v*(*nrows)] <= spl[k] ) bin=k;
-                res[s+v*(*nrows)] = bin+1;
-            }
-            else res[s+v*(*nrows)]= NA_INTEGER;
-     }
-     UNPROTECT(7);
-     return Rres;
-}
-
 import numpy as np
 
-def discretize_eq_freq(data, nbins):
-
-    nrows = data.shape[0]
-    ncols = data.shape[1]
-
-    col = []
-    spl = []
-
-    res = np.zeros(data.shape)
-    EPSILON = 0.01
-
-    for v in range(ncols):
-        N = nrows
-        for s in range(nrows):
-            col[s] = data[v*N + s]
-
-        col = sorted(col)
-
-        j = N-1
-        while (j > 0) and col[j] == np.nan:
-            j -= 1
-            N -= 1
-
-        freq = N / nbins
-        mod = N % nbins
-        splitpoint = freq - 1
-
-        for i in range(nbins - 1):
-            if mod > 0:
-                spl[i] = col[splitpoint+1]
-                mod -= 1
-            else:
-                spl[i] = col[splitpoint]
-            splitpoint += freq
-
-        spl[nbins - 1] = col[N - 1] + EPSILON
 
 
+def discret_eq_freq(inp_array, nbins):
+    N = inp_array.shape[0]
 
+    spl = np.zeros(nbins, dtype=np.float32) # split points
+    res = np.zeros(N, dtype=np.uint16) # discretized vector
+
+    sorted_column = np.sort(inp_array)
+
+    # find split points
+
+    freq = N // nbins
+    mod = N % nbins
+    splitpoint = freq - 1
+
+    for i in range(nbins - 1):
+        if mod > 0:
+            spl[i] = sorted_column[splitpoint + 1]
+            mod -= 1
+        else:
+            spl[i] = sorted_column[splitpoint]
+        splitpoint += freq
+
+    EPSILON = np.float32(0.01)  # constant to add to the end split point
+    spl[nbins - 1] = sorted_column[N - 1] + EPSILON
+
+    # identify the bin corresponding to each element of an array
+
+    for s in range(N):
+        bin = -1
+        k = 0
+        while (bin == -1) and (k < nbins):
+            if inp_array[s] <= spl[k]:
+                bin = k
+            res[s] = bin
+            k += 1
+
+    return res
+
+
+def main():
+    # no nans - remove them beforehand
+    vect_to_discr = [0.5, 5.1, 5.2, 4.8, 9.9, 0.1, 9.7, 0.2, 10.3]
+    discr_expected_result = [1, 2, 2, 2, 3, 1, 3, 1, 3]
+    discr_expected_result = [x-1 for x in discr_expected_result]
+    discr_expected_result_np = np.array(discr_expected_result, dtype=np.uint16)
+
+    array_to_discr = np.array(vect_to_discr, dtype=np.float32)
+    array_result = discret_eq_freq(array_to_discr, nbins=3)
+    assert(np.array_equal(discr_expected_result_np, array_result))
+
+main()
 
 
 
