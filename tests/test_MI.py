@@ -48,7 +48,31 @@ def test_discret_eq_width():
     assert (np.array_equal(vect_to_discr_30_result, discr_expected_30_result))
 
 
+def test_mutinf():
+    one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
+    two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
 
-if __name__ == "__main__":
+    mi_test = MI.mut_info(one_arr, two_arr)
+    mi_expected = 0.28418101912817351
+    assert(np.isclose(mi_test, mi_expected, atol=1e-16))
+
+    cmi_test = MI.cond_mut_info(one_arr, two_arr, one_arr + two_arr)
+    cmi_expected = 0.50219293007150134
+    assert(np.isclose(cmi_test, cmi_expected, atol=1e-16))
+
+    # an example from here: https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html#mifeatsel2
+    ut = np.repeat([0, 1, 0, 1], [774106, 27625, 141, 49])
+    cc = np.repeat([0, 0, 1, 1], [774106, 27625, 141, 49])
+    mi_test_base_2 = MI.mut_info(ut, cc, base=2)
+    mi_expected_base_2 = 0.0001105
+    assert(np.isclose(mi_test_base_2, mi_expected_base_2, atol=1e-6))
+
+
+def main():
     test_discret_eq_freq()
     test_discret_eq_width()
+    test_mutinf()
+
+
+if __name__ == "__main__":
+    main()

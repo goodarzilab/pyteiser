@@ -4,8 +4,6 @@ import numba
 import math
 
 
-
-
 # This function is written based on discretize function from infotheo package for R: https://cran.r-project.org/web/packages/infotheo/index.html
 # The original core fucntions - discEF and discEW - are in the discretize.cpp file is in the package's source code
 # the three key differences are:
@@ -117,8 +115,6 @@ def entropy_empirical(counts, total_number, base=None):
   ent = np.float64(0)
   base = math.e if base is None else base
 
-  #print(probs)
-
   for i in probs:
     ent -= i * math.log(i) / math.log(base)
 
@@ -131,13 +127,12 @@ def entropy(labels, base=None):
     return res
 
 
-
-# only for 2 one-dimensional arrays
-def mut_info(X, Y):
+# input: 2 one-dimensional arrays
+def mut_info(X, Y, base=None):
     U = np.stack((X, Y)).transpose()
-    Hyx = entropy(U)
-    Hx = entropy(X)
-    Hy = entropy(Y)
+    Hyx = entropy(U, base)
+    Hx = entropy(X, base)
+    Hy = entropy(Y, base)
     res = Hx + Hy - Hyx
     if res < 0:
         res = 0
@@ -145,32 +140,17 @@ def mut_info(X, Y):
     return res
 
 
-
-def cond_mut_info(X, Y, Z):
+# input: 3 one-dimensional arrays
+def cond_mut_info(X, Y, Z, base=None):
     U = np.stack((X, Z, Y)).transpose()
-    Hyzx = entropy(U)
-    Hzx = entropy(U[: , 0:2])
-    Hyz = entropy(U[: , 0:3])
-    Hz = entropy(Z)
+    Hyzx = entropy(U, base)
+    Hzx = entropy(U[: , 0:2], base)
+    Hyz = entropy(U[: , 0:3], base)
+    Hz = entropy(Z, base)
     Ires = Hyz - Hz - Hyzx + Hzx
 
-    print(Ires)
+    return Ires
 
-
-
-
-
-def test_mutinf():
-    one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
-    two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
-
-    mitest = mut_info(one_arr, two_arr)
-    print(mitest)
-
-    cond_mut_info(one_arr, two_arr, one_arr + two_arr)
-
-
-#def buildMIM():
 
 
 
@@ -179,7 +159,6 @@ def test_mutinf():
 
 
 def main():
-    test_mutinf()
     pass
 
 
