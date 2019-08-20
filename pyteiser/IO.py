@@ -221,5 +221,46 @@ def decompress_exp_mask_file(bitstring):
     return index_array, values_array
 
 
+def unpack_profiles_and_mask(args, do_print=False):
+    with open(args.profiles_bin_file, 'rb') as rf:
+        bitstring = rf.read()
+        decompressed_profiles_array = decompress_profiles(bitstring)
+        if do_print:
+            print("%d profiles have been loaded" % len(decompressed_profiles_array))
+
+    with open(args.exp_mask_file, 'rb') as rf:
+        bitstring = rf.read()
+        index_array, values_array = decompress_exp_mask_file(bitstring)
+        if do_print:
+            print("Expression values are provided for %d out of %d transcripts in the reference transcriptome" %
+                  (index_array.sum(), index_array.shape[0]))
+
+    try:
+        assert (decompressed_profiles_array[0].shape[0] == index_array.shape[0])
+    except AssertionError:
+        print("Error: occurence profiles were calculated for some other reference transcriptome. The length of the "
+              "profiles is %d and the length of the transcriptome provided is %d" %
+              (decompressed_profiles_array[0].shape[0], index_array.shape[0]))
+        sys.exit(1)
+
+    return decompressed_profiles_array, index_array, values_array
 
 
+def write_MI_values(MI_values_array, MI_values_file):
+    length_uint32 = np.array([MI_values_array.shape[0]], dtype=np.uint32)
+    length_bitstring = length_uint32.tobytes()
+    values_bytes = MI_values_array.tobytes()
+    MI_values_bytestring = length_bitstring + values_bytes
+
+    with open(MI_values_file, 'wb') as wf:
+        wf.write(MI_values_bytestring)
+
+
+def decompres_MI_values(bitstring):
+    length_bitstring = bitstring[0: 4]
+    MI_array_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+    MI_array_length = MI_array_length_np[0]
+    MI_array_bitstring = bitstring[4: 4 + MI_array_length * 8] # np.float64 takes 8 bytes
+    # to check it, you could run print(np.dtype(np.float32).itemsize)
+    MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
+    return MI_array

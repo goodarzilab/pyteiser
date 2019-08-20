@@ -109,6 +109,9 @@ def discret_eq_width(inp_array, nbins):
     return res
 
 
+# to check resolution of the respective data types
+# do np.finfo(np.float32).resolution: 1e-06
+# or np.finfo(np.float64).resolution: 1e-06
 @numba.jit(cache=True, nopython=True, nogil=True)
 def entropy_empirical(counts, total_number, base=None):
   probs = np.divide(counts, total_number)
@@ -152,6 +155,10 @@ def cond_mut_info(X, Y, Z, base=None):
     return Ires
 
 
+def discretize_exp_profile(index_array, values_array, nbins):
+    active_values_array = values_array[index_array]
+    quant_values_array = discretize(active_values_array, bins=nbins, disc = "equalfreq")
+    return quant_values_array
 
 
 
