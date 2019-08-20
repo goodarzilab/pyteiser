@@ -146,6 +146,19 @@ def mut_info(X, Y):
 
 
 
+def cond_mut_info(X, Y, Z):
+    U = np.stack((X, Z, Y)).transpose()
+    Hyzx = entropy(U)
+    Hzx = entropy(U[: , 0:2])
+    Hyz = entropy(U[: , 0:3])
+    Hz = entropy(Z)
+    Ires = Hyz - Hz - Hyzx + Hzx
+
+    print(Ires)
+
+
+
+
 
 def test_mutinf():
     one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
@@ -153,6 +166,8 @@ def test_mutinf():
 
     mitest = mut_info(one_arr, two_arr)
     print(mitest)
+
+    cond_mut_info(one_arr, two_arr, one_arr + two_arr)
 
 
 #def buildMIM():
