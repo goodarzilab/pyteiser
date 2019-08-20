@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 import numba
+import math
 
 
 
@@ -110,16 +111,50 @@ def discret_eq_width(inp_array, nbins):
     return res
 
 
+@numba.jit(cache=True, nopython=True, nogil=True)
+def entropy_empirical(counts, total_number, base=None):
+  probs = np.divide(counts, total_number)
+  ent = np.float64(0)
+  base = math.e if base is None else base
+
+  #print(probs)
+
+  for i in probs:
+    ent -= i * math.log(i) / math.log(base)
+
+  return ent
 
 
-# double entropy_empirical(std::map< std::vector<int> ,int > frequencies, int nb_samples) {
-#       double e = 0;
-#       for (std::map< std::vector<int> ,int>::const_iterator iter = frequencies.begin(); iter != frequencies.end(); ++iter)
-#             e -= iter->second * log((double)iter->second);
-#       return log((double)nb_samples) + e/nb_samples;
-# }
+def entropy(labels, base=None):
+    value, counts = np.unique(labels, return_counts=True, axis=0)
+    res = entropy_empirical(counts, len(labels), base)
+    return res
 
-#def entropy_empirical():
+
+
+# only for 2 one-dimensional arrays
+def mut_info(X, Y):
+    U = np.stack((X, Y)).transpose()
+    Hyx = entropy(U)
+    Hx = entropy(X)
+    Hy = entropy(Y)
+    res = Hx + Hy - Hyx
+    if res < 0:
+        res = 0
+
+    return res
+
+
+
+def test_mutinf():
+    one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
+    two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
+
+    mitest = mut_info(one_arr, two_arr)
+    print(mitest)
+
+
+#def buildMIM():
 
 
 
@@ -128,6 +163,7 @@ def discret_eq_width(inp_array, nbins):
 
 
 def main():
+    test_mutinf()
     pass
 
 

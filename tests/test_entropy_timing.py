@@ -22,7 +22,7 @@ import pyteiser.MI as MI
 
 
 def entropy(labels, how, base=None):
-    value, counts = np.unique(labels, return_counts=True)
+    value, counts = np.unique(labels, return_counts=True, axis=0)
     if how == "scipy":
         res = entropy_scipy(counts)
     elif how == "math":
