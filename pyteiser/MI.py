@@ -146,6 +146,7 @@ def mut_info(X, Y):
 
 
 
+
 def test_mutinf():
     one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
     two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
