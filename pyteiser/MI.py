@@ -140,6 +140,7 @@ def entropy_empirical(counts, total_number, base=None):
 #     return res
 
 
+@numba.jit(cache=True, nopython=True, nogil=True)
 def entropy(labels, base=None):
     value, counts = numba_rf.np_unique_return_counts(labels)
     res = entropy_empirical(counts, len(labels), base)
@@ -147,6 +148,7 @@ def entropy(labels, base=None):
 
 
 # input: 2 one-dimensional arrays
+@numba.jit(cache=True, nopython=True, nogil=True)
 def mut_info(X, Y, base=None):
     U = np.stack((X, Y)).transpose()
     Hyx = entropy(U, base)

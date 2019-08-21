@@ -1,6 +1,5 @@
 import numpy as np
 import numba
-from numba import numpy_support
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
