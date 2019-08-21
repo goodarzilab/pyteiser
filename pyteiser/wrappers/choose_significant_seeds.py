@@ -2,6 +2,9 @@ import numpy as np
 import argparse
 import numba
 
+
+import timeit
+
 import os
 import sys
 
@@ -15,8 +18,7 @@ if subpackage_folder_path not in sys.path:
 
 import IO
 import MI
-import matchmaker
-import type_conversions
+import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
@@ -66,43 +68,16 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
 
         assert(np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile), rtol=1e-10))
 
-        pass_value = seed_max_rank_test(active_profile, discr_exp_profile,
+        pass_value = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
                            current_MI, n_permutations)
-        print(pass_value)
+        #print(pass_value)
+
+        time_norm = timeit.timeit(lambda: statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
+                           current_MI, n_permutations), number=2)
+        print(time_norm)
 
         if counter > 10:
             break
-
-
-def seed_max_rank_test(active_profile, discr_exp_profile,
-                       current_MI, n_permutations):
-    shuffled_MI_values = np.zeros(n_permutations, dtype=np.float64)
-
-    for i in range(n_permutations):
-        shuffled_expr = np.random.permutation(discr_exp_profile)
-        ith_MI = MI.mut_info(active_profile, shuffled_expr)
-        shuffled_MI_values[i] = ith_MI
-
-    shuffled_MI_values.sort()
-
-    if current_MI < shuffled_MI_values[0]:
-        # shortcut: if current MI is less than the minimal permutation, exit
-        value_undiv = n_permutations
-    else:
-        # go from right to left while the shuffled score is higher than the real one
-        j = n_permutations - 1
-        while (j >= 0) and (current_MI <= shuffled_MI_values[j]):
-            j -= 1
-        value_undiv = j
-
-    # print(shuffled_MI_values)
-    # print(current_MI)
-    return value_undiv / float(n_permutations)
-
-
-### SHOULD IT BE (j) or (n_permutations - j - 1)????
-        #value_undiv = n_permutations - j - 1
-
 
 
 

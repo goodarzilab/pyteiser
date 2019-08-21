@@ -123,6 +123,18 @@ def entropy_empirical(counts, total_number, base=None):
 
   return ent
 
+# numba doesn't support np.unique with return_counts argument
+# someone wrote and overhaul of np.unique that does support this argument in here:
+# https://github.com/numba/numba/issues/2884
+# so I just add this as a numba-supported function
+# @numba.jit(cache=True, nopython=True, nogil=True)
+# def entropy(labels, base=None):
+#     value, counts = np_unique_return_counts(labels)
+#     print(value)
+#     print(counts)
+#     res = entropy_empirical(counts, len(labels), base)
+#     return res
+
 
 def entropy(labels, base=None):
     value, counts = np.unique(labels, return_counts=True, axis=0)
