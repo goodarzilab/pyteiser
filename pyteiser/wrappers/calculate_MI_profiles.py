@@ -61,6 +61,10 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
             # print("The seed number %d binds only %d transcripts" % (i, active_profile.sum()))
             continue
 
+        print(active_profile)
+        print(discr_exp_profile)
+        break
+
         MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile)
 
         if do_print:
