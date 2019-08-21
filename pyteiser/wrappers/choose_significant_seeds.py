@@ -1,5 +1,6 @@
 import numpy as np
 import argparse
+import numba
 
 import os
 import sys
@@ -26,12 +27,10 @@ def handler():
     parser.add_argument("--profiles_bin_file", help="file with occurence profiles", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
-    parser.add_argument("--MI_values_file", help="file with precalculated MI values for individual profiles", type=str)
 
-    parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
-    parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
-                                                 " for a seed to be considered", type=int)
-
+    parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
+    parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
+    parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
 
     parser.set_defaults(
         profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
@@ -39,8 +38,7 @@ def handler():
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
         MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
 
-        nbins = 3,
-        min_occurences = 5,
+        n_permutations = 100,
     )
 
     args = parser.parse_args()
@@ -49,30 +47,82 @@ def handler():
 
 
 
-def determine_mi_threshold(MI_values_array, discr_exp_profile):
+def determine_mi_threshold(MI_values_array, discr_exp_profile,
+                           profiles_array, index_array,
+                           n_permutations):
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+    # seed_pass contains 1-pvalue values for seeds as calculated by a permutation test in seed_max_rank_test
     seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool)
 
+
     for counter, index in enumerate(seed_indices_sorted):
-        print(counter, index, MI_values_array[index])
-        #seed_max_rank_test(discr_exp_profile)
+        profile = profiles_array[index]
+        active_profile = profile[index_array]
+        current_MI = MI_values_array[index]
+
+        if current_MI == -1:
+            seed_pass[index] = 0
+            continue
+
+        assert(np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile), rtol=1e-10))
+
+        pass_value = seed_max_rank_test(active_profile, discr_exp_profile,
+                           current_MI, n_permutations)
+        print(pass_value)
+
+        if counter > 10:
+            break
 
 
-    # print(MI_values_sorted)
+def seed_max_rank_test(active_profile, discr_exp_profile,
+                       current_MI, n_permutations):
+    shuffled_MI_values = np.zeros(n_permutations, dtype=np.float64)
 
-def seed_max_rank_test(discr_exp_profile):
-    shuffled_expr = np.random.permutation(discr_exp_profile)
+    for i in range(n_permutations):
+        shuffled_expr = np.random.permutation(discr_exp_profile)
+        ith_MI = MI.mut_info(active_profile, shuffled_expr)
+        shuffled_MI_values[i] = ith_MI
+
+    shuffled_MI_values.sort()
+
+    if current_MI < shuffled_MI_values[0]:
+        # shortcut: if current MI is less than the minimal permutation, exit
+        value_undiv = n_permutations
+    else:
+        # go from right to left while the shuffled score is higher than the real one
+        j = n_permutations - 1
+        while (j >= 0) and (current_MI <= shuffled_MI_values[j]):
+            j -= 1
+        value_undiv = j
+
+    # print(shuffled_MI_values)
+    # print(current_MI)
+    return value_undiv / float(n_permutations)
+
+
+### SHOULD IT BE (j) or (n_permutations - j - 1)????
+        #value_undiv = n_permutations - j - 1
+
+
+
 
 
 def main():
     args = handler()
-    decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
-    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
+
+    # read occurence profiles and expression profile
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
+
+    # read precalculated MI values
     with open(args.MI_values_file, 'rb') as rf:
         bitstring = rf.read()
-    MI_values_array = IO.decompres_MI_values(bitstring)
+    MI_values_array, nbins = IO.decompres_MI_values(bitstring)
 
-    determine_mi_threshold(MI_values_array, discr_exp_profile)
+    # find the threshold
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    determine_mi_threshold(MI_values_array, discr_exp_profile,
+                           profiles_array, index_array,
+                           args.n_permutations)
 
 
     # print(MI_values_array.shape)

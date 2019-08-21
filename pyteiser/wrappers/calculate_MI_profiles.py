@@ -77,7 +77,7 @@ def main():
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
     MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
                                          args.min_occurences, do_print = True)
-    IO.write_MI_values(MI_values_array, args.MI_values_file)
+    IO.write_MI_values(MI_values_array, args.nbins, args.MI_values_file)
 
 
 if __name__ == "__main__":
