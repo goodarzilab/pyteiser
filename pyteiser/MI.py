@@ -115,7 +115,7 @@ def discret_eq_width(inp_array, nbins):
 @numba.jit(cache=True, nopython=True, nogil=True)
 def entropy_empirical(counts, total_number, base=None):
   probs = np.divide(counts, total_number)
-  ent = np.float64(0)
+  ent = 0.
   base = math.e if base is None else base
 
   for i in probs:
