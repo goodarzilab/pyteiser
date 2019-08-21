@@ -1,7 +1,15 @@
 import sys
+import os
 import numpy as np
 import numba
 import math
+
+current_script_path = sys.argv[0]
+subpackage_folder_path = os.path.dirname( __file__ )
+if subpackage_folder_path not in sys.path:
+    sys.path.append(subpackage_folder_path)
+
+import numba_replacement_functions as numba_rf
 
 
 # This function is written based on discretize function from infotheo package for R: https://cran.r-project.org/web/packages/infotheo/index.html
@@ -126,8 +134,14 @@ def entropy_empirical(counts, total_number, base=None):
 # numba doesn't support np.unique with return_counts argument
 # I tried really hard to rewrite it in a numba-compatible fashion but I haven't succeeded
 
+# def entropy(labels, base=None):
+#     value, counts = np.unique(labels, return_counts=True, axis=0)
+#     res = entropy_empirical(counts, len(labels), base)
+#     return res
+
+
 def entropy(labels, base=None):
-    value, counts = np.unique(labels, return_counts=True, axis=0)
+    value, counts = numba_rf.np_unique_return_counts(labels)
     res = entropy_empirical(counts, len(labels), base)
     return res
 
