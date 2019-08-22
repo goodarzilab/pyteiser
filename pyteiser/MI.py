@@ -135,9 +135,8 @@ def entropy_empirical(counts, total_number, base=None):
 # numba doesn't support np.unique with return_counts argument
 # therefore, np.unique-based implementation of entropy calculation is hard to speed up
 # I have re-implemented np.unique in a numba-compatible way in the numba_replacement_functions file
-# entropy_no_numba is a valid implementation which is not supported by numba though so I don't use it
-# in other parts of the program. Rather, I am using entropy function that depends on
-# numba_replacement_functions but is numba-compatible
+# entropy_no_numba is a valid implementation which is not supported by numba
+# however, in certain scenarios it can be much faster so I leave it in here
 def entropy_no_numba(labels, base=None):
     value, counts = np.unique(labels, return_counts=True, axis=0)
     res = entropy_empirical(counts, len(labels), base)
