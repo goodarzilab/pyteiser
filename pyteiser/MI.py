@@ -131,13 +131,17 @@ def entropy_empirical(counts, total_number, base=None):
 
   return ent
 
-# numba doesn't support np.unique with return_counts argument
-# I tried really hard to rewrite it in a numba-compatible fashion but I haven't succeeded
 
-# def entropy(labels, base=None):
-#     value, counts = np.unique(labels, return_counts=True, axis=0)
-#     res = entropy_empirical(counts, len(labels), base)
-#     return res
+# numba doesn't support np.unique with return_counts argument
+# therefore, np.unique-based implementation of entropy calculation is hard to speed up
+# I have re-implemented np.unique in a numba-compatible way in the numba_replacement_functions file
+# entropy_no_numba is a valid implementation which is not supported by numba though so I don't use it
+# in other parts of the program. Rather, I am using entropy function that depends on
+# numba_replacement_functions but is numba-compatible
+def entropy_no_numba(labels, base=None):
+    value, counts = np.unique(labels, return_counts=True, axis=0)
+    res = entropy_empirical(counts, len(labels), base)
+    return res
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
@@ -162,6 +166,7 @@ def mut_info(X, Y, base=None):
 
 
 # input: 3 one-dimensional arrays
+@numba.jit(cache=True, nopython=True, nogil=True)
 def cond_mut_info(X, Y, Z, base=None):
     U = np.stack((X, Z, Y)).transpose()
     Hyzx = entropy(U, base)
@@ -179,17 +184,6 @@ def discretize_exp_profile(index_array, values_array, nbins):
     return quant_values_array
 
 
-
-
-def main():
-    pass
-
-
-
-
-
-if __name__ == "__main__":
-    main()
 
 
 

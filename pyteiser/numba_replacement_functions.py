@@ -1,7 +1,15 @@
 import numpy as np
 import numba
 
+# This file contains re-implementations of specific functions and use cases that exist in Python but are
+# not numba-compatible
 
+# it is super convenient to use np.unique(return_counts=True, axis=0) for entropy calculation
+# however, np.unique with such arguments is not supported by numba and this makes it hard to speed up MI calculations
+# here, I implement a function that does the same thing as np.unique(return_counts=True, axis=0) but is also
+# numba-compatible
+# It is rewritten from np.unique source code from
+# here: https://github.com/numpy/numpy/blob/v1.17.0/numpy/lib/arraysetops.py
 @numba.jit(cache=True, nopython=True, nogil=True)
 def np_unique_return_counts(inp_ar):
     ar = inp_ar.copy()
@@ -13,6 +21,7 @@ def np_unique_return_counts(inp_ar):
     aux = ar.copy()
 
     # sort by the columns, first to last
+    # to make sure that the same elements sit next to each other
     # from here: https://stackoverflow.com/questions/2828059/sorting-arrays-in-numpy-by-column
     # see J.J's answer
     for i in range(ar.shape[1], 0, -1):

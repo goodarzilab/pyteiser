@@ -54,10 +54,12 @@ def test_mutinf():
 
     mi_test = MI.mut_info(one_arr, two_arr)
     mi_expected = 0.28418101912817351
+    #print(mi_test, mi_expected)
     assert(np.isclose(mi_test, mi_expected, atol=1e-16))
 
     cmi_test = MI.cond_mut_info(one_arr, two_arr, one_arr + two_arr)
     cmi_expected = 0.50219293007150134
+    #print(cmi_test, cmi_expected)
     assert(np.isclose(cmi_test, cmi_expected, atol=1e-16))
 
     # an example from here: https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html#mifeatsel2
@@ -65,6 +67,7 @@ def test_mutinf():
     cc = np.repeat([0, 0, 1, 1], [774106, 27625, 141, 49])
     mi_test_base_2 = MI.mut_info(ut, cc, base=2)
     mi_expected_base_2 = 0.0001105
+    #print(mi_test_base_2, mi_expected_base_2)
     assert(np.isclose(mi_test_base_2, mi_expected_base_2, atol=1e-6))
 
 
