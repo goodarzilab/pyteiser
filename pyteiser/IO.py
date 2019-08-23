@@ -267,3 +267,5 @@ def decompres_MI_values(bitstring):
     # to check it, you could run print(np.dtype(np.float32).itemsize)
     MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
     return MI_array, nbins
+
+
