@@ -36,15 +36,18 @@ def handler():
     parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
 
     parser.set_defaults(
-        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
-        #profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
-        MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
 
-        n_permutations = 100, # takes 1 second per 100 permutations
-        max_pvalue = 0.01, # Hani's default threshold is 0.0000001
+        #profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
+        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
+
+        #MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
+        MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_profiles_4-7_4-9_4-6_14-20_30k_1.bin',
+
+        n_permutations = 1000, # takes 1 second per 100 permutations
+        max_pvalue = 0.001, # Hani's default threshold is 0.0000001
         min_zscore = -1,
-        fastthreshold_jump = 1, # Hani's default threshold is 200
+        fastthreshold_jump = 50, # Hani's default threshold is 200
     )
 
     args = parser.parse_args()
@@ -52,13 +55,9 @@ def handler():
     return args
 
 
-
-def determine_mi_threshold(MI_values_array, discr_exp_profile,
-                           profiles_array, index_array,
-                           args, do_print = False):
-    seed_indices_sorted = np.argsort(MI_values_array)[::-1]
-    # seed_pass contains 1-pvalue values for seeds as calculated by a permutation test in seed_max_rank_test
-    seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool) # zero means no info
+def determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
+                                 discr_exp_profile, profiles_array, index_array,
+                                args, do_print = False):
     last_positive_seed = -1
 
     for counter in range(0, len(seed_indices_sorted), args.fastthreshold_jump):
@@ -84,13 +83,33 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
         if pvalue > args.max_pvalue or z_score < args.min_zscore:
             seed_pass[index] = 1
             if do_print:
-                print("Seed number %d didn't pass (p=%.5f, z=%.2f" % (counter, pvalue, z_score))
+                print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
             break
         else:
             last_positive_seed = counter
             seed_pass[index] = -1
             if do_print:
-                print("Seed number %d passed (p=%.5f, z=%.2f" % (counter, pvalue, z_score))
+                print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+
+    return last_positive_seed
+
+
+
+def determine_mi_threshold(MI_values_array, discr_exp_profile,
+                           profiles_array, index_array,
+                           args, do_print = False):
+
+    seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+
+    # seed_pass contains 1-pvalue values for seeds as calculated by a permutation test in seed_max_rank_test
+    seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool) # zero means no info
+
+    last_positive_seed = determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
+                                 discr_exp_profile, profiles_array, index_array,
+                                    args, do_print)
+
+    print("The last seed that passed is: ", last_positive_seed)
+
 
         # if counter > 2:
         #     break
