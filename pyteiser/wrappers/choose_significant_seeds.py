@@ -33,6 +33,7 @@ def handler():
     parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
     parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
     parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
+    parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
 
     parser.set_defaults(
         profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
@@ -41,6 +42,9 @@ def handler():
         MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
 
         n_permutations = 100, # takes 1 second per 100 permutations
+        max_pvalue = 0.01, # Hani's default threshold is 0.0000001
+        min_zscore = -1,
+        fastthreshold_jump = 1, # Hani's default threshold is 200
     )
 
     args = parser.parse_args()
@@ -51,13 +55,15 @@ def handler():
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile,
                            profiles_array, index_array,
-                           n_permutations):
+                           args, do_print = False):
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
     # seed_pass contains 1-pvalue values for seeds as calculated by a permutation test in seed_max_rank_test
-    seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool)
+    seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool) # zero means no info
+    last_positive_seed = -1
 
-
-    for counter, index in enumerate(seed_indices_sorted):
+    for counter in range(0, len(seed_indices_sorted), args.fastthreshold_jump):
+        index = seed_indices_sorted[counter]
+    #for counter, index in enumerate(seed_indices_sorted):
         profile = profiles_array[index]
         active_profile = profile[index_array]
         current_MI = MI_values_array[index]
@@ -68,16 +74,26 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
 
         assert(np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile), rtol=1e-10))
 
-        pass_value = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
-                           current_MI, n_permutations)
-        #print(pass_value)
+        pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
+                           current_MI, args.n_permutations)
+        # time it
+        # time_norm = timeit.timeit(lambda: statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
+        #                    current_MI, n_permutations), number=2)
+        # print(time_norm)
 
-        time_norm = timeit.timeit(lambda: statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
-                           current_MI, n_permutations), number=2)
-        print(time_norm)
-
-        if counter > 10:
+        if pvalue > args.max_pvalue or z_score < args.min_zscore:
+            seed_pass[index] = 1
+            if do_print:
+                print("Seed number %d didn't pass (p=%.5f, z=%.2f" % (counter, pvalue, z_score))
             break
+        else:
+            last_positive_seed = counter
+            seed_pass[index] = -1
+            if do_print:
+                print("Seed number %d passed (p=%.5f, z=%.2f" % (counter, pvalue, z_score))
+
+        # if counter > 2:
+        #     break
 
 
 
@@ -97,18 +113,7 @@ def main():
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
     determine_mi_threshold(MI_values_array, discr_exp_profile,
                            profiles_array, index_array,
-                           args.n_permutations)
-
-
-    # print(MI_values_array.shape)
-    # print(MI_values_array[0])
-    # print(np.float32(MI_values_array[0]))
-
-    #print(np.array(MI_values_array, dtype=np.float32)*10000)
-
-    # MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-    #                                      args.min_occurences, do_print = True)
-    # IO.write_MI_values(MI_values_array, args.MI_values_file)
+                           args, do_print = True)
 
 
     # proceed with line 179 in mi_find_seed.c
