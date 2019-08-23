@@ -40,7 +40,7 @@ def handler():
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
         MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
 
-        n_permutations = 100,
+        n_permutations = 100, # takes 1 second per 100 permutations
     )
 
     args = parser.parse_args()
