@@ -43,9 +43,6 @@ def handler():
     parser.add_argument("--min_interval", help="when to stop searching in the decreasing intervals phase", type=int)
     parser.add_argument("--min_consecutive_not_passed", help="how many seeds should not pass consecutively "
                                                              "for the search to stop", type=int)
-    parser.add_argument("--jump_after_good_one", help="in the phase of search for 10 consecutive negative seeds,"
-                                                      "if I suddenly meet a good seed I jump a few seeds down"
-                                                      "this parameter defines how many seeds down do I jump", type=int)
 
     parser.set_defaults(
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -62,7 +59,6 @@ def handler():
         fastthreshold_jump = 50, # Hani's default threshold is 200
         min_interval = 10,
         min_consecutive_not_passed = 10,
-        jump_after_good_one = 10,
     )
 
     args = parser.parse_args()
@@ -157,10 +153,7 @@ def search_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_in
     else:
         number_previous_bad = 1
 
-    check = -1
-    z = 0
-
-    counter = min(len(MI_values_array) - 1, last_positive_seed + 10) # why????
+    counter = min(len(MI_values_array) - 1, last_positive_seed + args.min_consecutive_not_passed) # why????
 
     while counter < len(MI_values_array) and number_previous_bad < args.min_consecutive_not_passed:
         index = seed_indices_sorted[counter]
@@ -179,7 +172,7 @@ def search_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_in
             last_positive_seed = counter # write down last one that passed
             number_previous_bad = 0 # reset number of seeds that didn't pass
             seed_pass[index] = 1 # store info about this seed
-            counter += args.jump_after_good_one + 1 # jump several seeds down (because the current one is good)
+            counter += args.min_consecutive_not_passed + 1 # jump several seeds down (because the current one is good)
             # add 1 because 1 is going to be removed immediately below
             if do_print:
                 print("Seed number %d passed" % (counter))
@@ -193,6 +186,10 @@ def search_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_in
         counter -= 1
 
     return last_positive_seed, seed_pass
+
+
+def write_down_determined_threshold(last_positive_seed):
+    pass
 
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile,
@@ -222,6 +219,8 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
                                                     discr_exp_profile, seed_pass, do_print, args)
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
+
+    write_down_determined_threshold(last_positive_seed)
 
 
 
