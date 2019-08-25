@@ -34,6 +34,9 @@ def handler():
     parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
     parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
     parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
+    parser.add_argument("--min_interval", help="when to stop searching in the decreasing intervals phase", type=int)
+    parser.add_argument("--min_consecutive_not_passed", help="how many seeds should not pass consecutively "
+                                                             "for the search to stop", type=int)
 
     parser.set_defaults(
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -48,6 +51,8 @@ def handler():
         max_pvalue = 0.001, # Hani's default threshold is 0.0000001
         min_zscore = -1,
         fastthreshold_jump = 50, # Hani's default threshold is 200
+        min_interval = 10,
+        min_consecutive_not_passed = 10,
     )
 
     args = parser.parse_args()
@@ -55,44 +60,83 @@ def handler():
     return args
 
 
+def get_current_statistics(index, MI_values_array, profiles_array,
+                           index_array, discr_exp_profile, args):
+    profile = profiles_array[index]
+    active_profile = profile[index_array]
+    current_MI = MI_values_array[index]
+
+    if current_MI == -1:
+        return args.max_pvalue + 0.1, args.min_zscore - 0.1
+
+    assert (np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile), rtol=1e-10))
+
+    pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
+                                                               current_MI, args.n_permutations)
+    return pvalue, z_score
+
+
 def determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                  discr_exp_profile, profiles_array, index_array,
                                 args, do_print = False):
     last_positive_seed = -1
 
-    for counter in range(0, len(seed_indices_sorted), args.fastthreshold_jump):
+    counter = 0
+    everyone_passed = True
+
+    while (counter < len(seed_indices_sorted)) and everyone_passed:
         index = seed_indices_sorted[counter]
-    #for counter, index in enumerate(seed_indices_sorted):
-        profile = profiles_array[index]
-        active_profile = profile[index_array]
-        current_MI = MI_values_array[index]
+        pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
+                                                 index_array, discr_exp_profile, args)
 
-        if current_MI == -1:
-            seed_pass[index] = 0
-            continue
-
-        assert(np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile), rtol=1e-10))
-
-        pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
-                           current_MI, args.n_permutations)
-        # time it
-        # time_norm = timeit.timeit(lambda: statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
-        #                    current_MI, n_permutations), number=2)
-        # print(time_norm)
-
-        if pvalue > args.max_pvalue or z_score < args.min_zscore:
+        if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
+            # seed passed
+            last_positive_seed = counter
             seed_pass[index] = 1
             if do_print:
-                print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
-            break
+                print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
         else:
-            last_positive_seed = counter
             seed_pass[index] = -1
             if do_print:
-                print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+                print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+            everyone_passed = False
 
-    return last_positive_seed
+        counter += args.fastthreshold_jump
 
+    return last_positive_seed, seed_pass
+
+
+def decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
+                         profiles_array, index_array, discr_exp_profile, seed_pass,
+                         do_print, args):
+
+    if last_positive_seed >= 0:
+        upper_boundary = last_positive_seed # upper limit: last positive seed
+        lower_boundary = min(len(MI_values_array) - 1,
+                          last_positive_seed + args.fastthreshold_jump) # lower limit
+                                # the first negative seed - which is last positive seed + fastthreshold_jump
+                                # or, if there were none, the end of the profiles list
+
+
+        while (upper_boundary - lower_boundary) > args.min_interval:
+            counter = upper_boundary + (upper_boundary - lower_boundary) / 2
+            index = seed_indices_sorted[counter]
+            pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
+                                                     index_array, discr_exp_profile, args)
+            if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
+                # seed passed, go down half interval
+                upper_boundary = counter
+                last_positive_seed = counter
+                seed_pass[index] = 1 # write down that it passed
+                if do_print:
+                    print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+            else:
+                # seed didn't pass, go up half interval
+                lower_boundary = counter
+                seed_pass[index] = -1 # write down that it didn't pass
+                if do_print:
+                    print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+    return last_positive_seed, seed_pass
 
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile,
@@ -101,12 +145,14 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
 
-    # seed_pass contains 1-pvalue values for seeds as calculated by a permutation test in seed_max_rank_test
     seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool) # zero means no info
 
-    last_positive_seed = determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
-                                 discr_exp_profile, profiles_array, index_array,
-                                    args, do_print)
+    last_positive_seed, seed_pass = determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
+                                                     discr_exp_profile, profiles_array, index_array,
+                                                    args, do_print)
+    last_positive_seed, seed_pass = decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
+                                                     profiles_array, index_array, discr_exp_profile,
+                                                     seed_pass, do_print, args)
 
     print("The last seed that passed is: ", last_positive_seed)
 
@@ -141,3 +187,21 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+# if pvalue > args.max_pvalue or z_score < args.min_zscore:
+#     seed_pass[index] = -1
+#     if do_print:
+#         print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+#     everyone_passed = False
+# else:
+#     last_positive_seed = counter # position of the last good one
+#     nb_prev_bad = 0 # reset nb bad
+#     seed_pass[index] = 1 # store
+#     # jump 10 down (+1 because the current one is good)
+#     # add 1 because 1 is going to be removed immediately below
+#
+#
+#     if do_print:
+#         print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
