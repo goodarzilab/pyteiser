@@ -1,8 +1,6 @@
 import numpy as np
 import argparse
 import numba
-
-
 import timeit
 
 import os
@@ -21,6 +19,14 @@ import MI
 import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
+
+# This script implements greedy search of threshold for statistically significant seeds
+# "Greedy" in this context means that it's using a simple objective function
+# so "greedy" refers to computational time. Therefore, it's not robust and can find quite
+# different (and therefore imprecise) thresholds on each run. The advantage is that it works faster
+# For precise threshold identification, something more advanced (like maybe simulated annealing)
+# has to be implemented. However, Hani claims that in practice it doesn't matter because seeds are
+# redundant and if a good seed didn't pass for some reason there is always a similar seed that did
 
 
 def handler():
@@ -117,9 +123,8 @@ def decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorte
                                 # the first negative seed - which is last positive seed + fastthreshold_jump
                                 # or, if there were none, the end of the profiles list
 
-
-        while (upper_boundary - lower_boundary) > args.min_interval:
-            counter = upper_boundary + (upper_boundary - lower_boundary) / 2
+        while (lower_boundary - upper_boundary) > args.min_interval:
+            counter = upper_boundary + (lower_boundary - upper_boundary) // 2
             index = seed_indices_sorted[counter]
             pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
                                                      index_array, discr_exp_profile, args)
@@ -139,6 +144,13 @@ def decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorte
     return last_positive_seed, seed_pass
 
 
+
+def search_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_indices_sorted,
+                         profiles_array, index_array, discr_exp_profile, seed_pass,
+                         do_print, args):
+    pass
+
+
 def determine_mi_threshold(MI_values_array, discr_exp_profile,
                            profiles_array, index_array,
                            args, do_print = False):
@@ -147,14 +159,20 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
 
     seed_pass = np.zeros(MI_values_array.shape[0], dtype=np.bool) # zero means no info
 
+    if do_print:
+        print("Find the lower boundary for the threshold")
     last_positive_seed, seed_pass = determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                                      discr_exp_profile, profiles_array, index_array,
                                                     args, do_print)
+    if do_print:
+        print("The last seed that passed is: ", last_positive_seed, '\n')
+        print("Decreasing intervals phase")
     last_positive_seed, seed_pass = decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
                                                      profiles_array, index_array, discr_exp_profile,
                                                      seed_pass, do_print, args)
-
-    print("The last seed that passed is: ", last_positive_seed)
+    if do_print:
+        print("The last seed that passed is: ", last_positive_seed, '\n')
+        print("Find ")
 
 
         # if counter > 2:
