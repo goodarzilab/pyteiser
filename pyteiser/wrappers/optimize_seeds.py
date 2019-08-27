@@ -55,7 +55,7 @@ def handler():
         #MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
         MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_profiles_4-7_4-9_4-6_14-20_30k_1.bin',
 
-        threshold_file='',
+        threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
 
         n_permutations = 100, # takes 1 second per 100 permutations
         max_pvalue = 0.01, # Hani's default threshold is 0.0000001
@@ -70,16 +70,25 @@ def handler():
     return args
 
 
+
+
+
 def main():
     args = handler()
 
     # read occurence profiles and expression profile
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
+    #profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
 
     # read precalculated MI values
-    with open(args.MI_values_file, 'rb') as rf:
-        bitstring = rf.read()
-    MI_values_array, nbins = IO.decompres_MI_values(bitstring)
+    #MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
+
+    tv = IO.read_seed_significancy_threshold(args.threshold_file)
+    print(tv)
+
+
+    # find threshold for significant seeds selection
+
+
 
 
 

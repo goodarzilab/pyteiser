@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import sys
+import hashlib
 
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
@@ -268,4 +269,45 @@ def decompres_MI_values(bitstring):
     MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
     return MI_array, nbins
 
+
+def read_MI_values(MI_values_file):
+    with open(MI_values_file, 'rb') as rf:
+        bitstring = rf.read()
+    MI_values_array, nbins = decompres_MI_values(bitstring)
+    return MI_values_array, nbins
+
+
+def write_seed_significancy_threshold(last_positive_seed, threshold_file):
+    threshold_bytes = np.uint32(last_positive_seed).tobytes()
+    md5 = hashlib.md5()
+    md5.update(threshold_bytes)
+    md5_checksum = md5.digest()
+    byte_string = threshold_bytes + md5_checksum
+    with open(threshold_file, 'wb') as wf:
+        wf.write(byte_string)
+
+
+def read_seed_significancy_threshold(threshold_file):
+    with open(threshold_file, 'rb') as rf:
+        bitstring = rf.read()
+    threshold_bytes = bitstring[0: 4]
+    md5_checksum_saved = bitstring[4:]
+    threshold_value = np.frombuffer(threshold_bytes, dtype=np.uint32)
+    threshold_bytes_recode = np.uint32(threshold_value).tobytes()
+    md5 = hashlib.md5()
+    md5.update(threshold_bytes_recode)
+    md5_checksum = md5.digest()
+    assert(md5_checksum == md5_checksum_saved)
+    return threshold_value[0]
+
+
+def decompres_seed_threshold(bitstring):
+    length_nbins_bitstring = bitstring[0: 8]
+    MI_array_length_nbins_np = np.frombuffer(length_nbins_bitstring, dtype=np.uint32)
+    MI_array_length = MI_array_length_nbins_np[0]
+    nbins = MI_array_length_nbins_np[1]
+    MI_array_bitstring = bitstring[8 : 8 + MI_array_length * 8] # np.float64 takes 8 bytes
+    # to check it, you could run print(np.dtype(np.float32).itemsize)
+    MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
+    return MI_array, nbins
 
