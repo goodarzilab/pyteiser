@@ -54,10 +54,16 @@ def handler():
     parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
     parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
     parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
-    parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
-    parser.add_argument("--min_interval", help="when to stop searching in the decreasing intervals phase", type=int)
-    parser.add_argument("--min_fraction_not_passed", help="how many seeds should not pass consecutively "
-                                                             "for the search to stop - fraction", type=float)
+    parser.add_argument("--step_1_jump", help="", type=int)
+    parser.add_argument("--step_2_min_interval", help="", type=int)
+    parser.add_argument("--step_1_min_fraction", help="", type=float)
+    parser.add_argument("--step_2_min_fraction", help="", type=float)
+    parser.add_argument("--step_3_min_fraction", help="", type=float)
+
+    # parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
+    # parser.add_argument("--min_interval", help="when to stop searching in the decreasing intervals phase", type=int)
+    # parser.add_argument("--min_fraction_not_passed", help="how many seeds should not pass consecutively "
+    #                                                          "for the search to stop - fraction", type=float)
 
     parser.set_defaults(
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -70,17 +76,29 @@ def handler():
 
         threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
 
-        n_permutations = 1000, # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
+        n_permutations = 100, # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
         max_pvalue = 0.001, # Hani's default threshold is 1*10^-7
         min_zscore = -1,
-        fastthreshold_jump = 50, # Hani's default threshold is 200
-        min_interval = 10,
-        min_fraction_not_passed = 0.9,
+
+        step_1_jump = 50, # Hani's default threshold is 200
+        step_2_min_interval=10,
+
+        step_1_min_fraction = 0.8,
+        step_2_min_fraction= 0.8,
+        step_3_min_fraction= 0.9,
     )
 
     args = parser.parse_args()
 
     return args
+
+# let's say I want
+# instead of defining two separate parameters: (1) how many
+
+def find_fraction_denominator(x):
+    rounded_denominator = round(1 / (1 - x), 4)
+    return math.ceil(rounded_denominator)
+
 
 
 def get_current_statistics(index, MI_values_array, profiles_array,
@@ -99,32 +117,62 @@ def get_current_statistics(index, MI_values_array, profiles_array,
     return pvalue, z_score
 
 
+def check_N_consecutive(minimal_fraction, start_point,
+        MI_values_array, seed_indices_sorted, seed_pass,
+                                 discr_exp_profile, profiles_array, index_array,
+                                args, do_print = False):
+    number_not_passed = 0
+    denominator = find_fraction_denominator(minimal_fraction)
+    go_until =  start_point + denominator
+    if go_until > len(MI_values_array) - 1:
+        print("There aren't enough seeds to check")
+        return False, seed_pass
+
+    for counter in range(start_point, start_point + denominator):
+        index = seed_indices_sorted[counter]
+        pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
+                                                 index_array, discr_exp_profile, args)
+
+        if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
+            # seed passed, don't do anything
+            seed_pass[index] = 1
+            if do_print:
+                print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+        else:
+            # seed didn't pass, write it down to number_not_passed variable
+            number_not_passed += 1
+            seed_pass[index] = -1
+            if do_print:
+                print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
+
+    fraction_not_passed = float(number_not_passed) / denominator
+    if fraction_not_passed >= minimal_fraction:
+        is_over_threshold = True
+    else:
+        is_over_threshold = False
+
+    return is_over_threshold, seed_pass
+
+
 def determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                  discr_exp_profile, profiles_array, index_array,
                                 args, do_print = False):
     last_positive_seed = -1
 
     counter = 0
-    everyone_passed = True
+    is_over_threshold = False
 
-    while (counter < len(seed_indices_sorted)) and everyone_passed:
-        index = seed_indices_sorted[counter]
-        pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
-                                                 index_array, discr_exp_profile, args)
+    while (counter < len(seed_indices_sorted)) and not is_over_threshold:
+        is_over_threshold, seed_pass = check_N_consecutive(args.step_1_min_fraction,
+                            counter, MI_values_array, seed_indices_sorted, seed_pass,
+                            discr_exp_profile, profiles_array, index_array,
+                            args, do_print)
+        last_positive_seed = counter
+        counter += args.step_1_jump
 
-        if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
-            # seed passed
-            last_positive_seed = counter
-            seed_pass[index] = 1
-            if do_print:
-                print("Seed number %d passed (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
-        else:
-            seed_pass[index] = -1
-            if do_print:
-                print("Seed number %d didn't pass (p=%.5f, z=%.2f)" % (counter, pvalue, z_score))
-            everyone_passed = False
-
-        counter += args.fastthreshold_jump
+    if not is_over_threshold:
+        print("No lower boundary for threshold found!")
+        return len(MI_values_array) - 1, seed_pass
 
     return last_positive_seed, seed_pass
 
@@ -218,20 +266,20 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
                                                     args, do_print)
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
-        print("Decreasing intervals phase")
+    #     print("Decreasing intervals phase")
     last_positive_seed, seed_pass = decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
                                                      profiles_array, index_array, discr_exp_profile,
                                                      seed_pass, do_print, args)
-    if do_print:
-        print("The last seed that passed is: ", last_positive_seed, '\n')
-        print("Find 10 consecutive seeds that don't pass")
-    last_positive_seed, seed_pass = search_consec_not_passing_seeds(last_positive_seed, MI_values_array,
-                                                    seed_indices_sorted, profiles_array, index_array,
-                                                    discr_exp_profile, seed_pass, do_print, args)
-    if do_print:
-        print("The last seed that passed is: ", last_positive_seed, '\n')
-
-    IO.write_seed_significancy_threshold(last_positive_seed, args.threshold_file)
+    # if do_print:
+    #     print("The last seed that passed is: ", last_positive_seed, '\n')
+    #     print("Find 10 consecutive seeds that don't pass")
+    # last_positive_seed, seed_pass = search_consec_not_passing_seeds(last_positive_seed, MI_values_array,
+    #                                                 seed_indices_sorted, profiles_array, index_array,
+    #                                                 discr_exp_profile, seed_pass, do_print, args)
+    # if do_print:
+    #     print("The last seed that passed is: ", last_positive_seed, '\n')
+    #
+    # IO.write_seed_significancy_threshold(last_positive_seed, args.threshold_file)
 
 
 
