@@ -21,13 +21,26 @@ import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
-# This script implements greedy search of threshold for statistically significant seeds
-# "Greedy" in this context means that it's using a simple objective function
-# so "greedy" refers to computational time. Therefore, it's not robust and can find quite
-# different (and therefore imprecise) thresholds on each run. The advantage is that it works faster
-# For precise threshold identification, something more advanced (like maybe simulated annealing)
-# has to be implemented. However, Hani claims that in practice it doesn't matter because seeds are
-# redundant and if a good seed didn't pass for some reason there is always a similar seed that did
+# The original program works in this way
+# First, it keeps jumping down taking big steps (fastthreshold_jump) until it finds the first seed that doesn't pass
+# Second, it searches for the first seed not to pass in the last jump by decreasing intervals
+# Third, it goes down until it finds 10 consecutive seeds that didn't pass
+# There is a big fundamental problem with this design: the steps 1 and 2 look for a threshold that defines where the
+# first not-passing seed is (point 1). However, the third step looks for a threshold that defines where the last passing
+# seed is (or rather where all the seeds are non-passing, which is the same thing) (point 2), and this is a very different
+# spot that is located way down the list comparing to the spot where the first non-passing seed is.
+# The step 3 checks all the seeds consecutively between point 1 and point 2, which takes super long time and neglects
+# the effects of steps 1 and 2 being fast
+# Here, in the version 2, this fundamental problem will be fixed: all the 3 steps will be looking for point 2.
+# At the steps 1 and 2 I will (1) do bigger jumps and (2) instead of checking 1 seed after each jump, I'll check
+# several consecutive seeds (let's say 5 seeds) after each jump, and we stop only if a certain fraction of non-
+# passing seeds (say, 4/5) was reached. Then, at stage 2, we do decreasing interval search, also checking several
+# seeds at once and looking at the ratio of the ones that passed. At stage 3, we increase the required fraction by a tiny
+# bit and we go down until such fraction has been reached
+# additionally, since Hani's minimal pvalue is set up in the way that it doesn't pass the threshold even if only 1
+# shuffled array gets a pvalue bigger than the one listed, I can (1) remove the threshold parameter from the script and
+# (2) stop shuffling as soon as a single MI of bigger value than listed gets encountered. Such hack will speed up the
+# threshold search
 
 
 def handler():
