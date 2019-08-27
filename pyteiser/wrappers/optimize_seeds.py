@@ -71,22 +71,33 @@ def handler():
 
 
 
+def optimize_motifs(MI_values_array, discr_exp_profile,
+                           profiles_array, index_array,
+                           args, do_print = False):
+
+    seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+
 
 
 def main():
     args = handler()
 
-    # read occurence profiles and expression profile
-    #profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
+    #read occurence profiles and expression profile
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
 
     # read precalculated MI values
-    #MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
+    MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
 
-    tv = IO.read_seed_significancy_threshold(args.threshold_file)
+    # read precalculated threshold
+     = IO.read_seed_significancy_threshold(args.threshold_file)
     print(tv)
 
 
-    # find threshold for significant seeds selection
+    # optimize motifs
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    optimize_motifs(MI_values_array, discr_exp_profile,
+                       profiles_array, index_array,
+                       args, do_print=True)
 
 
 
