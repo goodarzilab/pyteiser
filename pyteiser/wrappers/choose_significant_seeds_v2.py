@@ -312,10 +312,6 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
     IO.write_seed_significancy_threshold(last_positive_seed, args.threshold_file)
 
 
-
-
-
-
 def main():
     args = handler()
 
