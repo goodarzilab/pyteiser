@@ -17,9 +17,14 @@ if subpackage_folder_path not in sys.path:
 
 import IO
 import MI
+import structures
 import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
+
+NUMBER_MODIFIED_MOTIFS_1 = 15
+NUMBER_MODIFIED_MOTIFS_2 = 46
+
 
 # This script implements greedy search of threshold for statistically significant seeds
 # "Greedy" in this context means that it's using a simple objective function
@@ -28,6 +33,10 @@ MASK_OUT_SEED_VALUE = np.float64(-1)
 # For precise threshold identification, something more advanced (like maybe simulated annealing)
 # has to be implemented. However, Hani claims that in practice it doesn't matter because seeds are
 # redundant and if a good seed didn't pass for some reason there is always a similar seed that did
+
+
+
+# add seeds file to the parameters!
 
 
 def handler():
@@ -71,11 +80,61 @@ def handler():
 
 
 
-def optimize_motifs(MI_values_array, discr_exp_profile,
-                           profiles_array, index_array,
-                           args, do_print = False):
+def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile,
+                    profiles_array, index_array, args, do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+    signif_indices = seed_indices_sorted[0 : number_signigicant_seeds]
+
+    print("There are %d signif seeds in total" % number_signigicant_seeds)
+    for counter, index in enumerate(signif_indices):
+        profile = profiles_array[index]
+        active_profile = profile[index_array]
+        current_MI = MI_values_array[index]
+
+        # check how much information it adds to the previous guys
+        if opt_count > 0 and minr>0:
+            minratio = minCondInfoNormalized()
+        else:
+            minratio = minr + 1
+
+        if minratio < minr:
+            print("seed %d killed by motif %d (ratio=%f).\n", i, midx, minratio)
+            continue
+        else:
+            print("optimizing")
+
+        if doonlypositive:
+            r = pearson_int(M_q, E_q, seq_count)
+            if r < 0:
+                print("seed %d killed due to negative association (pearson=%4.3f)\n", i, r)
+                continue
+
+        lastmyfreq = hits / seq_count
+        best_lastmyfreq = lastmyfreq
+
+        if do_optimize:
+            # initial mi value
+            init_best_mymi = MI.mut_info(active_profile, discr_exp_profile)
+            print("Initial MI = %.5f\n", init_best_mymi)
+
+            # create a random index
+            k_inc = np.arange(motifs[index].length)
+            k_shu = np.random.permutation(k_inc)
+
+            # optimize motif
+            bestmi = init_best_mymi
+            print("Optimzing the sequence of motif %d" % counter)
+            print("initial motif (mi = %.4f): %s\n", bestmi, bestmotif.print_sequence(do_return=True))
+
+            for k in motifs[index].length:
+                pos = k_shu[k]
+                modified_motifs = [0] * NUMBER_MODIFIED_MOTIFS_1
+                for j in range(NUMBER_MODIFIED_MOTIFS_1):
+                    modified_motifs[j] = structures.w_motif(? ?)
+                    
+
+
 
 
 
@@ -89,13 +148,13 @@ def main():
     MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
 
     # read precalculated threshold
-     = IO.read_seed_significancy_threshold(args.threshold_file)
-    print(tv)
+    number_signigicant_seeds = IO.read_seed_significancy_threshold(args.threshold_file)
 
 
     # optimize motifs
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
-    optimize_motifs(MI_values_array, discr_exp_profile,
+    optimize_motifs(number_signigicant_seeds,
+                    MI_values_array, discr_exp_profile,
                        profiles_array, index_array,
                        args, do_print=True)
 
