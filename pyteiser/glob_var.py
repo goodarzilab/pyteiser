@@ -15,7 +15,25 @@ _U = np.uint8(1)
 _C = np.uint8(2)
 _G = np.uint8(3)
 _A = np.uint8(4)
-_N = np.uint8(5)
+_N = np.uint8(5) # any
+
+_Y = np.uint8(6) # UC
+_R = np.uint8(7) # AG
+_K = np.uint8(8) # UG
+_M = np.uint8(9) # AC
+_S = np.uint8(10) # GC
+_W = np.uint8(11) # AU
+
+_B = np.uint8(12) # GUC
+_D = np.uint8(13) # GAU
+_H = np.uint8(14) # ACU
+_V = np.uint8(15) # GCA
+
+NT_LIST = np.array([_U, _C, _G, _A, _N,
+                    _Y, _R, _K, _M, _S, _W,
+                    _B, _D, _H, _V], dtype=np.uint8)
+
+MAX_NT = _V
 
 _stem = np.uint8(1)
 _loop = np.uint8(2)
@@ -26,14 +44,35 @@ _char_to_nt_mapping = {_U : 'U',
                         _C : 'C',
                         _G : 'G',
                         _A : 'A',
-                        _N : 'N'}
+                        _N : 'N',
+                        _Y : 'Y',
+                        _R : 'R',
+                        _K : 'K',
+                        _M : 'M',
+                        _S : 'S',
+                        _W : 'W',
+                        _B : 'B',
+                        _D : 'D',
+                        _H : 'H',
+                        _V : 'V'
+                       }
 
 _nt_to_char_mapping = {'U' : _U,
                        'T' : _U,
                        'C' : _C,
                        'G' : _G,
                        'A' : _A,
-                       'N' : _N}
+                       'N' : _N,
+                       'Y' : _Y,
+                       'R' : _R,
+                       'K' : _K,
+                       'M' : _M,
+                       'S' : _S,
+                       'W' : _W,
+                       'B' : _B,
+                       'D' : _D,
+                       'H' : _H,
+                       'V' : _V}
 
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}

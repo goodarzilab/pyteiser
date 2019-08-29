@@ -100,6 +100,9 @@ class w_motif:
         self.bytestring = motif_bytestring
         self.md5 = md5_checksum
 
+    def copy(self):
+        motif_copy = w_motif(self.stem_length, )
+
 
 class w_sequence:
     # w stands for wrapper. This is an external class that is used to interact with the environment, read, write etc

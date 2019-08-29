@@ -132,7 +132,7 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
                 modified_motifs = [0] * NUMBER_MODIFIED_MOTIFS_1
                 for j in range(NUMBER_MODIFIED_MOTIFS_1):
                     modified_motifs[j] = structures.w_motif(? ?)
-                    
+
 
 
 
