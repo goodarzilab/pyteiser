@@ -15,6 +15,7 @@ if subpackage_folder_path not in sys.path:
 import IO
 import matchmaker
 import type_conversions
+import sge
 
 
 def handler():
@@ -51,41 +52,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def parse_task_mapping_file(args):
-    mapping_dict = {}
-    with open(args.task_mapping_file, 'r') as rf:
-        for line in rf:
-            stripped_line = line.rstrip()
-            splitted_line = stripped_line.split('\t')
-            task_id = splitted_line[0]
-            file_index = splitted_line[1]
-            mapping_dict[task_id] = file_index
-    return mapping_dict
-
-
-
-def get_env_variables():
-    working_home_dir = os.getcwd()
-    local_scratch = os.getenv('TMPDIR')
-    task_id = os.environ["SGE_TASK_ID"]
-    job_id = os.environ["JOB_ID"]
-
-    env_variables_dict = {"working_dir": working_home_dir,
-                          "local_scratch": local_scratch,
-                          "task_id": task_id,
-                          "job_id": job_id}
-    return env_variables_dict
-
-
-def print_qstat_proc(env_variables_dict, args):
-    #subprocess.call(qstat_command, shell=False)  # qstat is an executable itself, you don't need shell to run it
-    # also subprocess doesn't want to find qstat if I provide the arguments as a string
-    # for more detail, see either the comment of jfs here https://stackoverflow.com/questions/18962785/oserror-errno-2-no-such-file-or-directory-while-using-python-subprocess-in-dj
-    # or this post https://stackoverflow.com/questions/4795190/passing-variables-to-a-subprocess-call
-
-    subprocess.call([args.path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
 
 
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
@@ -137,10 +103,10 @@ def main():
     args = handler()
 
     # get mapping of task ids to input files
-    mapping_dict = parse_task_mapping_file(args)
+    mapping_dict = sge.parse_task_mapping_file(args.task_mapping_file)
 
     # get the task id
-    env_variables_dict = get_env_variables()
+    env_variables_dict = sge.get_env_variables()
 
     # get the names of input and output files
     seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
@@ -158,7 +124,7 @@ def main():
     #
     #
     # if args.print_qstat == 'y':
-    #     print_qstat_proc(env_variables_dict, args)
+    #     sge.print_qstat_proc(env_variables_dict, args)
 
 
 if __name__ == "__main__":
