@@ -5,14 +5,8 @@ import os
 import sys
 
 
-# when I submit an array job with qsub, SGE creates lots of individual scripts and runs them one by one
-# these individual scripts run on the cluster nodes and they don't know where is the parent script stored
-# the cluster nodes might not even have access to the submission directory. See here: https://stackoverflow.com/questions/37721931/sge-get-script-location-inside-the-script
-# therefore, my hacky solution of python relative import problem doesn't work with qsub submissions, since
-# it is based on the fact that master script knows where it has been submitted from.
-# this script is built in the way where you have to run it from the same directory where it is located
-# so usage is: (1) cd path_to_script; (2) qsub qsub_calculate_seed_profiles.py
-
+# do relative import based on current working directory
+# otherwise I have to install the package for relative import to work
 current_wd = os.getenv('SGE_O_WORKDIR')
 subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
 if subpackage_folder_path not in sys.path:
@@ -25,6 +19,8 @@ import type_conversions
 
 def handler():
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("--task_mapping_file", help="", type=str)
 
     parser.add_argument("--seed_folder", help="", type=str)
     parser.add_argument("--rna_bin_file", help="", type=str)
@@ -48,13 +44,26 @@ def handler():
         out_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
-        print_qstat='y'
+        print_qstat='y',
 
     )
 
     args = parser.parse_args()
 
     return args
+
+
+def parse_task_mapping_file(args):
+    mapping_dict = {}
+    with open(args.task_mapping_file, 'r') as rf:
+        for line in rf:
+            stripped_line = line.rstrip()
+            splitted_line = stripped_line.split('\t')
+            task_id = splitted_line[0]
+            file_index = splitted_line[1]
+            mapping_dict[task_id] = file_index
+    return mapping_dict
+
 
 
 def get_env_variables():
@@ -79,9 +88,10 @@ def print_qstat_proc(env_variables_dict, args):
     subprocess.call([args.path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
 
 
-def get_current_in_out_filenames(args, env_variables_dict):
-    inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, env_variables_dict["task_id"])
-    out_filename_short = "%s_%s.bin" % (args.out_filename_template, env_variables_dict["task_id"])
+def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
+    file_index_to_use =  mapping_dict[env_variables_dict["task_id"]]
+    inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, file_index_to_use)
+    out_filename_short = "%s_%s.bin" % (args.out_filename_template, file_index_to_use)
     seeds_filename_full = os.path.join(args.seed_folder, inp_filename_short)
     profiles_filename_full = os.path.join(args.out_folder, out_filename_short)
     rna_bin_filename = args.rna_bin_file
@@ -125,16 +135,32 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
 
 def main():
     args = handler()
+
+    # get mapping of task ids to input files
+    mapping_dict = parse_task_mapping_file(args)
+
+    # get the task id
     env_variables_dict = get_env_variables()
-    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict)
+
+    # get the names of input and output files
+    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
     n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
-    calculate_write_profiles(n_motifs_list, n_seqs_list,
-                             profiles_filename_full, do_print=True)
+
+    print("I got it! I will use the file")
+    print(seeds_filename_full)
+    print("as and input and I will use the file")
+    print(profiles_filename_full)
+    print("as an output")
 
 
-    if args.print_qstat == 'y':
-        print_qstat_proc(env_variables_dict, args)
+    # calculate_write_profiles(n_motifs_list, n_seqs_list,
+    #                          profiles_filename_full, do_print=True)
+    #
+    #
+    # if args.print_qstat == 'y':
+    #     print_qstat_proc(env_variables_dict, args)
 
 
 if __name__ == "__main__":
     main()
+

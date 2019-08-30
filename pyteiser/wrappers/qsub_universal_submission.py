@@ -32,24 +32,23 @@ import sys
 # it automatically given the list of files that need to be processed
 
 
+# maybe http://45.76.113.195/?a/44467174 ?
+
 def handler():
     parser = argparse.ArgumentParser()
 
     #script to submit itself
     parser.add_argument("--script_to_sumbit", help="", type=str)
 
-    # input-output: universal parameter names for all the scripts
-    parser.add_argument("--input_folder", help="", type=str)
-    parser.add_argument("--output_folder", help="", type=str)
-    parser.add_argument("--input_file_prefix", help="", type=str)
-    parser.add_argument("--output_file_prefix", help="", type=str)
+    # # input-output: universal parameter names for all the scripts
+    # parser.add_argument("--input_folder", help="", type=str)
+    # parser.add_argument("--output_folder", help="", type=str)
+    # parser.add_argument("--input_file_prefix", help="", type=str)
+    # parser.add_argument("--output_file_prefix", help="", type=str)
 
     # list of input file indices (to create mapping to task numbers)
     parser.add_argument("--input_indices_list_file", help="input: list of indices of files to process", type=str)
-    parser.add_argument("--mapping_task_ids_file", help="output: mapping of file indices to task ids", type=str)
-    parser.add_argument("--", help="", type=str)
-    parser.add_argument("--", help="", type=str)
-    parser.add_argument("--", help="", type=str)
+    parser.add_argument("--mapping_task_ids_folder", help="output: mapping of file indices to task ids", type=str)
 
     # qsub submission parameters
     parser.add_argument("--python_binary", help="S parameter of qsub", type=str)
@@ -64,15 +63,15 @@ def handler():
 # script-specific arguments go into the -ac argument
 
     parser.set_defaults(
-        incomplete_files_summary='/Users/student/Documents/hani/programs/pyteiser/data/testing_data/are_profiles_complete/profiles_tarbp2.txt',
         python_binary='/wynton/home/goodarzi/khorms/miniconda3/bin/python',
-        time_required='60:00:00',
+        time_required='50:00:00',
         mem_free='1G',
         mem_scratch='1G',
         stderr_file='/wynton/scratch/khorms/logs/test_stderr.txt',
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
         queue='long.q',
         restart='yes',
+        priority=1,
     )
 
     args, unknown = parser.parse_known_args()
@@ -82,17 +81,21 @@ def handler():
 
 def create_mapping(args):
     with open(args.input_indices_list_file, 'r') as rf:
-        full_string = rf.read().rstrip()
+        full_string = rf.read()
+        full_string = full_string.rstrip()
     indices_list_str = full_string.split(', ')
     indices_list = [int(x) for x in indices_list_str]
 
     random_int_list = [str(random.randint(0, 9)) for p in range(7)]
     random_int_string = "".join(random_int_list)
-    unique_masking_file = "%s_%s" % (args.mapping_task_ids_file, random_int_string)
+    unique_masking_file = "%s/mapping_%s.txt" % (args.mapping_task_ids_folder, random_int_string)
     with open(unique_masking_file, 'w') as wf:
         for task_id, index in enumerate(indices_list):
-            current_string = "%d\t%d\n" % (task_id, index)
+            current_string = "%d\t%d\n" % (task_id+1, index)
             wf.write(current_string)
+    number_of_tasks = len(indices_list)
+
+    return unique_masking_file, number_of_tasks
 
 
 
@@ -100,9 +103,39 @@ def unknown_args_to_string(unknown_args):
     return " ".join(unknown_args)
 
 
+def construct_command(unique_masking_file, number_of_tasks,
+                      args, unknown_args):
+    # syntax
+    # qsub [ options ] [ command | -- [ command_args ]]
+    # create a template
+    command_template = ''
+    # add qsub options
+    command_template += "qsub -S {} -l h_rt={} -l mem_free={} ".format(args.python_binary, args.time_required, args.mem_free)
+    command_template += "-l scratch={} -e {} -o {} -q {} ".format(args.mem_scratch, args.stderr_file, args.stdout_file, args.queue)
+    command_template += "-r {} ".format(args.restart)
+
+    # add the array jobs option
+    command_template += "-t {}-{} ".format(1, number_of_tasks + 1)
+
+    # add the script to run
+    command_template += "{} ".format(args.script_to_sumbit)
+
+    # add the parameter defining the mapping task ids file
+    command_template += "--task_mapping_file {} ".format(unique_masking_file)
+
+    # add the parameters for the script itself
+    unknown_args_string = unknown_args_to_string(unknown_args)
+    command_template += "{} ".format(unknown_args_string)
+
+    return command_template
+
 
 def main():
     args, unknown_args = handler()
+    unique_masking_file, number_of_tasks = create_mapping(args)
+    command = construct_command(unique_masking_file, number_of_tasks,
+                                args, unknown_args)
+    print(command)
 
 
 

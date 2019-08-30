@@ -21,22 +21,21 @@ def handler():
     parser = argparse.ArgumentParser()
 
     # input-output: universal parameter names for all the scripts
-    parser.add_argument("--input_folder", help="folder with seed files", type=str)
-    parser.add_argument("--output_folder", help="folder with the profiles", type=str)
-    parser.add_argument("--input_file_prefix", help="prefix for the seed files names", type=str)
-    parser.add_argument("--output_file_prefix", help="prefix for naming the output profiles files", type=str)
+    # parser.add_argument("--input_folder", help="folder with seed files", type=str)
+    # parser.add_argument("--output_folder", help="folder with the profiles", type=str)
+    # parser.add_argument("--input_file_prefix", help="prefix for the seed files names", type=str)
+    # parser.add_argument("--output_file_prefix", help="prefix for naming the output profiles files", type=str)
 
-    # list of input file indices (to create mapping to task numbers)
-    parser.add_argument("--input_indices_list_file", help="", type=str)
 
+    parser.add_argument("--task_mapping_file", help="", type=str)
+
+    parser.add_argument("--seed_folder", help="", type=str)
     parser.add_argument("--rna_bin_file", help="", type=str)
-
-
+    parser.add_argument("--out_folder", help="", type=str)
+    parser.add_argument("--inp_filename_template", help="", type=str)
     parser.add_argument("--out_filename_template", help="", type=str)
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
-
-    parser.add_argument("--task_mapping_file", help="", type=str)
 
 
 
@@ -54,8 +53,6 @@ def handler():
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y',
 
-        task_mapping_file='',
-
     )
 
     args = parser.parse_args()
@@ -65,13 +62,14 @@ def handler():
 
 def parse_task_mapping_file(args):
     mapping_dict = {}
-    with open(args.mapping_task_ids_file, 'r') as rf:
+    with open(args.task_mapping_file, 'r') as rf:
         for line in rf:
             stripped_line = line.rstrip()
             splitted_line = stripped_line.split('\t')
             task_id = splitted_line[0]
             file_index = splitted_line[1]
             mapping_dict[task_id] = file_index
+    return mapping_dict
 
 
 
@@ -97,9 +95,10 @@ def print_qstat_proc(env_variables_dict, args):
     subprocess.call([args.path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
 
 
-def get_current_in_out_filenames(args, env_variables_dict):
-    inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, env_variables_dict["task_id"])
-    out_filename_short = "%s_%s.bin" % (args.out_filename_template, env_variables_dict["task_id"])
+def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
+    file_index_to_use =  mapping_dict[env_variables_dict["task_id"]]
+    inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, file_index_to_use)
+    out_filename_short = "%s_%s.bin" % (args.out_filename_template, file_index_to_use)
     seeds_filename_full = os.path.join(args.seed_folder, inp_filename_short)
     profiles_filename_full = os.path.join(args.out_folder, out_filename_short)
     rna_bin_filename = args.rna_bin_file
@@ -143,15 +142,30 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
 
 def main():
     args = handler()
+
+    # get mapping of task ids to input files
+    mapping_dict = parse_task_mapping_file(args)
+
+    # get the task id
     env_variables_dict = get_env_variables()
-    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict)
+
+    # get the names of input and output files
+    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
     n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
-    calculate_write_profiles(n_motifs_list, n_seqs_list,
-                             profiles_filename_full, do_print=True)
+
+    print("I got it! I will use the file")
+    print(seeds_filename_full)
+    print("as and input and I will use the file")
+    print(profiles_filename_full)
+    print("as an output")
 
 
-    if args.print_qstat == 'y':
-        print_qstat_proc(env_variables_dict, args)
+    # calculate_write_profiles(n_motifs_list, n_seqs_list,
+    #                          profiles_filename_full, do_print=True)
+    #
+    #
+    # if args.print_qstat == 'y':
+    #     print_qstat_proc(env_variables_dict, args)
 
 
 if __name__ == "__main__":
