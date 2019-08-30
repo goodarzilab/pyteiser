@@ -101,7 +101,10 @@ class w_motif:
         self.md5 = md5_checksum
 
     def copy(self):
-        motif_copy = w_motif(self.stem_length, )
+        motif_copy = w_motif(self.stem_length, self.loop_length)
+        motif_copy.sequence = self.sequence
+        motif_copy.structure = self.structure
+        return motif_copy
 
 
 class w_sequence:
@@ -250,6 +253,12 @@ class n_motif:
         self.linear_length = stem_length * 2 + loop_length
         self.sequence = sequence
         self.structure = structure
+
+    def copy(self):
+        motif_copy = n_motif(self.stem_length, self.loop_length,
+                             self.sequence, self.structure)
+        return motif_copy
+
 
 spec_sequence = [
     ('length', numba.uint32),

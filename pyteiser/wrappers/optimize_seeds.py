@@ -18,11 +18,14 @@ if subpackage_folder_path not in sys.path:
 import IO
 import MI
 import structures
+import glob_var
+import modify_seed
+import type_conversions
+import matchmaker
 import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
-NUMBER_MODIFIED_MOTIFS_1 = 15
 NUMBER_MODIFIED_MOTIFS_2 = 46
 
 
@@ -47,13 +50,11 @@ def handler():
                                                 "the reference transcriptome", type=str)
     parser.add_argument("--threshold_file", help="file where the threshold ", type=str)
 
-    parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
-    parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
-    parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
-    parser.add_argument("--fastthreshold_jump", help="how many seeds to move down the list in the fast search stage", type=int)
-    parser.add_argument("--min_interval", help="when to stop searching in the decreasing intervals phase", type=int)
-    parser.add_argument("--min_consecutive_not_passed", help="how many seeds should not pass consecutively "
-                                                             "for the search to stop", type=int)
+
+    parser.add_argument("--seed_file", help="file with the seeds corresponding to the profiles", type=str)
+    parser.add_argument("--rna_bin_file", help="", type=str)
+
+    parser.add_argument("--maxfreq", help="", type=float)
 
     parser.set_defaults(
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -66,12 +67,10 @@ def handler():
 
         threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
 
-        n_permutations = 100, # takes 1 second per 100 permutations
-        max_pvalue = 0.01, # Hani's default threshold is 0.0000001
-        min_zscore = -1,
-        fastthreshold_jump = 50, # Hani's default threshold is 200
-        min_interval = 10,
-        min_consecutive_not_passed = 10,
+        seed_file='/Users/student/Documents/hani/programs/pyteiser/data/test_seeds/seeds_4-7_4-9_4-6_14-20_30k_1.bin',
+        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+
+        maxfreq = 0.5, # default value from Hani's program is 0.5
     )
 
     args = parser.parse_args()
@@ -81,7 +80,7 @@ def handler():
 
 
 def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile,
-                    profiles_array, index_array, args, do_print = False):
+                    profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
     signif_indices = seed_indices_sorted[0 : number_signigicant_seeds]
@@ -112,6 +111,8 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
 
         lastmyfreq = hits / seq_count
         best_lastmyfreq = lastmyfreq
+        n_bestmotif = n_motifs_list[index].copy()
+        w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
 
         if do_optimize:
             # initial mi value
@@ -119,20 +120,44 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
             print("Initial MI = %.5f\n", init_best_mymi)
 
             # create a random index
-            k_inc = np.arange(motifs[index].length)
+            k_inc = np.arange(n_motifs_list[index].length)
             k_shu = np.random.permutation(k_inc)
 
             # optimize motif
             bestmi = init_best_mymi
             print("Optimzing the sequence of motif %d" % counter)
-            print("initial motif (mi = %.4f): %s\n", bestmi, bestmotif.print_sequence(do_return=True))
+            print("initial motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
 
-            for k in motifs[index].length:
-                pos = k_shu[k]
-                modified_motifs = [0] * NUMBER_MODIFIED_MOTIFS_1
-                for j in range(NUMBER_MODIFIED_MOTIFS_1):
-                    modified_motifs[j] = structures.w_motif(? ?)
+            for k in n_motifs_list[index].length:
+                position = k_shu[k]
+                w_modified_motifs = modify_seed.modify_base(n_motifs_list[index], position)
+                n_modified_motifs = type_conversions.w_to_n_motifs_list(w_modified_motifs)
+                for j in range(len(glob_var.NT_LIST)):
+                    # limit it to the expressed sequences only
+                    # change the matchmaking procedure to incorporate degenerative nucleotides
+                    current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j], n_seqs_list)
+                    myfreq = current_profile.sum() / float(len(n_seqs_list))
+                    tempmi = MI.mut_info(current_profile, discr_exp_profile)
 
+                    if tempmi>bestmi and current_profile.sum() > 10 and (myfreq<args.maxfreq or myfreq<lastmyfreq):
+                        n_bestmotif = n_modified_motifs[j].copy()
+                        w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
+                        bestmi = tempmi
+                        lastmyfreq = myfreq
+                        print("new motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
+
+
+
+
+
+def read_input_files(seeds_filename_full, rna_bin_filename):
+    seqs_dict, seqs_order = IO.read_rna_bin_file(rna_bin_filename)
+    w_motifs_list = IO.read_motif_file(seeds_filename_full)
+    w_seqs_list = [seqs_dict[name] for name in seqs_order]
+    n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
+    n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+
+    return n_motifs_list, n_seqs_list
 
 
 
@@ -141,7 +166,10 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
 def main():
     args = handler()
 
-    #read occurence profiles and expression profile
+    # read seeds and sequences
+    n_motifs_list, n_seqs_list = read_input_files(args.seed_file, args.rna_bin_file)
+
+    # read occurence profiles and expression profile
     profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
 
     # read precalculated MI values
@@ -156,6 +184,7 @@ def main():
     optimize_motifs(number_signigicant_seeds,
                     MI_values_array, discr_exp_profile,
                        profiles_array, index_array,
+                    n_motifs_list, n_seqs_list,
                        args, do_print=True)
 
 
