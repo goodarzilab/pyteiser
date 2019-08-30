@@ -20,10 +20,18 @@ import type_conversions
 def handler():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seed_folder", help="", type=str)
+    # input-output: universal parameter names for all the scripts
+    parser.add_argument("--input_folder", help="folder with seed files", type=str)
+    parser.add_argument("--output_folder", help="folder with the profiles", type=str)
+    parser.add_argument("--input_file_prefix", help="prefix for the seed files names", type=str)
+    parser.add_argument("--output_file_prefix", help="prefix for naming the output profiles files", type=str)
+
+    # list of input file indices (to create mapping to task numbers)
+    parser.add_argument("--input_indices_list_file", help="", type=str)
+
     parser.add_argument("--rna_bin_file", help="", type=str)
-    parser.add_argument("--out_folder", help="", type=str)
-    parser.add_argument("--inp_filename_template", help="", type=str)
+
+
     parser.add_argument("--out_filename_template", help="", type=str)
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
@@ -55,8 +63,16 @@ def handler():
     return args
 
 
-def parse_task_mapping_file():
-    pass
+def parse_task_mapping_file(args):
+    mapping_dict = {}
+    with open(args.mapping_task_ids_file, 'r') as rf:
+        for line in rf:
+            stripped_line = line.rstrip()
+            splitted_line = stripped_line.split('\t')
+            task_id = splitted_line[0]
+            file_index = splitted_line[1]
+            mapping_dict[task_id] = file_index
+
 
 
 def get_env_variables():

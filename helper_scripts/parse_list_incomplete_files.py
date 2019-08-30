@@ -8,7 +8,9 @@ def handler():
     parser.add_argument("--files_indices", help="output: list of indices of files to process", type=str)
     parser.set_defaults(
         incomplete_files_summary='/Users/student/Documents/hani/programs/pyteiser/data/testing_data/are_profiles_complete/profiles_tarbp2.txt',
+        #incomplete_files_summary='/Users/student/Documents/hani/programs/pyteiser/data/testing_data/are_profiles_complete/profiles_snrnp1.txt',
         files_indices='/Users/student/Documents/hani/programs/pyteiser/data/testing_data/are_profiles_complete/indices_incomplete_tarbp2.txt',
+        #files_indices='/Users/student/Documents/hani/programs/pyteiser/data/testing_data/are_profiles_complete/indices_incomplete_snrnp1.txt',
     )
 
     args = parser.parse_args()
