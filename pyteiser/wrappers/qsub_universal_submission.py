@@ -1,8 +1,6 @@
 import argparse
 import random
-import subprocess
 import os
-import sys
 
 
 # The overall submission scheme:
@@ -148,11 +146,6 @@ def main():
 
     # submit the actual job
     submit_job(wording_dir, command)
-
-
-
-
-
 
 
 if __name__ == "__main__":
