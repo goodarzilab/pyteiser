@@ -78,6 +78,70 @@ def handler():
     return args
 
 
+# TODO: modify matchmaker
+
+def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
+                            bestmi, n_bestmotif, lastmyfreq, args):
+
+    for j in range(len(n_modified_motifs)):
+        # limit it to the expressed sequences only
+        # change the matchmaking procedure to incorporate degenerative nucleotides
+        current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j], n_seqs_list)
+        myfreq = current_profile.sum() / float(len(n_seqs_list))
+        tempmi = MI.mut_info(current_profile, discr_exp_profile)
+
+        if tempmi > bestmi and current_profile.sum() > 10 and (myfreq < args.maxfreq or myfreq < lastmyfreq):
+            n_bestmotif = n_modified_motifs[j].copy()
+            w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
+            bestmi = tempmi
+            lastmyfreq = myfreq
+            print("new motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
+    return bestmi, lastmyfreq, n_bestmotif
+
+
+# optimize sequence of all the positions individually in random order
+def optimize_motif_sequence(counter, index, n_motifs_list, n_seqs_list,
+                            discr_exp_profile, active_profile,
+                            init_best_mymi, n_bestmotif, lastmyfreq, args):
+    # print initial motif
+    bestmi = init_best_mymi
+    print("Optimzing the sequence of motif %d" % counter)
+    w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
+    print("initial motif (mi = %.4f): %s", bestmi, w_bestmotif.print_sequence(return_string=True))
+
+    # create a random index so that we optimize each position not from left to right but rather in random order
+    k_inc = np.arange(n_motifs_list[index].length)
+    k_shu = np.random.permutation(k_inc)
+
+    # optimize motif
+    for k in n_motifs_list[index].length:
+        position = k_shu[k]
+        w_modified_motifs = modify_seed.modify_base(n_motifs_list[index], position)
+        n_modified_motifs = type_conversions.w_to_n_motifs_list(w_modified_motifs)
+        bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_modified_motifs,
+                                                    n_seqs_list, discr_exp_profile,
+                                                    bestmi, n_bestmotif, lastmyfreq, args)
+    return bestmi, lastmyfreq, n_bestmotif
+
+
+def elongate_motif(counter, index, n_motifs_list, n_seqs_list,
+                    discr_exp_profile, active_profile,
+                    bestmi, n_bestmotif, lastmyfreq, args):
+    print("Elongating the motif %d" % counter)
+
+    premi = bestmi
+
+    # TODO: how to I to a first iteration of this?
+    # TODO: also why premi >= bestmi, shouldn't it go the other way??
+
+    while premi >= bestmi and n_bestmotif.length > n_motifs_list[index].length:
+        n_elongated_motifs = modify_seed.elongate_motif(n_motifs_list[index])
+        for j in range(len(n_elongated_motifs)):
+            bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
+                                                          n_seqs_list, discr_exp_profile,
+                                                          bestmi, n_bestmotif, lastmyfreq, args)
+    return bestmi, lastmyfreq, n_bestmotif
+
 
 def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile,
                     profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
@@ -90,6 +154,8 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
         profile = profiles_array[index]
         active_profile = profile[index_array]
         current_MI = MI_values_array[index]
+
+        # TODO: find out if Hani's code uses parameters like doonlypositive at all
 
         # check how much information it adds to the previous guys
         if opt_count > 0 and minr>0:
@@ -109,48 +175,28 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
                 print("seed %d killed due to negative association (pearson=%4.3f)\n", i, r)
                 continue
 
-        lastmyfreq = hits / seq_count
-        best_lastmyfreq = lastmyfreq
         n_bestmotif = n_motifs_list[index].copy()
-        w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
 
         if do_optimize:
             # initial mi value
             init_best_mymi = MI.mut_info(active_profile, discr_exp_profile)
+            lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
+
             print("Initial MI = %.5f\n", init_best_mymi)
 
-            # create a random index
-            k_inc = np.arange(n_motifs_list[index].length)
-            k_shu = np.random.permutation(k_inc)
+            bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(counter, index,
+                                    n_motifs_list, n_seqs_list,
+                                    discr_exp_profile, active_profile,
+                                    init_best_mymi, n_bestmotif, lastmyfreq, args)
+            bestmi, lastmyfreq, n_bestmotif = elongate_motif(counter, index,
+                           n_motifs_list, n_seqs_list,
+                           discr_exp_profile, active_profile,
+                           bestmi, n_bestmotif, lastmyfreq, args)
 
-            # optimize motif
-            bestmi = init_best_mymi
-            print("Optimzing the sequence of motif %d" % counter)
-            print("initial motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
+            # TODO: stopped at line 271 of mi_optimize.c
 
-            for k in n_motifs_list[index].length:
-                position = k_shu[k]
-                w_modified_motifs = modify_seed.modify_base(n_motifs_list[index], position)
-                n_modified_motifs = type_conversions.w_to_n_motifs_list(w_modified_motifs)
-                for j in range(len(glob_var.NT_LIST)):
-                    # limit it to the expressed sequences only
-                    # change the matchmaking procedure to incorporate degenerative nucleotides
-                    current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j], n_seqs_list)
-                    myfreq = current_profile.sum() / float(len(n_seqs_list))
-                    tempmi = MI.mut_info(current_profile, discr_exp_profile)
 
-                    if tempmi>bestmi and current_profile.sum() > 10 and (myfreq<args.maxfreq or myfreq<lastmyfreq):
-                        n_bestmotif = n_modified_motifs[j].copy()
-                        w_bestmotif = type_conversions.n_to_w_sequence(n_bestmotif)
-                        bestmi = tempmi
-                        lastmyfreq = myfreq
-                        print("new motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
 
-            print("Elongating the motif...\n")
-            premi = bestmi
-
-            # how to I to a first iteration of this?
-            while premi >= bestmi and n_bestmotif.length > n_motifs_list[index].length:
 
 
 

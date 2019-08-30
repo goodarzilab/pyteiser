@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/glob_var.py" afterPath="$PROJECT_DIR$/pyteiser/glob_var.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/modify_seed.py" afterPath="$PROJECT_DIR$/pyteiser/modify_seed.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,8 +40,8 @@
       <file leaf-file-name="glob_var.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="2" />
+            <state relative-caret-position="450">
+              <caret line="40" column="11" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -66,11 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modify_seed.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="modify_seed.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/modify_seed.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="51" column="27" selection-start-line="51" selection-start-column="27" selection-end-line="51" selection-end-column="27" />
+            <state relative-caret-position="418">
+              <caret line="56" column="32" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="32" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -78,14 +81,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="optimize_seeds.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py">
+      <file leaf-file-name="type_conversions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-75">
-              <caret line="153" column="0" selection-start-line="153" selection-start-column="0" selection-end-line="153" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="105">
+              <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -97,6 +98,18 @@
               <caret line="134" column="25" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="25" />
               <folding>
                 <element signature="e#1432#1450#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="optimize_seeds.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1530">
+              <caret line="157" column="82" selection-start-line="157" selection-start-column="82" selection-end-line="157" selection-end-column="82" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -147,10 +160,10 @@
         <option value="$PROJECT_DIR$/random_scripts/find_incomplete_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
         <option value="$PROJECT_DIR$/random_scripts/launch_individual_processes.py" />
-        <option value="$PROJECT_DIR$/pyteiser/glob_var.py" />
         <option value="$PROJECT_DIR$/pyteiser/structures.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py" />
+        <option value="$PROJECT_DIR$/pyteiser/glob_var.py" />
         <option value="$PROJECT_DIR$/pyteiser/modify_seed.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py" />
       </list>
     </option>
   </component>
@@ -440,13 +453,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00036" summary="adddd structures.h">
-      <created>1565756603524</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1565756603524</updated>
     </task>
     <task id="LOCAL-00037" summary="adddd structures.h">
       <created>1565758920162</created>
@@ -784,7 +790,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567132640223</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="keep adding things to optimize_seeds">
+      <created>1567132660289</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1567132660289</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1170,32 +1183,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/random_scripts/launch_individual_processes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="918">
-          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -1216,22 +1203,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py">
+    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-75">
-          <caret line="153" column="0" selection-start-line="153" selection-start-column="0" selection-end-line="153" selection-end-column="0" />
+        <state relative-caret-position="450">
+          <caret line="40" column="11" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/random_scripts/launch_individual_processes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="918">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/modify_seed.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="51" column="27" selection-start-line="51" selection-start-column="27" selection-end-line="51" selection-end-column="27" />
+        <state relative-caret-position="418">
+          <caret line="56" column="32" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="32" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1530">
+          <caret line="157" column="82" selection-start-line="157" selection-start-column="82" selection-end-line="157" selection-end-column="82" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>

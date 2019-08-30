@@ -11,6 +11,7 @@ if subpackage_folder_path not in sys.path:
 
 import glob_var
 import structures
+import type_conversions
 
 
 # this function creates an array of motifs having all possible combinations of bases at the specified position
@@ -35,6 +36,7 @@ def modify_base(source_motif, position):
 # are playing in w_motif class is to initiate an instance with a pre-defined structure.
 # Once an instance has been initiated, you can change the structure in any way you would like,
 # as long as you make sure that the matchmaker works with such structure properly
+# This function created a template for a motif elongated by 1 nt on the left
 def create_template_elongated_motif(source_motif):
     new_stem_length = source_motif.stem_length + 1
     template = structures.w_motif(new_stem_length, source_motif.loop_length)
@@ -42,7 +44,8 @@ def create_template_elongated_motif(source_motif):
     template.sequence[1:] = source_motif.sequence
     template.structure[0] = glob_var._stem
     template.structure[1:] = source_motif.structure
-    return template
+    n_template = type_conversions.w_to_n_motif(template)
+    return n_template
 
 
 
@@ -52,9 +55,11 @@ def create_template_elongated_motif(source_motif):
 # 15 degenerate nucleotides
 # source_motif itself will also be one of the members of modified_motifs
 def elongate_motif(source_motif):
+    # create template instance of n_motif class for an elongated motif
+    template_motif = create_template_elongated_motif(source_motif)
 
-
-    modified_motifs = [0] * 45
+    number_elongated_variants = len(glob_var.STRUCT_LIST) * len(glob_var.NT_LIST) + 1
+    modified_motifs = [0] * number_elongated_variants
 
     motif_index = 0
     modified_motifs[motif_index] = source_motif.copy()
@@ -62,16 +67,10 @@ def elongate_motif(source_motif):
     for struct_mode in range(1, 3+1):
         for nt in glob_var.NT_LIST:
             motif_index += 1
+            current_variation = template_motif.copy()
+            # fill in the first nucleotide
+            current_variation.sequence[0] = nt
+            current_variation.structure[0] = struct_mode
+            modified_motifs[motif_index] = current_variation
 
-            structures.w_motif
-
-
-            # copy source motif
-            # increase length by 1
-            # assign sequence and structure to the leftmost element
-            # maybe create a new class for extended motif?
-
-
-
-            #modified_motifs[motif_index] =
-
+    return modified_motifs
