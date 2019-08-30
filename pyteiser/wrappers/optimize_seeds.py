@@ -146,6 +146,13 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
                         lastmyfreq = myfreq
                         print("new motif (mi = %.4f): %s\n", bestmi, w_bestmotif.print_sequence(return_string=True))
 
+            print("Elongating the motif...\n")
+            premi = bestmi
+
+            # how to I to a first iteration of this?
+            while premi >= bestmi and n_bestmotif.length > n_motifs_list[index].length:
+
+
 
 
 
