@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/modify_seed.py" afterPath="$PROJECT_DIR$/pyteiser/modify_seed.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -442,13 +441,6 @@
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
     </task>
-    <task id="LOCAL-00035" summary="adddd structures.h">
-      <created>1565736574941</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1565736574941</updated>
-    </task>
     <task id="LOCAL-00036" summary="adddd structures.h">
       <created>1565756603524</created>
       <option name="number" value="00036" />
@@ -785,7 +777,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567129024330</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="keep adding things to optimize_seeds">
+      <created>1567132640223</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1567132640223</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TestHistory">
