@@ -42,10 +42,12 @@ def get_env_variables():
     return env_variables_dict
 
 
-def print_qstat_proc(env_variables_dict, args):
+def print_qstat_proc(env_variables_dict, path_to_qstat):
     #subprocess.call(qstat_command, shell=False)  # qstat is an executable itself, you don't need shell to run it
     # also subprocess doesn't want to find qstat if I provide the arguments as a string
     # for more detail, see either the comment of jfs here https://stackoverflow.com/questions/18962785/oserror-errno-2-no-such-file-or-directory-while-using-python-subprocess-in-dj
     # or this post https://stackoverflow.com/questions/4795190/passing-variables-to-a-subprocess-call
 
-    subprocess.call([args.path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
+    subprocess.call([path_to_qstat, '-j', env_variables_dict["job_id"]], shell=False)  # qstat is an executable itself, you don't need shell to run it
+
+

@@ -112,19 +112,13 @@ def main():
     seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
     n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
 
-    print("I got it! I will use the file")
-    print(seeds_filename_full)
-    print("as and input and I will use the file")
-    print(profiles_filename_full)
-    print("as an output")
+    # the main procedure - calculate profiles
+    calculate_write_profiles(n_motifs_list, n_seqs_list,
+                             profiles_filename_full, do_print=True)
 
 
-    # calculate_write_profiles(n_motifs_list, n_seqs_list,
-    #                          profiles_filename_full, do_print=True)
-    #
-    #
-    # if args.print_qstat == 'y':
-    #     sge.print_qstat_proc(env_variables_dict, args)
+    if args.print_qstat == 'y':
+        sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)
 
 
 if __name__ == "__main__":

@@ -40,12 +40,6 @@ def handler():
     #script to submit itself
     parser.add_argument("--script_to_sumbit", help="", type=str)
 
-    # # input-output: universal parameter names for all the scripts
-    # parser.add_argument("--input_folder", help="", type=str)
-    # parser.add_argument("--output_folder", help="", type=str)
-    # parser.add_argument("--input_file_prefix", help="", type=str)
-    # parser.add_argument("--output_file_prefix", help="", type=str)
-
     # list of input file indices (to create mapping to task numbers)
     parser.add_argument("--input_indices_list_file", help="input: list of indices of files to process", type=str)
     parser.add_argument("--mapping_task_ids_folder", help="output: mapping of file indices to task ids", type=str)
@@ -130,12 +124,31 @@ def construct_command(unique_masking_file, number_of_tasks,
     return command_template
 
 
+def get_submission_working_directory(script_to_sumbit):
+    return os.path.dirname(script_to_sumbit)
+
+
+def submit_job(wording_dir, command):
+    os.chdir(wording_dir)
+    os.system(command)
+
+
 def main():
     args, unknown_args = handler()
+
+    # use the list of input files indices to consrtuct a mapping from task id to input file index
     unique_masking_file, number_of_tasks = create_mapping(args)
+
+    # assemble qsub command
     command = construct_command(unique_masking_file, number_of_tasks,
                                 args, unknown_args)
-    print(command)
+
+    # get the directory where the script to be submitted is located
+    wording_dir = get_submission_working_directory(args.script_to_sumbit)
+
+    # submit the actual job
+    submit_job(wording_dir, command)
+
 
 
 
