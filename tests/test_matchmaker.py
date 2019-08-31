@@ -211,10 +211,10 @@ if __name__ == "__main__":
     args = handler()
 
     # test individual cases
-    # test_matchmaker()
+    test_matchmaker()
 
     # test that the number of instances identified is correct
-    # test_calculate_seed_profiles()
+    test_calculate_seed_profiles()
 
     # test that I can
     test_profiles_compression_decompression(args)

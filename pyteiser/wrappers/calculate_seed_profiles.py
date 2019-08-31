@@ -4,19 +4,6 @@ import os
 import sys
 
 
-# do relative import based on current working directory
-# otherwise I have to install the package for relative import to work
-current_wd = os.getenv('SGE_O_WORKDIR')
-subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-if subpackage_folder_path not in sys.path:
-    sys.path.append(subpackage_folder_path)
-
-import IO
-import matchmaker
-import type_conversions
-import sge
-
-
 def handler():
     parser = argparse.ArgumentParser()
 
@@ -99,6 +86,25 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
 
 
 def main():
+    # I only import things if I run this script itself
+    # do relative import based on current working directory
+    # otherwise I have to install the package for relative import to work
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
+    global IO
+    global matchmaker
+    global type_conversions
+    global sge
+
+
+    import IO
+    import matchmaker
+    import type_conversions
+    import sge
+
     args = handler()
 
     # get mapping of task ids to input files

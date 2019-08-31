@@ -107,6 +107,7 @@ class w_motif:
         return motif_copy
 
 
+
 class w_sequence:
     # w stands for wrapper. This is an external class that is used to interact with the environment, read, write etc
     # for fast operations, we use n_motif, an internal class that is compatible with numba
@@ -254,11 +255,6 @@ class n_motif:
         self.sequence = sequence
         self.structure = structure
 
-    def copy(self):
-        motif_copy = n_motif(self.stem_length, self.loop_length,
-                             self.sequence, self.structure)
-        return motif_copy
-
 
 spec_sequence = [
     ('length', numba.uint32),
@@ -298,3 +294,11 @@ class n_sequence:
             if nt == base:
                 return True
             return False
+
+
+# Some functions that break numba compilation if I put them inside the class
+@numba.jit(cache=True, nopython=True, nogil=True)
+def copy_n_motif(motif):
+    motif_copy = n_motif(motif.stem_length, motif.loop_length,
+                         motif.sequence, motif.structure)
+    return motif_copy
