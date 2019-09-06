@@ -19,7 +19,7 @@ import structures
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
-def match_motif_seq(n_motif, n_sequence, ind):
+def match_motif_seq(n_motif, n_sequence, ind, is_degenerate = False):
     # this function only works with n_motif and n_sequence classes,
     # not with w_motif and w_sequence
 
@@ -27,34 +27,39 @@ def match_motif_seq(n_motif, n_sequence, ind):
     right_index = left_index + n_motif.linear_length - 1
 
     for i in range(n_motif.length):
+        if is_degenerate:
+            is_correct_nt = n_sequence.nt_is_a_degenerate(left_index, n_motif.sequence[i])
+        else:
+            is_correct_nt = n_sequence.nt_is_a(left_index, n_motif.sequence[i])
+
         if n_motif.structure[i] == glob_var._stem:
-            if not n_sequence.nt_is_a(left_index, n_motif.sequence[i]) or not n_sequence.is_paired(left_index, right_index):
+            if not is_correct_nt or not n_sequence.is_paired(left_index, right_index):
                 # either the sequence does not match or the left and right bases cannot form a Watson-Crick base pair
                 return False
             left_index += 1
             right_index -= 1
         else:
-            if not n_sequence.nt_is_a(left_index, n_motif.sequence[i]): # the sequence does not match
+            if not is_correct_nt: # the sequence does not match
                 return False
             left_index += 1
     return True
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
-def is_there_motif_instance(n_motif, n_sequence):
+def is_there_motif_instance(n_motif, n_sequence, is_degenerate = False):
     # this function only works with n_motif and n_sequence classes,
     # not with w_motif and w_sequence
 
     for i in range(n_sequence.length - n_motif.linear_length + 1):
         # sequence_string = sequence.print(return_string = True)
         # print(sequence_string[i : i + motif.linear_length])
-        if match_motif_seq(n_motif, n_sequence, i):
+        if match_motif_seq(n_motif, n_sequence, i, is_degenerate):
             return True
     return False
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
-def find_all_motif_instances(n_motif, n_sequence):
+def find_all_motif_instances(n_motif, n_sequence, is_degenerate = False):
     # this function only works with n_motif and n_sequence classes,
     # not with w_motif and w_sequence
 
@@ -62,7 +67,7 @@ def find_all_motif_instances(n_motif, n_sequence):
     for i in range(n_sequence.length - n_motif.linear_length + 1):
         # sequence_string = sequence.print(return_string = True)
         # print(sequence_string[i : i + motif.linear_length])
-        if match_motif_seq(n_motif, n_sequence, i):
+        if match_motif_seq(n_motif, n_sequence, i, is_degenerate):
             motif_instances.append(i)
     return motif_instances
 
@@ -77,12 +82,12 @@ def find_all_motif_instances(n_motif, n_sequence):
 # so there is no way to pass a bunch of variable-sized sequence objects to numba in the way that would make the iterations faster
 
 
-def calculate_profile_one_motif(motif, n_seqs_list):
+def calculate_profile_one_motif(motif, n_seqs_list, is_degenerate = False):
     start_time = time.time()
 
     current_profile = structures.w_profile(len(n_seqs_list))
     for i, seq in enumerate(n_seqs_list):
-        match = is_there_motif_instance(motif, seq)
+        match = is_there_motif_instance(motif, seq, is_degenerate)
         if match:
             current_profile.values[i] = True
     end_time = time.time()
@@ -92,11 +97,12 @@ def calculate_profile_one_motif(motif, n_seqs_list):
 
 
 def calculate_profiles_list_motifs(n_motifs_list, n_seqs_list,
-                                   do_print=False):
+                                   do_print=False,
+                                   is_degenerate = False):
     profiles_list = [0] * len(n_motifs_list)
 
     for i, motif in enumerate(n_motifs_list):
-        current_profile, time_spent = calculate_profile_one_motif(motif, n_seqs_list)
+        current_profile, time_spent = calculate_profile_one_motif(motif, n_seqs_list, is_degenerate)
         profiles_list[i] = current_profile.values
 
         if do_print:

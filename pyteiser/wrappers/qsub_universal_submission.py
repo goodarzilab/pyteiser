@@ -63,7 +63,6 @@ def handler():
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
         queue='long.q',
         restart='yes',
-        priority=1,
     )
 
     args, unknown = parser.parse_known_args()

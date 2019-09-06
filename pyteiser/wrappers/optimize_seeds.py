@@ -57,18 +57,20 @@ def handler():
     parser.add_argument("--maxfreq", help="", type=float)
 
     parser.set_defaults(
-        exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
-        #profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
-        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
+        # seed_file
+        seed_file='/Users/student/Documents/hani/programs/pyteiser/data/test_seeds/seeds_4-7_4-9_4-6_14-20_30k_1.bin',
 
-        #MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
+        # MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
         MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_profiles_4-7_4-9_4-6_14-20_30k_1.bin',
+
+        # profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
+        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
 
         threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
 
-        seed_file='/Users/student/Documents/hani/programs/pyteiser/data/test_seeds/seeds_4-7_4-9_4-6_14-20_30k_1.bin',
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
         maxfreq = 0.5, # default value from Hani's program is 0.5
     )
@@ -169,31 +171,27 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
         else:
             print("optimizing")
 
-        if doonlypositive:
-            r = pearson_int(M_q, E_q, seq_count)
-            if r < 0:
-                print("seed %d killed due to negative association (pearson=%4.3f)\n", i, r)
-                continue
 
         n_bestmotif = n_motifs_list[index].copy()
 
-        if do_optimize:
-            # initial mi value
-            init_best_mymi = MI.mut_info(active_profile, discr_exp_profile)
-            lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
+        # initial mi value
+        init_best_mymi = MI.mut_info(active_profile, discr_exp_profile)
+        lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
 
-            print("Initial MI = %.5f\n", init_best_mymi)
+        print("Initial MI = %.5f\n", init_best_mymi)
 
-            bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(counter, index,
-                                    n_motifs_list, n_seqs_list,
-                                    discr_exp_profile, active_profile,
-                                    init_best_mymi, n_bestmotif, lastmyfreq, args)
-            bestmi, lastmyfreq, n_bestmotif = elongate_motif(counter, index,
-                           n_motifs_list, n_seqs_list,
-                           discr_exp_profile, active_profile,
-                           bestmi, n_bestmotif, lastmyfreq, args)
+        bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(counter, index,
+                                n_motifs_list, n_seqs_list,
+                                discr_exp_profile, active_profile,
+                                init_best_mymi, n_bestmotif, lastmyfreq, args)
+        bestmi, lastmyfreq, n_bestmotif = elongate_motif(counter, index,
+                       n_motifs_list, n_seqs_list,
+                       discr_exp_profile, active_profile,
+                       bestmi, n_bestmotif, lastmyfreq, args)
 
-            # TODO: stopped at line 271 of mi_optimize.c
+
+
+        # TODO: stopped at line 271 of mi_optimize.c
 
 
 

@@ -296,6 +296,55 @@ class n_sequence:
             return False
 
 
+    def nt_is_a_degenerate(self, ind, nt_degen):
+        if nt_degen == glob_var._N:
+            return True
+        elif nt_degen == glob_var._Y:
+            if self.nts[ind] == glob_var._U or self.nts[ind] == glob_var._C:
+                return True
+            return False
+        elif nt_degen == glob_var._R:
+            if self.nts[ind] == glob_var._A or self.nts[ind] == glob_var._G:
+                return True
+            return False
+        elif nt_degen == glob_var._K:
+            if self.nts[ind] == glob_var._U or self.nts[ind] == glob_var._G:
+                return True
+            return False
+        elif nt_degen == glob_var._M:
+            if self.nts[ind] == glob_var._A or self.nts[ind] == glob_var._C:
+                return True
+            return False
+        elif nt_degen == glob_var._S:
+            if self.nts[ind] == glob_var._G or self.nts[ind] == glob_var._C:
+                return True
+            return False
+        elif nt_degen == glob_var._W:
+            if self.nts[ind] == glob_var._A or self.nts[ind] == glob_var._U:
+                return True
+            return False
+        elif nt_degen == glob_var._B:
+            if self.nts[ind] == glob_var._G or self.nts[ind] == glob_var._U or self.nts[ind] == glob_var._C:
+                return True
+            return False
+        elif nt_degen == glob_var._D:
+            if self.nts[ind] == glob_var._G or self.nts[ind] == glob_var._A or self.nts[ind] == glob_var._U:
+                return True
+            return False
+        elif nt_degen == glob_var._H:
+            if self.nts[ind] == glob_var._A or self.nts[ind] == glob_var._C or self.nts[ind] == glob_var._U:
+                return True
+            return False
+        elif nt_degen == glob_var._V:
+            if self.nts[ind] == glob_var._G or self.nts[ind] == glob_var._C or self.nts[ind] == glob_var._A:
+                return True
+            return False
+        else:
+            if nt_degen == self.nts[ind]:
+                return True
+            return False
+
+
 # Some functions that break numba compilation if I put them inside the class
 @numba.jit(cache=True, nopython=True, nogil=True)
 def copy_n_motif(motif):
