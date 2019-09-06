@@ -55,6 +55,7 @@ def is_there_motif_instance(n_motif, n_sequence, is_degenerate = False):
         # print(sequence_string[i : i + motif.linear_length])
         if match_motif_seq(n_motif, n_sequence, i, is_degenerate):
             return True
+
     return False
 
 
@@ -64,11 +65,13 @@ def find_all_motif_instances(n_motif, n_sequence, is_degenerate = False):
     # not with w_motif and w_sequence
 
     motif_instances = []
+
     for i in range(n_sequence.length - n_motif.linear_length + 1):
         # sequence_string = sequence.print(return_string = True)
         # print(sequence_string[i : i + motif.linear_length])
         if match_motif_seq(n_motif, n_sequence, i, is_degenerate):
             motif_instances.append(i)
+
     return motif_instances
 
 # I have tried really hard to improve performance of this step with numba
