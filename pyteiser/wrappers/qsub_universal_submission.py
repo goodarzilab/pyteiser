@@ -106,7 +106,7 @@ def construct_command(unique_masking_file, number_of_tasks,
     command_template += "-r {} ".format(args.restart)
 
     # add the array jobs option
-    command_template += "-t {}-{} ".format(1, number_of_tasks + 1)
+    command_template += "-t {}-{} ".format(1, number_of_tasks)
 
     # add the script to run
     command_template += "{} ".format(args.script_to_sumbit)

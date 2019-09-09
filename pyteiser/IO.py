@@ -222,14 +222,14 @@ def decompress_exp_mask_file(bitstring):
     return index_array, values_array
 
 
-def unpack_profiles_and_mask(args, do_print=False):
-    with open(args.profiles_bin_file, 'rb') as rf:
+def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, do_print=False):
+    with open(profiles_bin_file, 'rb') as rf:
         bitstring = rf.read()
         decompressed_profiles_array = decompress_profiles(bitstring)
         if do_print:
             print("%d profiles have been loaded" % len(decompressed_profiles_array))
 
-    with open(args.exp_mask_file, 'rb') as rf:
+    with open(exp_mask_file, 'rb') as rf:
         bitstring = rf.read()
         index_array, values_array = decompress_exp_mask_file(bitstring)
         if do_print:

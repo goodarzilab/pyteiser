@@ -316,8 +316,8 @@ def main():
     args = handler()
 
     # read occurence profiles and expression profile
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
-
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args.profiles_bin_file,
+                                                                            args.exp_mask_file, do_print=False)
     # read precalculated MI values
     MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
 

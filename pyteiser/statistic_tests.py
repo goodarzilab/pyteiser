@@ -46,3 +46,6 @@ def MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
     # print(current_MI)
     return pvalue, z_score
 
+
+def jackknife_test():
+    # subsample 2/3 of all the data only

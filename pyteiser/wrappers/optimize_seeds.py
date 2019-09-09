@@ -55,6 +55,7 @@ def handler():
     parser.add_argument("--rna_bin_file", help="", type=str)
 
     parser.add_argument("--maxfreq", help="", type=float)
+    parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
 
     parser.set_defaults(
 
@@ -73,6 +74,7 @@ def handler():
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
         maxfreq = 0.5, # default value from Hani's program is 0.5
+        n_permutations=1000,  # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
     )
 
     args = parser.parse_args()
@@ -80,7 +82,6 @@ def handler():
     return args
 
 
-# TODO: modify matchmaker
 
 def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
                             bestmi, n_bestmotif, lastmyfreq, args):
@@ -88,7 +89,9 @@ def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
     for j in range(len(n_modified_motifs)):
         # limit it to the expressed sequences only
         # change the matchmaking procedure to incorporate degenerative nucleotides
-        current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j], n_seqs_list)
+        current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j],
+                                                                             n_seqs_list,
+                                                                            is_degenerate = True)
         myfreq = current_profile.sum() / float(len(n_seqs_list))
         tempmi = MI.mut_info(current_profile, discr_exp_profile)
 
@@ -157,8 +160,6 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
         active_profile = profile[index_array]
         current_MI = MI_values_array[index]
 
-        # TODO: find out if Hani's code uses parameters like doonlypositive at all
-
         # check how much information it adds to the previous guys
         if opt_count > 0 and minr>0:
             minratio = minCondInfoNormalized()
@@ -188,6 +189,23 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
                        n_motifs_list, n_seqs_list,
                        discr_exp_profile, active_profile,
                        bestmi, n_bestmotif, lastmyfreq, args)
+
+        bestmotif_profile, _ = matchmaker.calculate_profile_one_motif(n_bestmotif, n_seqs_list)
+        bestmotif_active_profile = bestmotif_profile[index_array]
+        bestmotif_mi = MI.mut_info(bestmotif_active_profile, discr_exp_profile)
+        pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_active_profile, discr_exp_profile,
+                                                                   bestmotif_mi, args.n_permutations)
+        print("The findal z-score is: %.3f", z_score)
+
+        jacknife_score = statistic_tests.jackknife_test()
+
+
+        pv_defined = True
+        if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
+            check = 1  # seed passed
+        else:
+            check = -1  # seed didn't pass
+
 
 
 
@@ -221,7 +239,8 @@ def main():
     n_motifs_list, n_seqs_list = read_input_files(args.seed_file, args.rna_bin_file)
 
     # read occurence profiles and expression profile
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args, do_print=False)
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args.profiles_bin_file,
+                                                                            args.exp_mask_file, do_print=False)
 
     # read precalculated MI values
     MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
