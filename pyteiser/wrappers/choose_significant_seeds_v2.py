@@ -50,8 +50,8 @@ def handler():
                                                 "the reference transcriptome", type=str)
 
     parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
-    parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
-    parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=int)
+    parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=float)
+    parser.add_argument("--min_zscore", help="maximal acceptable p-value", type=float)
     parser.add_argument("--step_1_jump", help="", type=int)
     parser.add_argument("--step_2_min_interval", help="", type=int)
     parser.add_argument("--step_1_min_fraction", help="", type=float)
