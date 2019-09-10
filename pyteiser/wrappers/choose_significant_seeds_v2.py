@@ -203,7 +203,7 @@ def check_N_consecutive(minimal_fraction, start_point,
 def step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                  discr_exp_profile, profiles_array, index_array,
                                 args, do_print = False):
-    last_positive_seed = -1
+    first_negative_seed = -1
 
     counter = 0
     is_over_threshold = False
@@ -213,40 +213,42 @@ def step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, se
                             counter, MI_values_array, seed_indices_sorted, seed_pass,
                             discr_exp_profile, profiles_array, index_array,
                             args, do_print)
-        last_positive_seed = counter
+        first_negative_seed = counter
         counter += args.step_1_jump
 
     if not is_over_threshold:
         print("No lower boundary for threshold found!")
         return len(MI_values_array) - 1, seed_pass
 
-    return last_positive_seed, seed_pass
+    return first_negative_seed, seed_pass
 
 
-def step_2_decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
+def step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indices_sorted,
                          profiles_array, index_array, discr_exp_profile, seed_pass,
                          do_print, args):
+    last_positive_seed = first_negative_seed - args.step_1_jump # this is where the last positive seed was
 
-    if last_positive_seed >= 0:
-        upper_boundary = last_positive_seed - args.step_1_jump # upper limit: last positive seed - one jump (just in case)
-        lower_boundary = min(len(MI_values_array) - 1,
-                          last_positive_seed + args.step_1_jump) # lower limit
-                                # the first negative seed - which is last positive seed + step_1_jump
-                                # or, if there were none, the end of the profiles list
+    upper_boundary = first_negative_seed - args.step_1_jump # upper limit: first negative seed - one jump (just in case)
+    lower_boundary = min(len(MI_values_array) - 1,
+                        first_negative_seed + args.step_1_jump) # lower limit
+                            # the first negative seed + step_1_jump
+                            # or, if there were none, the end of the profiles list
 
-        while (lower_boundary - upper_boundary) > args.step_2_min_interval:
-            counter = upper_boundary + (lower_boundary - upper_boundary) // 2
-            is_over_threshold, seed_pass = check_N_consecutive(args.step_1_min_fraction,
-                                                               counter, MI_values_array, seed_indices_sorted, seed_pass,
-                                                               discr_exp_profile, profiles_array, index_array,
-                                                               args, do_print)
-            if not is_over_threshold:
-                # some seed passed, go down half interval
-                upper_boundary = counter
-                last_positive_seed = counter
-            else:
-                # enough seeds didn't pass, go up half interval
-                lower_boundary = counter
+
+
+    while (lower_boundary - upper_boundary) > args.step_2_min_interval:
+        counter = upper_boundary + (lower_boundary - upper_boundary) // 2
+        is_over_threshold, seed_pass = check_N_consecutive(args.step_1_min_fraction,
+                                                           counter, MI_values_array, seed_indices_sorted, seed_pass,
+                                                           discr_exp_profile, profiles_array, index_array,
+                                                           args, do_print)
+        if not is_over_threshold:
+            # some seed passed, go down half interval
+            upper_boundary = counter
+            last_positive_seed = counter
+        else:
+            # enough seeds didn't pass, go up half interval
+            lower_boundary = counter
 
     return last_positive_seed, seed_pass
 
@@ -310,13 +312,13 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
 
     if do_print:
         print("Find the lower boundary for the threshold")
-    last_positive_seed, seed_pass = step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
+    first_negative_seed, seed_pass = step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                                      discr_exp_profile, profiles_array, index_array,
                                                     args, do_print)
     if do_print:
-        print("The last seed that passed is: ", last_positive_seed, '\n')
+        print("The first seed that didn't pass is: ", first_negative_seed, '\n')
         print("Decreasing intervals phase")
-    last_positive_seed, seed_pass = step_2_decreasing_intervals(last_positive_seed, MI_values_array, seed_indices_sorted,
+    last_positive_seed, seed_pass = step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indices_sorted,
                                                      profiles_array, index_array, discr_exp_profile,
                                                      seed_pass, do_print, args)
     if do_print:
