@@ -88,6 +88,5 @@ def main():
     compress_write_mask_arrays(array_indices_occuring, array_measurement_values, args)
 
 
-
 if __name__ == '__main__':
     main()
