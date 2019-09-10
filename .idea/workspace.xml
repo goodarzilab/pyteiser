@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v2.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -56,8 +56,8 @@
       <file leaf-file-name="calculate_MI_profiles.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+            <state relative-caret-position="255">
+              <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -140,10 +140,10 @@
         <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/statistic_tests.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v2.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
       </list>
     </option>
   </component>
@@ -433,13 +433,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00050" summary="adddd structures.h">
-      <created>1565979708242</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1565979708243</updated>
     </task>
     <task id="LOCAL-00051" summary="adddd structures.h">
       <created>1565985452919</created>
@@ -777,7 +770,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568080998522</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="fixed float/int bug in thresholding">
+      <created>1568082148678</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1568082148678</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -871,7 +871,8 @@
     <MESSAGE value="adopt threshold selection for qsub submissions part 1" />
     <MESSAGE value="fix syntax error in stat tests" />
     <MESSAGE value="custom expression profile" />
-    <option name="LAST_COMMIT_MESSAGE" value="custom expression profile" />
+    <MESSAGE value="fixed float/int bug in thresholding" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed float/int bug in thresholding" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1170,8 +1171,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+        <state relative-caret-position="255">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
