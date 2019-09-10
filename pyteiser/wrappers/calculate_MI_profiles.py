@@ -10,13 +10,19 @@ MASK_OUT_SEED_VALUE = np.float64(-1)
 
 def handler():
     parser = argparse.ArgumentParser()
-
     parser.add_argument("--task_mapping_file", help="", type=str)
 
-    parser.add_argument("--profiles_bin_file", help="file with occurence profiles", type=str)
+    parser.add_argument("--profiles_folder", help="", type=str)
+    parser.add_argument("--MI_values_folder", help="", type=str)
+    parser.add_argument("--inp_filename_template", help="", type=str)
+    parser.add_argument("--out_filename_template", help="", type=str)
+
+    parser.add_argument("--print_qstat", help="", type=str)
+    parser.add_argument("--path_to_qstat", help="", type=str)
+
+    parser.add_argument("--rna_bin_file", help="", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
-    parser.add_argument("--MI_values_file", help="output file where calculated MI values are stored", type=str)
 
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
@@ -112,6 +118,9 @@ def main():
     MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
                                          args.min_occurences, do_print = True)
     IO.write_MI_values(MI_values_array, args.nbins, MI_values_filename_full)
+
+    if args.print_qstat == 'y':
+        sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)
 
 
 if __name__ == "__main__":

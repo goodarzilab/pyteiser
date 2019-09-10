@@ -1,7 +1,5 @@
 import numpy as np
 import argparse
-import numba
-import timeit
 import math
 
 import os
@@ -10,14 +8,6 @@ import sys
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
 
-current_script_path = sys.argv[0]
-subpackage_folder_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
-if subpackage_folder_path not in sys.path:
-    sys.path.append(subpackage_folder_path)
-
-import IO
-import MI
-import statistic_tests
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
@@ -45,11 +35,19 @@ MASK_OUT_SEED_VALUE = np.float64(-1)
 
 def handler():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--task_mapping_file", help="", type=str)
 
-    parser.add_argument("--profiles_bin_file", help="file with occurence profiles", type=str)
+    parser.add_argument("--profiles_folder", help="", type=str)
+    parser.add_argument("--MI_values_folder", help="", type=str)
+    parser.add_argument("--thresholds_folder", help="", type=str)
+
+    parser.add_argument("--profiles_filename_template", help="", type=str)
+    parser.add_argument("--MI_values_filename_template", help="", type=str)
+    parser.add_argument("--thresholds_filename_template", help="", type=str)
+
+    parser.add_argument("--rna_bin_file", help="", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
-    parser.add_argument("--threshold_file", help="file where the threshold ", type=str)
 
     parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
     parser.add_argument("--max_pvalue", help="maximal acceptable p-value", type=int)
@@ -60,16 +58,20 @@ def handler():
     parser.add_argument("--step_2_min_fraction", help="", type=float)
     parser.add_argument("--step_3_min_fraction", help="", type=float)
 
+    parser.add_argument("--print_qstat", help="", type=str)
+    parser.add_argument("--path_to_qstat", help="", type=str)
+
+
     parser.set_defaults(
-        exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
+        profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
+        MI_values_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/MI_values/MI_values_4-7_4-9_4-6_14-20/MI_values_per_file_30k',
+        thresholds_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/thresholds/thresholds_4-7_4-9_4-6_14-20/thresholds_per_file_30k',
+        profiles_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
+        MI_values_filename_template='MI_values_4-7_4-9_4-6_14-20_30k',
+        thresholds_filename_template='thresholds_4-7_4-9_4-6_14-20_30k',
 
-        #profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
-        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
-
-        #MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
-        MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_profiles_4-7_4-9_4-6_14-20_30k_1.bin',
-
-        threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
+        rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        exp_mask_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
         n_permutations = 1000, # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
         max_pvalue = 0.0001, # Hani's default threshold is 1*10^-7
@@ -81,19 +83,39 @@ def handler():
         step_1_min_fraction = 0.8,
         step_2_min_fraction= 0.8,
         step_3_min_fraction= 0.9,
+
+        path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
+        print_qstat='y',
+
     )
 
     args = parser.parse_args()
 
     return args
 
-# let's say I want
-# instead of defining two separate parameters: (1) how many
+
+def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
+    file_index_to_use =  mapping_dict[env_variables_dict["task_id"]]
+
+    profiles_filename_short = "%s_%s.bin" % (args.profiles_filename_template, file_index_to_use)
+    MI_values_filename_short = "%s_%s.bin" % (args.MI_values_filename_template, file_index_to_use)
+    thresholds_filename_short = "%s_%s.bin" % (args.thresholds_filename_template, file_index_to_use)
+
+    profiles_filename_full = os.path.join(args.profiles_folder, profiles_filename_short)
+    MI_values_filename_full = os.path.join(args.MI_values_folder, MI_values_filename_short)
+    thresholds_filename_full = os.path.join(args.MI_values_folder, thresholds_filename_short)
+
+    rna_bin_filename = args.rna_bin_file
+    exp_mask_filename = args.exp_mask_file
+
+    return profiles_filename_full, MI_values_filename_full, \
+           thresholds_filename_full,\
+           rna_bin_filename, exp_mask_filename
+
 
 def find_fraction_denominator(x):
     rounded_denominator = round(1 / (1 - x), 4)
     return math.ceil(rounded_denominator)
-
 
 
 def get_current_statistics(index, MI_values_array, profiles_array,
@@ -280,7 +302,7 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
 
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile,
-                           profiles_array, index_array,
+                           profiles_array, index_array, threshold_filename,
                            args, do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
@@ -309,23 +331,56 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile,
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
 
-    IO.write_seed_significancy_threshold(last_positive_seed, args.threshold_file)
+    IO.write_seed_significancy_threshold(last_positive_seed, threshold_filename)
 
 
 def main():
+    # I only import things if I run this script itself
+    # do relative import based on current working directory
+    # otherwise I have to install the package for relative import to work
+
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
+    global MI
+    global IO
+    global sge
+    global statistic_tests
+
+    import MI
+    import IO
+    import sge
+    import statistic_tests
+
     args = handler()
 
-    # read occurence profiles and expression profile
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args.profiles_bin_file,
-                                                                            args.exp_mask_file, do_print=False)
+    # get mapping of task ids to input files
+    mapping_dict = sge.parse_task_mapping_file(args.task_mapping_file)
+    # get the task id
+    env_variables_dict = sge.get_env_variables()
+
+    # get the names of input and output files
+    profiles_filename_full, MI_values_filename_full, \
+    thresholds_filename_full, \
+    rna_bin_filename, exp_mask_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
+
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
+                                                                                         exp_mask_filename, do_print=True)
+
     # read precalculated MI values
-    MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
+    MI_values_array, nbins = IO.read_MI_values(MI_values_filename_full)
 
     # find the threshold
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
     determine_mi_threshold(MI_values_array, discr_exp_profile,
-                           profiles_array, index_array,
+                           profiles_array, index_array, thresholds_filename_full,
                            args, do_print = True)
+
+    if args.print_qstat == 'y':
+        sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)
+
 
 
 if __name__ == "__main__":
