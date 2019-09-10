@@ -8,7 +8,6 @@ import sys
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
 
-
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
 # The original program works in this way
