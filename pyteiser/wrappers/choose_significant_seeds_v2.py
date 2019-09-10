@@ -103,7 +103,7 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
     profiles_filename_full = os.path.join(args.profiles_folder, profiles_filename_short)
     MI_values_filename_full = os.path.join(args.MI_values_folder, MI_values_filename_short)
-    thresholds_filename_full = os.path.join(args.MI_values_folder, thresholds_filename_short)
+    thresholds_filename_full = os.path.join(args.thresholds_folder, thresholds_filename_short)
 
     rna_bin_filename = args.rna_bin_file
     exp_mask_filename = args.exp_mask_file
