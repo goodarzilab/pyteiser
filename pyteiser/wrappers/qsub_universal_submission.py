@@ -46,9 +46,12 @@ def handler():
     # qsub submission parameters
     parser.add_argument("--python_binary", help="S parameter of qsub", type=str)
     parser.add_argument("--time_required", help="-l h_rt parameter of qsub", type=str)
+    parser.add_argument("--include_mem_free_parameter", help="should the mem_free parameter be included", type=str)
     parser.add_argument("--mem_free", help="-l mem_free parameter of qsub", type=str)
     parser.add_argument("--include_mem_scratch_parameter", help="should the scratch parameter be included", type=str)
     parser.add_argument("--mem_scratch", help="-l scratch parameter of qsub", type=str)
+    parser.add_argument("--include_mem_parameter", help="should the mem parameter be included", type=str)
+    parser.add_argument("--mem", help="-l mem parameter of qsub", type=str)
     parser.add_argument("--stderr_file", help="-e parameter of qsub", type=str)
     parser.add_argument("--stdout_file", help="-o parameter of qsub", type=str)
     parser.add_argument("--include_queue_parameter", help="should the desired queue be passed as a parameter", type=str)
@@ -60,9 +63,12 @@ def handler():
     parser.set_defaults(
         python_binary='/wynton/home/goodarzi/khorms/miniconda3/bin/python',
         time_required='50:00:00',
+        include_mem_free_parameter='y',
         mem_free='1G',
         include_mem_scratch_parameter='y',
         mem_scratch='1G',
+        include_mem_parameter='n',
+        mem='1G',
         stderr_file='/wynton/scratch/khorms/logs/test_stderr.txt',
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
         include_queue_parameter='y',
@@ -110,13 +116,16 @@ def construct_command(unique_masking_file, number_of_tasks,
     command_template += "qsub -S {} -l h_rt={} -l mem_free={} ".format(args.python_binary, args.time_required, args.mem_free)
 
     # some servers do not ask for scratch parameter
+    if args.include_mem_free_parameter == 'y' or args.include_mem_free_parameter == 'yes':
+        command_template += "-l mem_free={} ".format(args.mem_free)
     if args.include_mem_scratch_parameter == 'y' or args.include_mem_scratch_parameter == 'yes':
         command_template += "-l scratch={} ".format(args.mem_scratch)
-
-    command_template += "-e {} -o {} ".format(args.stderr_file, args.stdout_file)
-
+    if args.include_mem_parameter == 'y' or args.include_mem_parameter == 'yes':
+        command_template += "-l mem={} ".format(args.mem)
     if args.include_queue_parameter == 'y' or args.include_queue_parameter == 'yes':
         command_template += "-q {} ".format(args.queue)
+
+    command_template += "-e {} -o {} ".format(args.stderr_file, args.stdout_file)
 
     command_template += "-r {} ".format(args.restart)
 

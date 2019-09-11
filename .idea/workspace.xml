@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="make scratch parameter optional">
+    <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py" />
     </list>
@@ -70,8 +70,8 @@
       <file leaf-file-name="qsub_universal_submission.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1410">
-              <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+            <state relative-caret-position="-95">
+              <caret line="126" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -422,13 +422,6 @@
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
     </task>
-    <task id="LOCAL-00057" summary="mut info">
-      <created>1566261984904</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1566261984904</updated>
-    </task>
     <task id="LOCAL-00058" summary="mut info testing">
       <created>1566268073990</created>
       <option name="number" value="00058" />
@@ -765,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568165681935</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="make queue parameter optional">
+      <created>1568165984859</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1568165984859</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -863,7 +863,8 @@
     <MESSAGE value="thresholding confuses last positive and first negative seeds: fixed" />
     <MESSAGE value="make qsub submission script print the command" />
     <MESSAGE value="make scratch parameter optional" />
-    <option name="LAST_COMMIT_MESSAGE" value="make scratch parameter optional" />
+    <MESSAGE value="make queue parameter optional" />
+    <option name="LAST_COMMIT_MESSAGE" value="make queue parameter optional" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1164,8 +1165,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+        <state relative-caret-position="-95">
+          <caret line="126" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
           <folding />
         </state>
       </provider>
