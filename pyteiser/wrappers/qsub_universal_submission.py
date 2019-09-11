@@ -51,6 +51,7 @@ def handler():
     parser.add_argument("--mem_scratch", help="-l scratch parameter of qsub", type=str)
     parser.add_argument("--stderr_file", help="-e parameter of qsub", type=str)
     parser.add_argument("--stdout_file", help="-o parameter of qsub", type=str)
+    parser.add_argument("--include_queue_parameter", help="should the desired queue be passed as a parameter", type=str)
     parser.add_argument("--queue", help="-q parameter of qsub", type=str)
     parser.add_argument("--restart", help="-r parameter of qsub", type=str)
 
@@ -64,6 +65,7 @@ def handler():
         mem_scratch='1G',
         stderr_file='/wynton/scratch/khorms/logs/test_stderr.txt',
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
+        include_queue_parameter='y',
         queue='long.q',
         restart='yes',
         do_print_command='no'
@@ -111,7 +113,11 @@ def construct_command(unique_masking_file, number_of_tasks,
     if args.include_mem_scratch_parameter == 'y' or args.include_mem_scratch_parameter == 'yes':
         command_template += "-l scratch={} ".format(args.mem_scratch)
 
-    command_template += "-e {} -o {} -q {} ".format(args.stderr_file, args.stdout_file, args.queue)
+    command_template += "-e {} -o {} ".format(args.stderr_file, args.stdout_file)
+
+    if args.include_queue_parameter == 'y' or args.include_queue_parameter == 'yes':
+        command_template += "-q {} ".format(args.queue)
+
     command_template += "-r {} ".format(args.restart)
 
     # add the array jobs option
