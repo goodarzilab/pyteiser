@@ -47,6 +47,7 @@ def handler():
     parser.add_argument("--python_binary", help="S parameter of qsub", type=str)
     parser.add_argument("--time_required", help="-l h_rt parameter of qsub", type=str)
     parser.add_argument("--mem_free", help="-l mem_free parameter of qsub", type=str)
+    parser.add_argument("--include_mem_scratch_parameter", help="should the scratch parameter be included", type=str)
     parser.add_argument("--mem_scratch", help="-l scratch parameter of qsub", type=str)
     parser.add_argument("--stderr_file", help="-e parameter of qsub", type=str)
     parser.add_argument("--stdout_file", help="-o parameter of qsub", type=str)
@@ -59,6 +60,7 @@ def handler():
         python_binary='/wynton/home/goodarzi/khorms/miniconda3/bin/python',
         time_required='50:00:00',
         mem_free='1G',
+        include_mem_scratch_parameter='y',
         mem_scratch='1G',
         stderr_file='/wynton/scratch/khorms/logs/test_stderr.txt',
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
@@ -104,7 +106,12 @@ def construct_command(unique_masking_file, number_of_tasks,
     command_template = ''
     # add qsub options
     command_template += "qsub -S {} -l h_rt={} -l mem_free={} ".format(args.python_binary, args.time_required, args.mem_free)
-    command_template += "-l scratch={} -e {} -o {} -q {} ".format(args.mem_scratch, args.stderr_file, args.stdout_file, args.queue)
+
+    # some servers do not ask for scratch parameter
+    if args.include_mem_scratch_parameter == 'y' or args.include_mem_scratch_parameter == 'yes':
+        command_template += "-l scratch={} ".format(args.mem_scratch)
+
+    command_template += "-e {} -o {} -q {} ".format(args.stderr_file, args.stdout_file, args.queue)
     command_template += "-r {} ".format(args.restart)
 
     # add the array jobs option
