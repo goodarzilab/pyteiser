@@ -299,6 +299,10 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
         sys.exit(1)
 
     last_positive_seed = counter - denominator - 1
+
+    if last_positive_seed < 0:
+        last_positive_seed = 0
+
     return last_positive_seed, seed_pass
 
 
