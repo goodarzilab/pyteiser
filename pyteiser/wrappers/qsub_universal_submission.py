@@ -37,6 +37,7 @@ def handler():
 
     #script to submit itself
     parser.add_argument("--script_to_sumbit", help="", type=str)
+    parser.add_argument("--do_print_command", help="if the script should print the command it's submitting", type=str)
 
     # list of input file indices (to create mapping to task numbers)
     parser.add_argument("--input_indices_list_file", help="input: list of indices of files to process", type=str)
@@ -63,6 +64,7 @@ def handler():
         stdout_file='/wynton/scratch/khorms/logs/test_stdout.txt',
         queue='long.q',
         restart='yes',
+        do_print_command='no'
     )
 
     args, unknown = parser.parse_known_args()
@@ -125,7 +127,10 @@ def get_submission_working_directory(script_to_sumbit):
     return os.path.dirname(script_to_sumbit)
 
 
-def submit_job(wording_dir, command):
+def submit_job(wording_dir, command, do_print):
+    if do_print == 'y' or do_print == 'yes':
+        print("The command is: ")
+        print(command)
     os.chdir(wording_dir)
     os.system(command)
 
@@ -144,7 +149,7 @@ def main():
     wording_dir = get_submission_working_directory(args.script_to_sumbit)
 
     # submit the actual job
-    submit_job(wording_dir, command)
+    submit_job(wording_dir, command, args.do_print_command)
 
 
 if __name__ == "__main__":
