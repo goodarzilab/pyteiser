@@ -45,6 +45,7 @@ def handler():
 
     # qsub submission parameters
     parser.add_argument("--python_binary", help="S parameter of qsub", type=str)
+    parser.add_argument("--time_l_keyword", help="how to define time requirements in the -l parameters list", type=str)
     parser.add_argument("--time_required", help="-l h_rt parameter of qsub", type=str)
     parser.add_argument("--include_mem_free_parameter", help="should the mem_free parameter be included", type=str)
     parser.add_argument("--mem_free", help="-l mem_free parameter of qsub", type=str)
@@ -62,6 +63,7 @@ def handler():
 
     parser.set_defaults(
         python_binary='/wynton/home/goodarzi/khorms/miniconda3/bin/python',
+        time_l_keyword='h_rt',
         time_required='50:00:00',
         include_mem_free_parameter='y',
         mem_free='1G',
@@ -113,7 +115,8 @@ def construct_command(unique_masking_file, number_of_tasks,
     # create a template
     command_template = ''
     # add qsub options
-    command_template += "qsub -S {} -l h_rt={} -l mem_free={} ".format(args.python_binary, args.time_required, args.mem_free)
+    command_template += "qsub -S {} -l {}={} -l mem_free={} ".format(args.python_binary, args.time_l_keyword,
+                                                                     args.time_required, args.mem_free)
 
     # some servers do not ask for scratch parameter
     if args.include_mem_free_parameter == 'y' or args.include_mem_free_parameter == 'yes':

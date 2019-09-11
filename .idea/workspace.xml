@@ -70,8 +70,8 @@
       <file leaf-file-name="qsub_universal_submission.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-95">
-              <caret line="126" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+            <state relative-caret-position="1815">
+              <caret line="123" column="66" selection-start-line="123" selection-start-column="66" selection-end-line="123" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -422,13 +422,6 @@
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
     </task>
-    <task id="LOCAL-00058" summary="mut info testing">
-      <created>1566268073990</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1566268073990</updated>
-    </task>
     <task id="LOCAL-00059" summary="mut info testing">
       <created>1566268082447</created>
       <option name="number" value="00059" />
@@ -765,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568165984859</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="make several other -l parameters optional">
+      <created>1568167137793</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1568167137793</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -864,7 +864,8 @@
     <MESSAGE value="make qsub submission script print the command" />
     <MESSAGE value="make scratch parameter optional" />
     <MESSAGE value="make queue parameter optional" />
-    <option name="LAST_COMMIT_MESSAGE" value="make queue parameter optional" />
+    <MESSAGE value="make several other -l parameters optional" />
+    <option name="LAST_COMMIT_MESSAGE" value="make several other -l parameters optional" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1165,8 +1166,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-95">
-          <caret line="126" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+        <state relative-caret-position="1815">
+          <caret line="123" column="66" selection-start-line="123" selection-start-column="66" selection-end-line="123" selection-end-column="66" />
           <folding />
         </state>
       </provider>
