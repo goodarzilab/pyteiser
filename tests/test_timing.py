@@ -20,6 +20,7 @@ import pyteiser.structures as structures
 import pyteiser.IO as IO
 import pyteiser.matchmaker as matchmaker
 import pyteiser.MI as MI
+import pyteiser.wrappers.calculate_MI_profiles as calculate_MI_profiles
 
 
 
@@ -137,6 +138,22 @@ def time_discretization():
     print("Discretization takes: ", time_discretization)
 
 
+def time_calculate_MI_profiles(calculate_with_numba):
+    test_batch_folder = '/Users/student/Documents/hani/programs/pyteiser/data/test_1_batch_snrnpa1'
+    seeds_filename = os.path.join(test_batch_folder, 'seeds_4-7_4-9_4-6_14-20_30k_1.bin')
+    profiles_filename = os.path.join(test_batch_folder, 'snrnpa_profiles_4-7_4-9_4-6_14-20_30k_1.bin')
+    exp_mask_filename = "/Users/student/Documents/hani/programs/pyteiser/data/mask_files/SNRNPA1_PSI_mask.bin"
+    nbins = 10
+    min_occurences = 5
+
+
+    decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename,
+                                                                                         exp_mask_filename, do_print=True)
+
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    MI_values_array = calculate_MI_profiles.calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
+                                         min_occurences, calculate_with_numba, do_print = True)
+
 
 def main():
     args = handler()
@@ -145,8 +162,9 @@ def main():
     # time_compressing_sequences(args.rna_fastafile)
     # time_iterating()
     # time_compressing_profile()
+    # time_discretization()
 
-    time_discretization()
+    time_calculate_MI_profiles(calculate_with_numba = 'y')
 
 
 

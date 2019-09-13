@@ -23,7 +23,7 @@ def MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
 
     for i in range(n_permutations):
         shuffled_expr = np.random.permutation(discr_exp_profile)
-        ith_MI = MI.mut_info(active_profile, shuffled_expr)
+        ith_MI = MI.mut_info_with_numba(active_profile, shuffled_expr)
 
         shuffled_MI_values[i] = ith_MI
 

@@ -28,6 +28,9 @@ def handler():
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
                                                  " for a seed to be considered", type=int)
 
+    parser.add_argument("--calculate_with_numba", help="which MI calculation implementation to use: "
+                                                       "numba-based or numba-free", type=str)
+
 
     parser.set_defaults(
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
@@ -44,11 +47,28 @@ def handler():
 
         nbins = 10,
         min_occurences = 5,
+
+        calculate_with_numba='y',
     )
 
     args = parser.parse_args()
 
     return args
+
+
+def import_modules():
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
+    global MI
+    global IO
+    global sge
+
+    import MI
+    import IO
+    import sge
 
 
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
@@ -63,7 +83,11 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
 
 def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-                       min_occurences, do_print=False):
+                       min_occurences, calculate_with_numba, do_print=False):
+    if calculate_with_numba == 'yes' or calculate_with_numba == 'y':
+        with_numba = True
+    else:
+        with_numba = False
     MI_values_array = np.zeros(decompressed_profiles_array.shape[0], dtype=np.float32)
 
     for i, profile in enumerate(decompressed_profiles_array):
@@ -74,7 +98,7 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
             # print("The seed number %d binds only %d transcripts" % (i, active_profile.sum()))
             continue
 
-        MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile)
+        MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile, with_numba)
 
         if do_print:
             if i % 1000 == 0 and i > 0:
@@ -88,19 +112,7 @@ def main():
     # I only import things if I run this script itself
     # do relative import based on current working directory
     # otherwise I have to install the package for relative import to work
-
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global MI
-    global IO
-    global sge
-
-    import MI
-    import IO
-    import sge
+    import_modules()
 
     args = handler()
 
@@ -116,7 +128,7 @@ def main():
 
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
     MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-                                         args.min_occurences, do_print = True)
+                                         args.min_occurences, args.calculate_with_numba, do_print = True)
     IO.write_MI_values(MI_values_array, args.nbins, MI_values_filename_full)
 
     if args.print_qstat == 'y':

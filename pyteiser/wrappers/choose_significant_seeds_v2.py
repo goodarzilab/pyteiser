@@ -93,6 +93,23 @@ def handler():
     return args
 
 
+def import_modules():
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
+    global MI
+    global IO
+    global sge
+    global statistic_tests
+
+    import MI
+    import IO
+    import sge
+    import statistic_tests
+
+
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
     file_index_to_use =  mapping_dict[env_variables_dict["task_id"]]
 
@@ -343,21 +360,7 @@ def main():
     # I only import things if I run this script itself
     # do relative import based on current working directory
     # otherwise I have to install the package for relative import to work
-
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global MI
-    global IO
-    global sge
-    global statistic_tests
-
-    import MI
-    import IO
-    import sge
-    import statistic_tests
+    import_modules()
 
     args = handler()
 

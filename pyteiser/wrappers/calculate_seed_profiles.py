@@ -16,6 +16,7 @@ def handler():
     parser.add_argument("--out_filename_template", help="", type=str)
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
+    parser.add_argument("--are_seeds_degenerate", help="", type=str)
 
 
 
@@ -32,12 +33,30 @@ def handler():
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y',
+        are_seeds_degenerate='n',
 
     )
 
     args = parser.parse_args()
 
     return args
+
+
+def import_modules():
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
+    global IO
+    global matchmaker
+    global type_conversions
+    global sge
+
+    import IO
+    import matchmaker
+    import type_conversions
+    import sge
 
 
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
@@ -53,14 +72,20 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
 
 def calculate_write_profiles(n_motifs_list, n_seqs_list,
-                            out_filename, do_print=False,
-                             do_return = False):
+                            out_filename, are_seeds_degenerate,
+                             do_print=False, do_return = False):
+    if are_seeds_degenerate == 'yes' or are_seeds_degenerate == 'y':
+        is_degenerate = True
+    else:
+        is_degenerate = False
+
     with open(out_filename, 'wb') as wf:
         if do_return:
             profiles_list = [0] * len(n_motifs_list)
 
         for i, motif in enumerate(n_motifs_list):
-            current_profile, time_spent = matchmaker.calculate_profile_one_motif(motif, n_seqs_list)
+            current_profile, time_spent = matchmaker.calculate_profile_one_motif(motif, n_seqs_list,
+                                                                                 is_degenerate = is_degenerate)
             current_profile.compress()
             wf.write(current_profile.bytestring)
 
@@ -89,21 +114,7 @@ def main():
     # I only import things if I run this script itself
     # do relative import based on current working directory
     # otherwise I have to install the package for relative import to work
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global IO
-    global matchmaker
-    global type_conversions
-    global sge
-
-
-    import IO
-    import matchmaker
-    import type_conversions
-    import sge
+    import_modules()
 
     args = handler()
 
@@ -119,7 +130,8 @@ def main():
 
     # the main procedure - calculate profiles
     calculate_write_profiles(n_motifs_list, n_seqs_list,
-                             profiles_filename_full, do_print=True)
+                             profiles_filename_full,
+                             args.are_seeds_degenerate, do_print=True)
 
 
     if args.print_qstat == 'y':
@@ -128,4 +140,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

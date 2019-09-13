@@ -52,7 +52,7 @@ def test_mutinf():
     one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
     two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
 
-    mi_test = MI.mut_info(one_arr, two_arr)
+    mi_test = MI.mut_info(one_arr, two_arr, with_numba=False)
     mi_expected = 0.28418101912817351
     #print(mi_test, mi_expected)
     assert(np.isclose(mi_test, mi_expected, atol=1e-16))
@@ -65,7 +65,7 @@ def test_mutinf():
     # an example from here: https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html#mifeatsel2
     ut = np.repeat([0, 1, 0, 1], [774106, 27625, 141, 49])
     cc = np.repeat([0, 0, 1, 1], [774106, 27625, 141, 49])
-    mi_test_base_2 = MI.mut_info(ut, cc, base=2)
+    mi_test_base_2 = MI.mut_info(ut, cc, base=2, with_numba=False)
     mi_expected_base_2 = 0.0001105
     #print(mi_test_base_2, mi_expected_base_2)
     assert(np.isclose(mi_test_base_2, mi_expected_base_2, atol=1e-6))
