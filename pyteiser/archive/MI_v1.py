@@ -11,6 +11,8 @@ if subpackage_folder_path not in sys.path:
 
 import numba_replacement_functions as numba_rf
 
+# THERE IS SOME BUG IN THE DISCRETIZATION FUNCTION
+# Some of the bins end up being of different size
 
 # This function is written based on discretize function from infotheo package for R: https://cran.r-project.org/web/packages/infotheo/index.html
 # The original core fucntions - discEF and discEW - are in the discretize.cpp file is in the package's source code
