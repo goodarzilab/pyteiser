@@ -115,8 +115,8 @@ def construct_command(unique_masking_file, number_of_tasks,
     # create a template
     command_template = ''
     # add qsub options
-    command_template += "qsub -S {} -l {}={} -l mem_free={} ".format(args.python_binary, args.time_l_keyword,
-                                                                     args.time_required, args.mem_free)
+    command_template += "qsub -S {} -l {}={} ".format(args.python_binary, args.time_l_keyword,
+                                                                     args.time_required)
 
     # some servers do not ask for scratch parameter
     if args.include_mem_free_parameter == 'y' or args.include_mem_free_parameter == 'yes':
