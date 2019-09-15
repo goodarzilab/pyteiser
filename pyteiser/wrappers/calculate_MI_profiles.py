@@ -128,12 +128,6 @@ def main():
 
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
 
-
-    value, counts = np.unique(discr_exp_profile, return_counts=True, axis=0)
-    print("Discretization")
-    print(counts)
-
-
     MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
                                          args.min_occurences, args.calculate_with_numba, do_print = True)
     IO.write_MI_values(MI_values_array, args.nbins, MI_values_filename_full)

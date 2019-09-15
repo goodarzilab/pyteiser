@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/MI.py" afterPath="$PROJECT_DIR$/pyteiser/MI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_timing.py" afterPath="$PROJECT_DIR$/tests/test_timing.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -100,8 +98,8 @@
       <file leaf-file-name="calculate_MI_profiles.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="130" column="0" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+            <state relative-caret-position="274">
+              <caret line="128" column="88" selection-start-line="128" selection-start-column="88" selection-end-line="128" selection-end-column="88" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -489,13 +487,6 @@
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
     </task>
-    <task id="LOCAL-00062" summary="mut info testing">
-      <created>1566369238047</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1566369238047</updated>
-    </task>
     <task id="LOCAL-00063" summary="mut info testing">
       <created>1566425276335</created>
       <option name="number" value="00063" />
@@ -832,7 +823,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568416394426</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="print discretization result">
+      <created>1568509431719</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1568509431720</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -937,7 +935,8 @@
     <MESSAGE value="make several other -l parameters optional" />
     <MESSAGE value="make time -l parameter optional" />
     <MESSAGE value="fixed bug with negative last_positive_seed index" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed bug with negative last_positive_seed index" />
+    <MESSAGE value="print discretization result" />
+    <option name="LAST_COMMIT_MESSAGE" value="print discretization result" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1234,8 +1233,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="130" column="0" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+        <state relative-caret-position="274">
+          <caret line="128" column="88" selection-start-line="128" selection-start-column="88" selection-end-line="128" selection-end-column="88" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
