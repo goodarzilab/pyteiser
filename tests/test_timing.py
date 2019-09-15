@@ -143,7 +143,7 @@ def time_calculate_MI_profiles(calculate_with_numba):
     seeds_filename = os.path.join(test_batch_folder, 'seeds_4-7_4-9_4-6_14-20_30k_1.bin')
     profiles_filename = os.path.join(test_batch_folder, 'snrnpa_profiles_4-7_4-9_4-6_14-20_30k_1.bin')
     exp_mask_filename = "/Users/student/Documents/hani/programs/pyteiser/data/mask_files/SNRNPA1_PSI_mask.bin"
-    nbins = 10
+    nbins = 15
     min_occurences = 5
 
 
@@ -151,6 +151,10 @@ def time_calculate_MI_profiles(calculate_with_numba):
                                                                                          exp_mask_filename, do_print=True)
 
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+
+    value, counts = np.unique(discr_exp_profile, return_counts=True, axis=0)
+    print(counts)
+
     MI_values_array = calculate_MI_profiles.calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
                                          min_occurences, calculate_with_numba, do_print = True)
 

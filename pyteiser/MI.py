@@ -28,7 +28,6 @@ def discretize(inp_array, bins, noise_std = 0.000000001):
     return digitized
 
 
-
 # to check resolution of the respective data types
 # do np.finfo(np.float32).resolution: 1e-06
 # or np.finfo(np.float64).resolution: 1e-06
