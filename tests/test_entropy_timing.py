@@ -4,6 +4,8 @@ import numpy as np
 import numba
 import os
 import sys
+import timeit
+from collections import Counter
 
 # to make sure relative import works
 # for a detailed explanation, see test_matchmaker.py
@@ -60,26 +62,51 @@ def entropy_numpy(counts, base=None):
   return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
 
 
-import timeit
+#@numba.jit(cache=True, nopython=True, nogil=True)
+def eta(data):
+    base = math.exp(1)
+
+    if len(data) <= 1:
+        return 0
+
+    counts = Counter()
+
+    for d in data:
+        counts[d] += 1
+
+    ent = 0
+
+    probs = [float(c) / len(data) for c in counts.values()]
+    for p in probs:
+        if p > 0.:
+            ent -= p * math.log(p, base)
+
+    return ent
+
+
 
 def time_entropies():
-    vect_to_discr_10k = np.random.normal(size=10000)
-    discr_vect = MI.discretize(vect_to_discr_10k, bins=10, disc="equalfreq")
+    vect_to_discr_10k = np.random.normal(size=40000)
+    discr_vect = MI.discretize(vect_to_discr_10k, bins=15)
 
     e1 = entropy(discr_vect, how="scipy")
     e2 = entropy(discr_vect, how="math")
     e3 = entropy(discr_vect, how="numpy")
+    e4 = eta(discr_vect)
 
     assert(np.isclose(e1, e2, atol=1e-16))
     assert (np.isclose(e1, e3, atol=1e-16))
+    assert (np.isclose(e1, e4, atol=1e-16))
     # print(e1, e2, e3)
 
-    time_entr_1 = timeit.timeit(lambda: entropy(discr_vect, how = "scipy"), number=1000)
-    time_entr_2 = timeit.timeit(lambda: entropy(discr_vect, how = "math"), number=1000)
-    time_entr_3 = timeit.timeit(lambda: entropy(discr_vect, how = "numpy"), number=1000)
+    time_entr_1 = timeit.timeit(lambda: entropy(discr_vect, how = "scipy"), number=500)
+    time_entr_2 = timeit.timeit(lambda: entropy(discr_vect, how = "math"), number=500)
+    time_entr_3 = timeit.timeit(lambda: entropy(discr_vect, how = "numpy"), number=500)
+    time_entr_4 = timeit.timeit(lambda: eta(discr_vect), number=100)
     print("Entropy calculation with scipy takes : ", time_entr_1)
     print("Entropy calculation with math takes : ", time_entr_2)
     print("Entropy calculation with numpy takes : ", time_entr_3)
+    print("Entropy calculation with Counter takes : ", time_entr_4)
 
 
 # example timing
