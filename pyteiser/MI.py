@@ -9,8 +9,6 @@ subpackage_folder_path = os.path.dirname( __file__ )
 if subpackage_folder_path not in sys.path:
     sys.path.append(subpackage_folder_path)
 
-import numba_replacement_functions as numba_rf
-
 
 @numba.jit(cache=True, nopython=True, nogil=True)
 def discretize(inp_array, bins, noise_std = 0.000000001):
@@ -43,31 +41,15 @@ def entropy_empirical(counts, total_number, base=None):
   return ent
 
 
-# numba doesn't support np.unique with return_counts argument
-# therefore, np.unique-based implementation of entropy calculation is hard to speed up
-# I have re-implemented np.unique in a numba-compatible way in the numba_replacement_functions file
-# entropy_no_numba is a valid implementation which is not supported by numba
-# however, in certain scenarios it can be much faster so I leave it in here
-def entropy_no_numba(labels, base=None):
-    value, counts = np.unique(labels, return_counts=True, axis=0)
-    res = entropy_empirical(counts, len(labels), base)
-    return res
+def mut_info(X, Y, x_bins, y_bins, base=None):
+    c_xy = np.histogram2d(X, Y, [x_bins, y_bins])[0]
+    flatten_c_xy = c_xy.flatten()
+    c_x = c_xy.sum(axis=1)
+    c_y = c_xy.sum(axis=0)
 
-
-@numba.jit(cache=True, nopython=True, nogil=True)
-def entropy(labels, base=None):
-    value, counts = numba_rf.np_unique_return_counts(labels)
-    res = entropy_empirical(counts, len(labels), base)
-    return res
-
-
-# input: 2 one-dimensional arrays
-@numba.jit(cache=True, nopython=True, nogil=True)
-def mut_info_with_numba(X, Y, base=None):
-    U = np.stack((X, Y)).transpose()
-    Hyx = entropy(U, base)
-    Hx = entropy(X, base)
-    Hy = entropy(Y, base)
+    Hyx = entropy_empirical(flatten_c_xy, flatten_c_xy.sum(), base=base)
+    Hx = entropy_empirical(c_x, c_x.sum(), base=base)
+    Hy = entropy_empirical(c_y, c_y.sum(), base=base)
     res = Hx + Hy - Hyx
     if res < 0:
         res = 0
@@ -75,45 +57,24 @@ def mut_info_with_numba(X, Y, base=None):
     return res
 
 
-# input: 2 one-dimensional arrays
-def mut_info_no_numba(X, Y, base=None):
-    U = np.stack((X, Y)).transpose()
-    Hyx = entropy_no_numba(U, base)
-    Hx = entropy_no_numba(X, base)
-    Hy = entropy_no_numba(Y, base)
-    res = Hx + Hy - Hyx
-    if res < 0:
-        res = 0
-
-    return res
-
-
-# for some arrays, MI calculations without using my ad-hoc Numba implementation actually works faster
-# therefore, it will be optional if the user wants to use numba here or not
-def mut_info(X, Y, with_numba=True, base=None):
-    if with_numba:
-        return mut_info_with_numba(X, Y, base)
-    else:
-        return mut_info_no_numba(X, Y, base)
-
-
-# input: 3 one-dimensional arrays
 @numba.jit(cache=True, nopython=True, nogil=True)
-def cond_mut_info(X, Y, Z, base=None):
-    U = np.stack((X, Z, Y)).transpose()
-    Hyzx = entropy(U, base)
-    Hzx = entropy(U[: , 0:2], base)
-    Hyz = entropy(U[: , 0:3], base)
-    Hz = entropy(Z, base)
-    Ires = Hyz - Hz - Hyzx + Hzx
-
-    return Ires
-
-
 def discretize_exp_profile(index_array, values_array, nbins):
     active_values_array = values_array[index_array]
     quant_values_array = discretize(active_values_array, bins=nbins)
     return quant_values_array
+
+# # input: 3 one-dimensional arrays
+# @numba.jit(cache=True, nopython=True, nogil=True)
+# def cond_mut_info(X, Y, Z, base=None):
+#     U = np.stack((X, Z, Y)).transpose()
+#     Hyzx = entropy(U, base)
+#     Hzx = entropy(U[: , 0:2], base)
+#     Hyz = entropy(U[: , 0:3], base)
+#     Hz = entropy(Z, base)
+#     Ires = Hyz - Hz - Hyzx + Hzx
+#
+#     return Ires
+
 
 
 
