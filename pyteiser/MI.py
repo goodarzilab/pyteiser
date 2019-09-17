@@ -11,7 +11,9 @@ if subpackage_folder_path not in sys.path:
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
-def discretize(inp_array, bins, noise_std = 0.000000001):
+def discretize(inp_array, bins, noise_std = 0.000000001, new_seed = False):
+    if not new_seed:
+        np.random.seed(57)
     length = len(inp_array)
     to_discr = inp_array + np.random.normal(0, noise_std, length)
 

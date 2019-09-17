@@ -47,6 +47,25 @@ def MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
     return pvalue, z_score
 
 
-def jackknife_test():
-    # subsample 2/3 of all the data only
+def jackknife_test(active_profile, discr_exp_profile, nbins,
+                    n_permutations,
+                    n_samples, fraction_retain, min_fraction_passed):
+    total_number_passed = 0
+
+    for i in n_samples:
+        subsampl_index_array = np.subsample
+        curr_profile = active_profile[subsampl_index_array]
+        curr_exp_profile = discr_exp_profile[subsampl_index_array]
+        curr_MI = MI.mut_info(curr_profile, curr_exp_profile, x_bins=2, y_bins=nbins)
+    # jn = 10
+    # jn_t = 6
+    # jn_f = 3
+    # pass = 0
+    # do jn iterations:
+        # subsample 1-1/jn_f = 2/3 of all the data
+        # for subsample: calculate MI
+        # for subsample: calculate p-value
+        # if pvalue < max_pvalue:
+            # pass += 1
+    # if pass > jn_t: passed
     pass

@@ -56,6 +56,11 @@ def handler():
 
     parser.add_argument("--maxfreq", help="", type=float)
     parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
+    parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
+    parser.add_argument("--jackknife_fraction_retain", help="what fraction of the sample to retain for each test",
+                                                                                    type=float)
+    parser.add_argument("--jackknife_min_fraction_passed", help="what fraction of all iterations should"
+                                                                "pass to consider the motif robust", type=float)
 
     parser.set_defaults(
 
@@ -75,6 +80,10 @@ def handler():
 
         maxfreq = 0.5, # default value from Hani's program is 0.5
         n_permutations=1000,  # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
+        jackknife_n_samples = 10,
+        jackknife_fraction_retain = 0.66,
+        jackknife_min_fraction_passed = 0.6,
+
     )
 
     args = parser.parse_args()
@@ -83,7 +92,7 @@ def handler():
 
 
 
-def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
+def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile, nbins,
                             bestmi, n_bestmotif, lastmyfreq, args):
 
     for j in range(len(n_modified_motifs)):
@@ -93,7 +102,7 @@ def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
                                                                              n_seqs_list,
                                                                             is_degenerate = True)
         myfreq = current_profile.sum() / float(len(n_seqs_list))
-        tempmi = MI.mut_info(current_profile, discr_exp_profile)
+        tempmi = MI.mut_info(current_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
 
         if tempmi > bestmi and current_profile.sum() > 10 and (myfreq < args.maxfreq or myfreq < lastmyfreq):
             n_bestmotif = n_modified_motifs[j].copy()
@@ -106,7 +115,7 @@ def are_there_better_motifs(n_modified_motifs, n_seqs_list, discr_exp_profile,
 
 # optimize sequence of all the positions individually in random order
 def optimize_motif_sequence(counter, index, n_motifs_list, n_seqs_list,
-                            discr_exp_profile, active_profile,
+                            discr_exp_profile, nbins, active_profile,
                             init_best_mymi, n_bestmotif, lastmyfreq, args):
     # print initial motif
     bestmi = init_best_mymi
@@ -124,13 +133,13 @@ def optimize_motif_sequence(counter, index, n_motifs_list, n_seqs_list,
         w_modified_motifs = modify_seed.modify_base(n_motifs_list[index], position)
         n_modified_motifs = type_conversions.w_to_n_motifs_list(w_modified_motifs)
         bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_modified_motifs,
-                                                    n_seqs_list, discr_exp_profile,
+                                                    n_seqs_list, discr_exp_profile, nbins,
                                                     bestmi, n_bestmotif, lastmyfreq, args)
     return bestmi, lastmyfreq, n_bestmotif
 
 
 def elongate_motif(counter, index, n_motifs_list, n_seqs_list,
-                    discr_exp_profile, active_profile,
+                    discr_exp_profile, nbins, active_profile,
                     bestmi, n_bestmotif, lastmyfreq, args):
     print("Elongating the motif %d" % counter)
 
@@ -143,12 +152,12 @@ def elongate_motif(counter, index, n_motifs_list, n_seqs_list,
         n_elongated_motifs = modify_seed.elongate_motif(n_motifs_list[index])
         for j in range(len(n_elongated_motifs)):
             bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
-                                                          n_seqs_list, discr_exp_profile,
+                                                          n_seqs_list, discr_exp_profile, nbins,
                                                           bestmi, n_bestmotif, lastmyfreq, args)
     return bestmi, lastmyfreq, n_bestmotif
 
 
-def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile,
+def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile, nbins,
                     profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
@@ -176,28 +185,30 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
         n_bestmotif = n_motifs_list[index].copy()
 
         # initial mi value
-        init_best_mymi = MI.mut_info(active_profile, discr_exp_profile)
+        init_best_mymi = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
         lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
 
         print("Initial MI = %.5f\n", init_best_mymi)
 
         bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(counter, index,
                                 n_motifs_list, n_seqs_list,
-                                discr_exp_profile, active_profile,
+                                discr_exp_profile, nbins, active_profile,
                                 init_best_mymi, n_bestmotif, lastmyfreq, args)
         bestmi, lastmyfreq, n_bestmotif = elongate_motif(counter, index,
                        n_motifs_list, n_seqs_list,
-                       discr_exp_profile, active_profile,
+                       discr_exp_profile, nbins, active_profile,
                        bestmi, n_bestmotif, lastmyfreq, args)
 
         bestmotif_profile, _ = matchmaker.calculate_profile_one_motif(n_bestmotif, n_seqs_list)
         bestmotif_active_profile = bestmotif_profile[index_array]
-        bestmotif_mi = MI.mut_info(bestmotif_active_profile, discr_exp_profile)
+        bestmotif_mi = MI.mut_info(bestmotif_active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
         pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_active_profile, discr_exp_profile, nbins,
                                                                    bestmotif_mi, args.n_permutations)
         print("The findal z-score is: %.3f", z_score)
 
-        jacknife_score = statistic_tests.jackknife_test()
+        passed_jacknife = statistic_tests.jackknife_test(args.jackknife_n_samples,
+                                                        args.jackknife_fraction_retain,
+                                                        args.jackknife_min_fraction_passed)
 
 
         pv_defined = True
@@ -252,7 +263,7 @@ def main():
     # optimize motifs
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
     optimize_motifs(number_signigicant_seeds,
-                    MI_values_array, discr_exp_profile,
+                    MI_values_array, discr_exp_profile, nbins,
                        profiles_array, index_array,
                     n_motifs_list, n_seqs_list,
                        args, do_print=True)
