@@ -38,11 +38,13 @@ def handler():
 
     parser.add_argument("--profiles_folder", help="", type=str)
     parser.add_argument("--MI_values_folder", help="", type=str)
-    parser.add_argument("--thresholds_folder", help="", type=str)
+    parser.add_argument("--passed_seed_folder", help="", type=str)
+    parser.add_argument("--seed_folder", help="", type=str)
 
     parser.add_argument("--profiles_filename_template", help="", type=str)
     parser.add_argument("--MI_values_filename_template", help="", type=str)
-    parser.add_argument("--thresholds_filename_template", help="", type=str)
+    parser.add_argument("--passed_seed_filename_template", help="", type=str)
+    parser.add_argument("--seed_filename_template", help="", type=str)
 
     parser.add_argument("--rna_bin_file", help="", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
@@ -62,12 +64,14 @@ def handler():
 
 
     parser.set_defaults(
+        seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/seeds/seeds_4-7_4-9_4-6_14-20/motifs_per_file_30k',
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
         MI_values_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/MI_values/MI_values_4-7_4-9_4-6_14-20/MI_values_per_file_30k',
-        thresholds_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/thresholds/thresholds_4-7_4-9_4-6_14-20/thresholds_per_file_30k',
+        passed_seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_seed/passed_seed_4-7_4-9_4-6_14-20_individual/passed_seed_30k',
+        seed_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
         profiles_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
         MI_values_filename_template='MI_values_4-7_4-9_4-6_14-20_30k',
-        thresholds_filename_template='thresholds_4-7_4-9_4-6_14-20_30k',
+        passed_seed_filename_template='seed_filename_4-7_4-9_4-6_14-20_30k',
 
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -115,17 +119,19 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
     profiles_filename_short = "%s_%s.bin" % (args.profiles_filename_template, file_index_to_use)
     MI_values_filename_short = "%s_%s.bin" % (args.MI_values_filename_template, file_index_to_use)
-    thresholds_filename_short = "%s_%s.bin" % (args.thresholds_filename_template, file_index_to_use)
+    passed_seed_filename_short = "%s_%s.bin" % (args.passed_seed_filename_template, file_index_to_use)
+    seed_filename_short = "%s_%s.bin" % (args.seed_filename_template, file_index_to_use)
 
     profiles_filename_full = os.path.join(args.profiles_folder, profiles_filename_short)
     MI_values_filename_full = os.path.join(args.MI_values_folder, MI_values_filename_short)
-    thresholds_filename_full = os.path.join(args.thresholds_folder, thresholds_filename_short)
+    passed_seed_filename_full = os.path.join(args.passed_seed_folder, passed_seed_filename_short)
+    seed_filename_full = os.path.join(args.seed_folder, seed_filename_short)
 
     rna_bin_filename = args.rna_bin_file
     exp_mask_filename = args.exp_mask_file
 
     return profiles_filename_full, MI_values_filename_full, \
-           thresholds_filename_full,\
+           passed_seed_filename_full, seed_filename_full, \
            rna_bin_filename, exp_mask_filename
 
 
@@ -246,6 +252,7 @@ def step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indic
     last_positive_seed = first_negative_seed - args.step_1_jump # this is where the last positive seed was
 
     upper_boundary = first_negative_seed - args.step_1_jump # upper limit: first negative seed - one jump (just in case)
+    upper_boundary = min(upper_boundary, 0) # upper boundary shouldn't be less than zero
     lower_boundary = min(len(MI_values_array) - 1,
                         first_negative_seed + args.step_1_jump) # lower limit
                             # the first negative seed + step_1_jump
@@ -267,6 +274,8 @@ def step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indic
             # enough seeds didn't pass, go up half interval
             lower_boundary = counter
 
+    last_positive_seed = max(last_positive_seed, -1) # last positive seed could become negative if the seed 0 didn't pass
+                                                     # at the first stage
     return last_positive_seed, seed_pass
 
 
@@ -278,9 +287,6 @@ def get_current_fraction_from_array(x):
 def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_indices_sorted,
                          profiles_array, index_array, discr_exp_profile, nbins, seed_pass,
                          do_print, args):
-    if last_positive_seed < 0: # if even the first seed didn't pass in the 1st step, the last_positive_seed variable
-        last_positive_seed = 0 # holds -1, but we need it to hold 0
-
     denominator = find_fraction_denominator(args.step_3_min_fraction)
     if last_positive_seed + denominator > len(MI_values_array):
         print("Reached the end of file, no threshold found! Suppose that all the seeds are significant")
@@ -317,15 +323,11 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
 
     last_positive_seed = counter - denominator - 1
 
-    if last_positive_seed < 0:
-        last_positive_seed = 0
-
     return last_positive_seed, seed_pass
 
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
-                           profiles_array, index_array, threshold_filename,
-                           args, do_print = False):
+                           profiles_array, index_array, args, do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
 
@@ -353,7 +355,30 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
 
-    IO.write_seed_significancy_threshold(last_positive_seed, threshold_filename)
+    return last_positive_seed
+
+    # IO.write_seed_significancy_threshold(last_positive_seed, threshold_filename)
+
+
+def write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
+                       passed_seed_filename):
+    if last_positive_seed < 0:
+        total_bitstring = np.uint32(0).tobytes()
+    else:
+        seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+        indices_passed = seed_indices_sorted[0 : last_positive_seed + 1]
+        seeds_passed_list = [w_motifs_list[x] for x in indices_passed]
+
+        seeds_bitstrings = []
+
+        for motif in seeds_passed_list:
+            motif.compress()
+            seeds_bitstrings.append(motif.bytestring)
+
+        total_bitstring = np.uint32(len(seeds_bitstrings)).tobytes() + b''.join(seeds_bitstrings)
+
+    with open(passed_seed_filename, 'wb') as wf:
+        wf.write(total_bitstring)
 
 
 def main():
@@ -371,20 +396,23 @@ def main():
 
     # get the names of input and output files
     profiles_filename_full, MI_values_filename_full, \
-    thresholds_filename_full, \
+    passed_seed_filename_full, seed_filename_full, \
     rna_bin_filename, exp_mask_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
 
+    # read motifs, their profiles and MI values
     profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
-                                                                                         exp_mask_filename, do_print=True)
-
-    # read precalculated MI values
+                                                                         exp_mask_filename, do_print=True)
+    w_motifs_list = IO.read_motif_file(seed_filename_full)
     MI_values_array, nbins = IO.read_MI_values(MI_values_filename_full)
 
     # find the threshold
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
-    determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
-                           profiles_array, index_array, thresholds_filename_full,
-                           args, do_print = True)
+    last_positive_seed = determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
+                           profiles_array, index_array, args, do_print = True)
+
+    write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
+                       passed_seed_filename_full)
+
 
     if args.print_qstat == 'y':
         sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)

@@ -277,28 +277,28 @@ def read_MI_values(MI_values_file):
     return MI_values_array, nbins
 
 
-def write_seed_significancy_threshold(last_positive_seed, threshold_file):
-    threshold_bytes = np.uint32(last_positive_seed).tobytes()
-    md5 = hashlib.md5()
-    md5.update(threshold_bytes)
-    md5_checksum = md5.digest()
-    byte_string = threshold_bytes + md5_checksum
-    with open(threshold_file, 'wb') as wf:
-        wf.write(byte_string)
-
-
-def read_seed_significancy_threshold(threshold_file):
-    with open(threshold_file, 'rb') as rf:
-        bitstring = rf.read()
-    threshold_bytes = bitstring[0: 4]
-    md5_checksum_saved = bitstring[4:]
-    threshold_value = np.frombuffer(threshold_bytes, dtype=np.uint32)
-    threshold_bytes_recode = np.uint32(threshold_value).tobytes()
-    md5 = hashlib.md5()
-    md5.update(threshold_bytes_recode)
-    md5_checksum = md5.digest()
-    assert(md5_checksum == md5_checksum_saved)
-    return threshold_value[0]
+# def write_seed_significancy_threshold(last_positive_seed, threshold_file):
+#     threshold_bytes = np.uint32(last_positive_seed).tobytes()
+#     md5 = hashlib.md5()
+#     md5.update(threshold_bytes)
+#     md5_checksum = md5.digest()
+#     byte_string = threshold_bytes + md5_checksum
+#     with open(threshold_file, 'wb') as wf:
+#         wf.write(byte_string)
+#
+#
+# def read_seed_significancy_threshold(threshold_file):
+#     with open(threshold_file, 'rb') as rf:
+#         bitstring = rf.read()
+#     threshold_bytes = bitstring[0: 4]
+#     md5_checksum_saved = bitstring[4:]
+#     threshold_value = np.frombuffer(threshold_bytes, dtype=np.uint32)
+#     threshold_bytes_recode = np.uint32(threshold_value).tobytes()
+#     md5 = hashlib.md5()
+#     md5.update(threshold_bytes_recode)
+#     md5_checksum = md5.digest()
+#     assert(md5_checksum == md5_checksum_saved)
+#     return threshold_value[0]
 
 
 def decompres_seed_threshold(bitstring):
