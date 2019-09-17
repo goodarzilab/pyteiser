@@ -299,15 +299,29 @@ def read_MI_values(MI_values_file):
 #     md5_checksum = md5.digest()
 #     assert(md5_checksum == md5_checksum_saved)
 #     return threshold_value[0]
+#
+#
+# def decompres_seed_threshold(bitstring):
+#     length_nbins_bitstring = bitstring[0: 8]
+#     MI_array_length_nbins_np = np.frombuffer(length_nbins_bitstring, dtype=np.uint32)
+#     MI_array_length = MI_array_length_nbins_np[0]
+#     nbins = MI_array_length_nbins_np[1]
+#     MI_array_bitstring = bitstring[8 : 8 + MI_array_length * 8] # np.float64 takes 8 bytes
+#     # to check it, you could run print(np.dtype(np.float32).itemsize)
+#     MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
+#     return MI_array, nbins
 
+def read_seed_pass_individual_file(inp_filename):
+    with open(inp_filename, 'rb') as rf:
+        bitstring = rf.read()
+    length_bytes = bitstring[0: 4]
+    length_value = np.frombuffer(length_bytes, dtype=np.uint32)
+    if length_value == 0:
+        return []
 
-def decompres_seed_threshold(bitstring):
-    length_nbins_bitstring = bitstring[0: 8]
-    MI_array_length_nbins_np = np.frombuffer(length_nbins_bitstring, dtype=np.uint32)
-    MI_array_length = MI_array_length_nbins_np[0]
-    nbins = MI_array_length_nbins_np[1]
-    MI_array_bitstring = bitstring[8 : 8 + MI_array_length * 8] # np.float64 takes 8 bytes
-    # to check it, you could run print(np.dtype(np.float32).itemsize)
-    MI_array = np.frombuffer(MI_array_bitstring, dtype=np.float64)
-    return MI_array, nbins
+    motifs_bitstring = bitstring[4: ]
+    motifs_list = decompress_motifs_from_bitstring(motifs_bitstring)
+    assert(len(motifs_list) == length_value)
+    return motifs_list
+
 

@@ -71,7 +71,7 @@ def handler():
         seed_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
         profiles_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
         MI_values_filename_template='MI_values_4-7_4-9_4-6_14-20_30k',
-        passed_seed_filename_template='seed_filename_4-7_4-9_4-6_14-20_30k',
+        passed_seed_filename_template='passed_seed_4-7_4-9_4-6_14-20_30k',
 
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/mask_files/TARBP2_decay_t_score_mask.bin',
