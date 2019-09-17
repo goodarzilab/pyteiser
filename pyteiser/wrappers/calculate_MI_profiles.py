@@ -28,10 +28,6 @@ def handler():
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
                                                  " for a seed to be considered", type=int)
 
-    parser.add_argument("--calculate_with_numba", help="which MI calculation implementation to use: "
-                                                       "numba-based or numba-free", type=str)
-
-
     parser.set_defaults(
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
         MI_values_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/MI_values/MI_values_4-7_4-9_4-6_14-20/MI_values_per_file_30k',
@@ -47,8 +43,6 @@ def handler():
 
         nbins = 15,
         min_occurences = 5,
-
-        calculate_with_numba='y',
     )
 
     args = parser.parse_args()
@@ -83,11 +77,7 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
 
 def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-                       min_occurences, calculate_with_numba, do_print=False):
-    if calculate_with_numba == 'yes' or calculate_with_numba == 'y':
-        with_numba = True
-    else:
-        with_numba = False
+                           nbins, min_occurences, do_print=False):
     MI_values_array = np.zeros(decompressed_profiles_array.shape[0], dtype=np.float32)
 
     for i, profile in enumerate(decompressed_profiles_array):
@@ -98,7 +88,7 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
             # print("The seed number %d binds only %d transcripts" % (i, active_profile.sum()))
             continue
 
-        MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile, with_numba)
+        MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
 
         if do_print:
             if i % 1000 == 0 and i > 0:
@@ -129,7 +119,7 @@ def main():
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
 
     MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-                                         args.min_occurences, args.calculate_with_numba, do_print = True)
+                                             args.nbins, args.min_occurences, do_print = True)
     IO.write_MI_values(MI_values_array, args.nbins, MI_values_filename_full)
 
     if args.print_qstat == 'y':

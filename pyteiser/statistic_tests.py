@@ -16,14 +16,14 @@ if subpackage_folder_path not in sys.path:
 import MI
 
 
-@numba.jit(cache=True, nopython=True, nogil=True)
+#@numba.jit(cache=True, nopython=True, nogil=True)
 def MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
-                       current_MI, n_permutations):
+                        nbins, current_MI, n_permutations):
     shuffled_MI_values = np.zeros(n_permutations, dtype=np.float64)
 
     for i in range(n_permutations):
         shuffled_expr = np.random.permutation(discr_exp_profile)
-        ith_MI = MI.mut_info_with_numba(active_profile, shuffled_expr)
+        ith_MI = MI.mut_info(active_profile, shuffled_expr, x_bins=2, y_bins=nbins)
 
         shuffled_MI_values[i] = ith_MI
 

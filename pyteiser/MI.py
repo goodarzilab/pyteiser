@@ -31,14 +31,16 @@ def discretize(inp_array, bins, noise_std = 0.000000001):
 # or np.finfo(np.float64).resolution: 1e-06
 @numba.jit(cache=True, nopython=True, nogil=True)
 def entropy_empirical(counts, total_number, base=None):
-  probs = np.divide(counts, total_number)
-  ent = 0.
-  base = math.e if base is None else base
+    probs = np.divide(counts, total_number)
+    ent = 0.
+    base = math.e if base is None else base
 
-  for i in probs:
-    ent -= i * math.log(i) / math.log(base)
+    for i in probs:
+        if i == 0: # np.isclose is not supported by numba
+            continue
+        ent -= i * math.log(i) / math.log(base)
 
-  return ent
+    return ent
 
 
 def mut_info(X, Y, x_bins, y_bins, base=None):

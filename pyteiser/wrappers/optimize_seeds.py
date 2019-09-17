@@ -193,7 +193,7 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
         bestmotif_profile, _ = matchmaker.calculate_profile_one_motif(n_bestmotif, n_seqs_list)
         bestmotif_active_profile = bestmotif_profile[index_array]
         bestmotif_mi = MI.mut_info(bestmotif_active_profile, discr_exp_profile)
-        pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_active_profile, discr_exp_profile,
+        pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_active_profile, discr_exp_profile, nbins,
                                                                    bestmotif_mi, args.n_permutations)
         print("The findal z-score is: %.3f", z_score)
 
