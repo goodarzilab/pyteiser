@@ -60,7 +60,7 @@ def collect_all_the_passing_seeds(filenames_list):
     return all_seeds_passed
 
 
-def write_seeds_passed(seeds_passed_list, seeds_passed_filename):
+def write_seeds_passed(seeds_passed_list, combined_seeds_filename):
     seeds_bitstrings = []
 
     for motif in seeds_passed_list:
@@ -69,7 +69,7 @@ def write_seeds_passed(seeds_passed_list, seeds_passed_filename):
 
     total_bitstring = b''.join(seeds_bitstrings)
 
-    with open(seeds_passed_filename, 'wb') as wf:
+    with open(combined_seeds_filename, 'wb') as wf:
         wf.write(total_bitstring)
 
 
@@ -78,7 +78,7 @@ def main():
     filenames_list = get_list_files(args.passed_seed_folder, args.passed_seed_filename_template,
                                           args.input_indices_list_file)
     seeds_passed_list = collect_all_the_passing_seeds(filenames_list)
-    write_seeds_passed(seeds_passed_list, args.seeds_passed_filename)
+    write_seeds_passed(seeds_passed_list, args.combined_seeds_filename)
 
 
 if __name__ == "__main__":

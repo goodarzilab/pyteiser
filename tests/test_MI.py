@@ -52,9 +52,12 @@ def test_mutinf(do_test_cond_mut_info = False):
     one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
     two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
 
+    # the current implementation of MI only works for arrays where bins start from 0 and go incrementally
+    one_arr = one_arr - 1
+    two_arr = two_arr - 1
+
     mi_test = MI.mut_info(one_arr, two_arr, x_bins=3, y_bins=3)
     mi_expected = 0.28418101912817351
-    #print(mi_test, mi_expected)
     assert(np.isclose(mi_test, mi_expected, atol=1e-16))
 
     if do_test_cond_mut_info:

@@ -45,8 +45,25 @@ def entropy_empirical(counts, total_number, base=None):
     return ent
 
 
+@numba.jit(cache=True, nopython=True, nogil=True)
+def histogram_2D(X, Y, x_bins, y_bins):
+    x_bins = np.int64(x_bins) # for some reason it doesn't work with np.int32
+    y_bins = np.int64(y_bins)
+    hist_array = np.zeros((x_bins, y_bins))
+    for x_val, y_val in zip(X,Y):
+        x_coord = int(x_val)
+        y_coord = int(y_val)
+        hist_array[x_coord, y_coord] += 1
+    return hist_array
+
+
+# in current implementation, all vallues in both vectors have to be integers between 0 and x/y_bins
+# this solution increases the speed of histogram step (the slowest step) 10-fold, but it sacrifises some
+# flexibility
+@numba.jit(cache=True, nopython=True, nogil=True)
 def mut_info(X, Y, x_bins, y_bins, base=None):
-    c_xy = np.histogram2d(X, Y, [x_bins, y_bins])[0]
+    #c_xy = np.histogram2d(X, Y, [x_bins, y_bins])[0]
+    c_xy = histogram_2D(X, Y, x_bins, y_bins)
     flatten_c_xy = c_xy.flatten()
     c_x = c_xy.sum(axis=1)
     c_y = c_xy.sum(axis=0)
