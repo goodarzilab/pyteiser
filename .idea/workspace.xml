@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/helper_scripts/find_missing_files.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/MI.py" afterPath="$PROJECT_DIR$/pyteiser/MI.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_MI.py" afterPath="$PROJECT_DIR$/tests/test_MI.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -467,13 +463,6 @@
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
     </task>
-    <task id="LOCAL-00072" summary="eval lower bound">
-      <created>1566698246679</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1566698246679</updated>
-    </task>
     <task id="LOCAL-00073" summary="eval lower bound">
       <created>1566699688416</created>
       <option name="number" value="00073" />
@@ -810,7 +799,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568760445227</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="new combine_seeds_passed">
+      <created>1568841666899</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1568841666899</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="TestHistory">
