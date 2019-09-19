@@ -222,6 +222,17 @@ def decompress_exp_mask_file(bitstring):
     return index_array, values_array
 
 
+def unpack_mask_file(exp_mask_file, do_print=False):
+    with open(exp_mask_file, 'rb') as rf:
+        bitstring = rf.read()
+        index_array, values_array = decompress_exp_mask_file(bitstring)
+        if do_print:
+            print("Expression values are provided for %d out of %d transcripts in the reference transcriptome" %
+                  (index_array.sum(), index_array.shape[0]))
+
+    return index_array, values_array
+
+
 def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, do_print=False):
     with open(profiles_bin_file, 'rb') as rf:
         bitstring = rf.read()

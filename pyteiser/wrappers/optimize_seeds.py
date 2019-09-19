@@ -44,18 +44,13 @@ NUMBER_MODIFIED_MOTIFS_2 = 46
 
 def handler():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("--profiles_bin_file", help="file with occurence profiles", type=str)
+    parser.add_argument("--combined_passed_seeds_filename", help="file with the seeds that have passed the threshold", type=str)
+    parser.add_argument("--rna_bin_file", help="referense transcriptome in binary format", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
-    parser.add_argument("--threshold_file", help="file where the threshold ", type=str)
-
-
-    parser.add_argument("--seed_file", help="file with the seeds corresponding to the profiles", type=str)
-    parser.add_argument("--rna_bin_file", help="", type=str)
 
     parser.add_argument("--maxfreq", help="", type=float)
-    parser.add_argument("--n_permutations", help="number of permutations for the rnak test for a seed", type=int)
+    parser.add_argument("--n_permutations", help="number of permutations for the rank test for a seed", type=int)
     parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
     parser.add_argument("--jackknife_fraction_retain", help="what fraction of the sample to retain for each test",
                                                                                     type=float)
@@ -63,18 +58,7 @@ def handler():
                                                                 "pass to consider the motif robust", type=float)
 
     parser.set_defaults(
-
-        # seed_file
-        seed_file='/Users/student/Documents/hani/programs/pyteiser/data/test_seeds/seeds_4-7_4-9_4-6_14-20_30k_1.bin',
-
-        # MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_test_motifs_101.bin',
-        MI_values_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_values/MI_profiles_4-7_4-9_4-6_14-20_30k_1.bin',
-
-        # profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/test_motifs_101.bin",
-        profiles_bin_file="/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/profiles_4-7_4-9_4-6_14-20_30k_1.bin",
-
-        threshold_file='/Users/student/Documents/hani/programs/pyteiser/data/MI_significancy_threshold/MI_profiles_4-7_4-9_4-6_14-20_30k_1_threshold.bin',
-
+        combined_passed_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_passed_100k_tarbp2_utrs.bin',
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
@@ -249,9 +233,8 @@ def main():
     # read seeds and sequences
     n_motifs_list, n_seqs_list = read_input_files(args.seed_file, args.rna_bin_file)
 
-    # read occurence profiles and expression profile
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(args.profiles_bin_file,
-                                                                            args.exp_mask_file, do_print=False)
+    # read expression profile
+    index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
 
     # read precalculated MI values
     MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)

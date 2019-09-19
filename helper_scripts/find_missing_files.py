@@ -28,7 +28,7 @@ def find_missing_indices(all_indices_list, min_index = 1):
     full_set_indices = set(list(range(min_index, max_index)))
     existing_set_indices = set(all_indices_list)
     difference = full_set_indices.difference(existing_set_indices)
-    missing_ones_list = sorted([int(x) for x in list(difference)])
+    missing_ones_list = sorted([str(x) for x in list(difference)])
     missing_ones_string = ", ".join(missing_ones_list)
     print("The missing indices are: ", missing_ones_string)
 
