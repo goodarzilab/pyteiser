@@ -39,11 +39,13 @@ def handler():
     parser.add_argument("--profiles_folder", help="", type=str)
     parser.add_argument("--MI_values_folder", help="", type=str)
     parser.add_argument("--passed_seed_folder", help="", type=str)
+    parser.add_argument("--passed_profiles_folder", help="", type=str)
     parser.add_argument("--seed_folder", help="", type=str)
 
     parser.add_argument("--profiles_filename_template", help="", type=str)
     parser.add_argument("--MI_values_filename_template", help="", type=str)
     parser.add_argument("--passed_seed_filename_template", help="", type=str)
+    parser.add_argument("--passed_profiles_filename_template", help="", type=str)
     parser.add_argument("--seed_filename_template", help="", type=str)
 
     parser.add_argument("--rna_bin_file", help="", type=str)
@@ -68,10 +70,12 @@ def handler():
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
         MI_values_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/MI_values/MI_values_4-7_4-9_4-6_14-20/MI_values_per_file_30k',
         passed_seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_seed/passed_seed_4-7_4-9_4-6_14-20_individual/passed_seed_30k',
+        passed_profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_individual/passed_profiles_30k',
         seed_filename_template='seeds_4-7_4-9_4-6_14-20_30k',
         profiles_filename_template='profiles_4-7_4-9_4-6_14-20_30k',
         MI_values_filename_template='MI_values_4-7_4-9_4-6_14-20_30k',
         passed_seed_filename_template='passed_seed_4-7_4-9_4-6_14-20_30k',
+        passed_profiles_filename_template='passed_profiles_4-7_4-9_4-6_14-20_30k',
 
         rna_bin_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/wynton/home/goodarzi/khorms/pyteiser_root/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -103,11 +107,13 @@ def import_modules():
     if subpackage_folder_path not in sys.path:
         sys.path.append(subpackage_folder_path)
 
+    global structures
     global MI
     global IO
     global sge
     global statistic_tests
 
+    import structures
     import MI
     import IO
     import sge
@@ -120,18 +126,21 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
     profiles_filename_short = "%s_%s.bin" % (args.profiles_filename_template, file_index_to_use)
     MI_values_filename_short = "%s_%s.bin" % (args.MI_values_filename_template, file_index_to_use)
     passed_seed_filename_short = "%s_%s.bin" % (args.passed_seed_filename_template, file_index_to_use)
+    passed_profiles_filename_short = "%s_%s.bin" % (args.passed_profiles_filename_template, file_index_to_use)
     seed_filename_short = "%s_%s.bin" % (args.seed_filename_template, file_index_to_use)
 
     profiles_filename_full = os.path.join(args.profiles_folder, profiles_filename_short)
     MI_values_filename_full = os.path.join(args.MI_values_folder, MI_values_filename_short)
     passed_seed_filename_full = os.path.join(args.passed_seed_folder, passed_seed_filename_short)
+    passed_profiles_filename_full = os.path.join(args.passed_profiles_folder, passed_profiles_filename_short)
     seed_filename_full = os.path.join(args.seed_folder, seed_filename_short)
 
     rna_bin_filename = args.rna_bin_file
     exp_mask_filename = args.exp_mask_file
 
     return profiles_filename_full, MI_values_filename_full, \
-           passed_seed_filename_full, seed_filename_full, \
+           passed_seed_filename_full, passed_profiles_filename_full, \
+           seed_filename_full, \
            rna_bin_filename, exp_mask_filename
 
 
@@ -381,6 +390,29 @@ def write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
         wf.write(total_bitstring)
 
 
+def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
+                        passed_profiles_filename):
+    if last_positive_seed < 0:
+        total_bitstring = np.uint32(0).tobytes()
+    else:
+        seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+        indices_passed = seed_indices_sorted[0 : last_positive_seed + 1]
+
+        profiles_passed_list = profiles_array[indices_passed]
+        profiles_bitstrings = []
+
+        for i in range(profiles_passed_list.shape[0]):
+            current_profile = structures.w_profile(profiles_passed_list[i].shape[0])
+            current_profile.values = profiles_passed_list[i]
+            current_profile.compress()
+            profiles_bitstrings.append(current_profile.bytestring)
+
+        total_bitstring = np.uint32(len(profiles_bitstrings)).tobytes() + b''.join(profiles_bitstrings)
+
+    with open(passed_profiles_filename, 'wb') as wf:
+        wf.write(total_bitstring)
+
+
 def main():
     # I only import things if I run this script itself
     # do relative import based on current working directory
@@ -396,7 +428,8 @@ def main():
 
     # get the names of input and output files
     profiles_filename_full, MI_values_filename_full, \
-    passed_seed_filename_full, seed_filename_full, \
+    passed_seed_filename_full, passed_profiles_filename, \
+    seed_filename_full, \
     rna_bin_filename, exp_mask_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
 
     # read motifs, their profiles and MI values
@@ -412,6 +445,8 @@ def main():
 
     write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
                        passed_seed_filename_full)
+    write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
+                          passed_profiles_filename)
 
 
     if args.print_qstat == 'y':

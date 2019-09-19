@@ -336,3 +336,17 @@ def read_seed_pass_individual_file(inp_filename):
     return motifs_list
 
 
+def read_profile_pass_individual_file(inp_filename):
+    with open(inp_filename, 'rb') as rf:
+        bitstring = rf.read()
+    length_bytes = bitstring[0: 4]
+    length_value = np.frombuffer(length_bytes, dtype=np.uint32)
+    if length_value == 0:
+        return []
+
+    profiles_bitstring = bitstring[4: ]
+    profiles_array = decompress_profiles(profiles_bitstring)
+    assert(len(profiles_array) == length_value)
+    return profiles_array
+
+
