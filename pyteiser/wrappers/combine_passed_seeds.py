@@ -80,9 +80,9 @@ def collect_all_the_passing_seeds(filenames_list):
         current_seeds_passed = IO.read_seed_pass_individual_file(passed_seed_fn)
         current_profiles_passed = IO.read_profile_pass_individual_file(passed_profiles_fn)
         all_seeds_passed += current_seeds_passed
-        all_profiles_passed += current_profiles_passed
+        all_profiles_passed.append(current_profiles_passed)
 
-    all_profiles_passed_array = np.array(all_profiles_passed, dtype=np.bool)
+    all_profiles_passed_array = np.concatenate(all_profiles_passed, axis=0)
 
     return all_seeds_passed, all_profiles_passed_array
 

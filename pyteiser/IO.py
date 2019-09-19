@@ -233,19 +233,18 @@ def unpack_mask_file(exp_mask_file, do_print=False):
     return index_array, values_array
 
 
-def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, do_print=False):
+def unpack_profiles_file(profiles_bin_file, do_print=False):
     with open(profiles_bin_file, 'rb') as rf:
         bitstring = rf.read()
         decompressed_profiles_array = decompress_profiles(bitstring)
         if do_print:
             print("%d profiles have been loaded" % len(decompressed_profiles_array))
+    return decompressed_profiles_array
 
-    with open(exp_mask_file, 'rb') as rf:
-        bitstring = rf.read()
-        index_array, values_array = decompress_exp_mask_file(bitstring)
-        if do_print:
-            print("Expression values are provided for %d out of %d transcripts in the reference transcriptome" %
-                  (index_array.sum(), index_array.shape[0]))
+
+def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, do_print=False):
+    decompressed_profiles_array = unpack_profiles_file(profiles_bin_file, do_print)
+    index_array, values_array = unpack_mask_file(exp_mask_file, do_print)
 
     try:
         assert (decompressed_profiles_array[0].shape[0] == index_array.shape[0])
