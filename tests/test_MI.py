@@ -51,20 +51,34 @@ def test_discret_eq_freq():
 def test_mutinf(do_test_cond_mut_info = False):
     one_arr = np.array([1, 2, 3, 3, 2, 1, 2, 2, 2, 1])
     two_arr = np.array([1, 1, 1, 2, 2, 2, 3, 3, 3, 1])
+    three_arr = np.array([1, 2, 2, 2, 3, 2, 3, 1, 2, 1])
+    four_arr = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
 
     # the current implementation of MI only works for arrays where bins start from 0 and go incrementally
     one_arr = one_arr - 1
     two_arr = two_arr - 1
+    three_arr = three_arr - 1
+    four_arr = four_arr - 1
 
     mi_test = MI.mut_info(one_arr, two_arr, x_bins=3, y_bins=3)
     mi_expected = 0.28418101912817351
     assert(np.isclose(mi_test, mi_expected, atol=1e-16))
 
     if do_test_cond_mut_info:
-        cmi_test = MI.cond_mut_info(one_arr, two_arr, one_arr + two_arr)
+        cmi_test = MI.cond_mut_info(one_arr, two_arr, one_arr + two_arr, x_bins=3, y_bins=3, z_bins=4)
         cmi_expected = 0.50219293007150134
-        #print(cmi_test, cmi_expected)
+        # print(cmi_test, cmi_expected)
         assert(np.isclose(cmi_test, cmi_expected, atol=1e-16))
+
+        cmi_test_2 = MI.cond_mut_info(one_arr, two_arr, three_arr, x_bins=3, y_bins=3, z_bins=4)
+        cmi_expected_2 = 0.44115546225753777
+        # print(cmi_test_2, cmi_expected_2)
+        assert (np.isclose(cmi_test_2, cmi_expected_2, atol=1e-16))
+
+        cmi_test_3 = MI.cond_mut_info(one_arr, two_arr, four_arr, x_bins=3, y_bins=3, z_bins=4)
+        cmi_expected_3 = 0.28418101912817351
+        # print(cmi_test_3, cmi_expected_3)
+        assert (np.isclose(cmi_test_3, cmi_expected_3, atol=1e-16))
 
     # an example from here: https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html#mifeatsel2
     ut = np.repeat([0, 1, 0, 1], [774106, 27625, 141, 49])
@@ -77,7 +91,7 @@ def test_mutinf(do_test_cond_mut_info = False):
 
 def main():
     test_discret_eq_freq()
-    test_mutinf(do_test_cond_mut_info = False)
+    test_mutinf(do_test_cond_mut_info = True)
 
 
 if __name__ == "__main__":

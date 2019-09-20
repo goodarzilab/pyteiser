@@ -27,8 +27,8 @@ def handler():
         combined_seeds_filename='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_seed/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_passed_100k_tarbp2_utrs.bin',
         combined_profiles_filename='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_passed_100k_tarbp2_utrs.bin',
 
-        input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/test_2_files.txt',
-        #input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/full_range_2277.txt',
+        #input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/test_2_files.txt',
+        input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/full_range_2277.txt',
 
     )
 
@@ -80,7 +80,8 @@ def collect_all_the_passing_seeds(filenames_list):
         current_seeds_passed = IO.read_seed_pass_individual_file(passed_seed_fn)
         current_profiles_passed = IO.read_profile_pass_individual_file(passed_profiles_fn)
         all_seeds_passed += current_seeds_passed
-        all_profiles_passed.append(current_profiles_passed)
+        if len(current_profiles_passed) > 0: # skip the empty files
+            all_profiles_passed.append(current_profiles_passed)
 
     all_profiles_passed_array = np.concatenate(all_profiles_passed, axis=0)
 

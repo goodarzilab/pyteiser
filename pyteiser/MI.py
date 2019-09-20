@@ -46,6 +46,17 @@ def entropy_empirical(counts, total_number, base=None):
 
 
 @numba.jit(cache=True, nopython=True, nogil=True)
+def histogram_1D(X, x_bins):
+    x_bins = np.int64(x_bins) # for some reason it doesn't work with np.int32
+    hist_array = np.zeros(x_bins)
+    for x_val in X:
+        x_coord = int(x_val)
+        hist_array[x_coord] += 1
+    return hist_array
+
+
+
+@numba.jit(cache=True, nopython=True, nogil=True)
 def histogram_2D(X, Y, x_bins, y_bins):
     x_bins = np.int64(x_bins) # for some reason it doesn't work with np.int32
     y_bins = np.int64(y_bins)
@@ -54,6 +65,20 @@ def histogram_2D(X, Y, x_bins, y_bins):
         x_coord = int(x_val)
         y_coord = int(y_val)
         hist_array[x_coord, y_coord] += 1
+    return hist_array
+
+
+@numba.jit(cache=True, nopython=True, nogil=True)
+def histogram_3D(X, Y, Z, x_bins, y_bins, z_bins):
+    x_bins = np.int64(x_bins) # for some reason it doesn't work with np.int32
+    y_bins = np.int64(y_bins)
+    z_bins = np.int64(z_bins)
+    hist_array = np.zeros((x_bins, y_bins, z_bins))
+    for x_val, y_val, z_val in zip(X,Y,Z):
+        x_coord = int(x_val)
+        y_coord = int(y_val)
+        z_coord = int(z_val)
+        hist_array[x_coord, y_coord, z_coord] += 1
     return hist_array
 
 
@@ -78,23 +103,36 @@ def mut_info(X, Y, x_bins, y_bins, base=None):
     return res
 
 
+# this is based on calculations in Infotheo R package source code
+# link: https://cran.r-project.org/web/packages/infotheo/index.html
+@numba.jit(cache=True, nopython=True, nogil=True)
+def cond_mut_info(X, Y, Z, x_bins, y_bins, z_bins, base=None):
+    c_yz = histogram_2D(Y, Z, y_bins, z_bins)
+    flatten_c_yz = c_yz.flatten()
+    H_yz = entropy_empirical(flatten_c_yz, flatten_c_yz.sum(), base=base)
+
+    c_xz = histogram_2D(X, Z, x_bins, z_bins)
+    flatten_c_xz = c_xz.flatten()
+    H_xz = entropy_empirical(flatten_c_xz, flatten_c_xz.sum(), base=base)
+
+    c_z = histogram_1D(Z, z_bins)
+    flatten_c_z = c_z.flatten()
+    H_z = entropy_empirical(flatten_c_z, flatten_c_z.sum(), base=base)
+
+    c_xyz = histogram_3D(X, Y, Z, x_bins, y_bins, z_bins)
+    flatten_c_xyz = c_xyz.flatten()
+    H_xyz = entropy_empirical(flatten_c_xyz, flatten_c_xyz.sum(), base=base)
+
+    Ires = H_yz - H_z - H_xyz + H_xz
+
+    return Ires
+
+
 @numba.jit(cache=True, nopython=True, nogil=True)
 def discretize_exp_profile(index_array, values_array, nbins):
     active_values_array = values_array[index_array]
     quant_values_array = discretize(active_values_array, bins=nbins)
     return quant_values_array
-
-# # input: 3 one-dimensional arrays
-# @numba.jit(cache=True, nopython=True, nogil=True)
-# def cond_mut_info(X, Y, Z, base=None):
-#     U = np.stack((X, Z, Y)).transpose()
-#     Hyzx = entropy(U, base)
-#     Hzx = entropy(U[: , 0:2], base)
-#     Hyz = entropy(U[: , 0:3], base)
-#     Hz = entropy(Z, base)
-#     Ires = Hyz - Hz - Hyzx + Hzx
-#
-#     return Ires
 
 
 
