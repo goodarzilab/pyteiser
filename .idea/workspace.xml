@@ -4,8 +4,6 @@
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/IO.py" afterPath="$PROJECT_DIR$/pyteiser/IO.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/MI.py" afterPath="$PROJECT_DIR$/pyteiser/MI.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py" />
     </list>
     <ignored path="pyteiser.iws" />
@@ -26,31 +24,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="IO.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="IO.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="357" column="0" selection-start-line="357" selection-start-column="0" selection-end-line="357" selection-end-column="0" />
+            <state relative-caret-position="759">
+              <caret line="401" column="25" selection-start-line="401" selection-start-column="25" selection-end-line="401" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calculate_MI_profiles.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
+      <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="45" />
+            <state relative-caret-position="-2743">
+              <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="filter_passed_seeds_with_CMI.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="filter_passed_seeds_with_CMI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="124" column="41" selection-start-line="124" selection-start-column="41" selection-end-line="124" selection-end-column="41" />
+            <state relative-caret-position="-1689">
+              <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="35" selection-end-column="8" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -118,17 +116,17 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v3.py" />
         <option value="$PROJECT_DIR$/tests/test_MI.py" />
         <option value="$PROJECT_DIR$/pyteiser/MI.py" />
-        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py" />
+        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="703" />
+    <option name="width" value="2560" />
+    <option name="height" value="1343" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -159,7 +157,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/structures.py" />
   </component>
   <component name="RunManager" selected="Python.filter_passed_seeds_with_CMI">
     <configuration default="false" name="test_timing" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -411,13 +409,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00081" summary="eval lower bound">
-      <created>1567120774052</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1567120774052</updated>
     </task>
     <task id="LOCAL-00082" summary="keep adding things to optimize_seeds">
       <created>1567127551145</created>
@@ -755,7 +746,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569005564758</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="classification step for CI filtering">
+      <created>1569017387796</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1569017387797</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -782,7 +780,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="703" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="1343" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -790,7 +788,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4786184" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23317307" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -837,7 +835,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix syntax error in stat tests" />
     <MESSAGE value="custom expression profile" />
     <MESSAGE value="fixed float/int bug in thresholding" />
     <MESSAGE value="thresholding confuses last positive and first negative seeds: fixed" />
@@ -862,7 +859,8 @@
     <MESSAGE value="created filter_passed_seeds_with_CMI" />
     <MESSAGE value="added conditional information calculation" />
     <MESSAGE value="added proof for conditional information calculation" />
-    <option name="LAST_COMMIT_MESSAGE" value="added proof for conditional information calculation" />
+    <MESSAGE value="classification step for CI filtering" />
+    <option name="LAST_COMMIT_MESSAGE" value="classification step for CI filtering" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1121,26 +1119,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="874">
-          <caret line="213" column="0" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-176">
           <caret line="83" column="63" selection-start-line="83" selection-start-column="63" selection-end-line="83" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="357" column="0" selection-start-line="357" selection-start-column="0" selection-end-line="357" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1163,19 +1145,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="45" />
+        <state relative-caret-position="359">
+          <caret line="82" column="61" selection-start-line="82" selection-start-column="4" selection-end-line="82" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2743">
+          <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="124" column="41" selection-start-line="124" selection-start-column="41" selection-end-line="124" selection-end-column="41" />
+        <state relative-caret-position="-1689">
+          <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="35" selection-end-column="8" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="759">
+          <caret line="401" column="25" selection-start-line="401" selection-start-column="25" selection-end-line="401" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>

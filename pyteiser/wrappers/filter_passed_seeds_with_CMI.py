@@ -109,21 +109,49 @@ def filter_CMI(seeds_passed, profiles_passed,
             classification_array[k] = len(indices_accepted_profiles)
             indices_accepted_profiles.append(k)
             if do_print:
-                print(indices_accepted_profiles)
+                # print(indices_accepted_profiles)
                 print('\n')
         else:
             classification_array[k] = similar_one_index
 
-    accepted_profiles_array = np.array(indices_accepted_profiles)
-    seeds_unique = [seeds_passed[x] for x in accepted_profiles_array]
-    profiles_unique = profiles_passed[accepted_profiles_array]
+    N_families = len(indices_accepted_profiles)
+
+    return classification_array, N_families
+
+
+def calculate_MIs_all_seeds(profiles_passed, discr_exp_profile,
+                            index_array, nbins):
+    MI_values_array = np.zeros(profiles_passed.shape[0], dtype=np.float32)
+
+    for i, profile in enumerate(profiles_passed):
+        active_profile = profile[index_array]
+        MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
+
+    return MI_values_array
+
+
+def choose_best_reps_for_families(seeds_passed, profiles_passed,
+                                  classification_array, N_families,
+                                  MI_values_array, do_print = False):
+    best_reps = np.zeros(N_families, dtype=np.int32)
+    for i in range(N_families):
+        current_family_bool = (classification_array == i)
+        ith_family_indices = np.arange(classification_array.shape[0])[current_family_bool]
+        ith_family_MI_values = MI_values_array[current_family_bool]
+        best_repr_index_location_in_indices_array = np.argmax(ith_family_MI_values)
+        best_repr_index = ith_family_indices[best_repr_index_location_in_indices_array]
+
+        best_MI = MI_values_array[best_repr_index]
+        best_reps[i] = best_repr_index
+
+        if do_print:
+            print("Family #%d consists of %d members. The best MI value is %.4f" %
+                                        (i, current_family_bool.sum(), best_MI))
+
+    seeds_unique = [seeds_passed[x] for x in best_reps]
+    profiles_unique = profiles_passed[best_reps]
 
     return seeds_unique, profiles_unique
-
-
-def calculate_MIs_all_seeds():
-    active_profile = profile[index_array]
-    MI_values_array[i] = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
 
 
 
@@ -136,13 +164,21 @@ def main():
     seeds_passed = IO.read_motif_file(args.combined_seeds_filename)
     profiles_passed = IO.unpack_profiles_file(args.combined_profiles_filename)
 
-    seeds_unique, profiles_unique = filter_CMI(seeds_passed, profiles_passed,
+    classification_array, N_families = filter_CMI(seeds_passed, profiles_passed,
                                                discr_exp_profile, index_array,
                                                args.nbins, args.min_ratio,
                                                do_print = True)
-    # IO.write_list_of_seeds(seeds_unique, args.unique_seeds_filename)
-    # IO.write_array_of_profiles(profiles_unique, args.unique_profiles_filename)
 
+    MI_values_array = calculate_MIs_all_seeds(profiles_passed, discr_exp_profile,
+                            index_array, args.nbins)
+
+    seeds_unique, profiles_unique = choose_best_reps_for_families(seeds_passed, profiles_passed,
+                                  classification_array, N_families,
+                                  MI_values_array, do_print=False)
+
+    IO.write_list_of_seeds(seeds_unique, args.unique_seeds_filename)
+    IO.write_array_of_profiles(profiles_unique, args.unique_profiles_filename)
+    IO.write_classification_array(classification_array, args.families_classification_filename)
 
 
 if __name__ == "__main__":

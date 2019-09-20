@@ -371,3 +371,39 @@ def write_array_of_profiles(profiles_passed_array, combined_profiles_filename):
             current_profile.compress()
             wf.write(current_profile.bytestring)
 
+
+def write_classification_array(classification_array, classification_filename):
+    length_uint32 = np.array([classification_array.shape[0]], dtype=np.uint32)
+    length_bitstring = length_uint32.tobytes()
+    array_bitstring = length_bitstring + classification_array.tobytes()
+
+    md5 = hashlib.md5()
+    md5.update(array_bitstring)
+    md5_checksum = md5.digest()
+    assert (md5.digest_size == 16)  # md5 checksum is always 16 bytes long, see wiki: https://en.wikipedia.org/wiki/MD5
+
+    full_bytestring = array_bitstring + md5_checksum
+
+    with open(classification_filename, 'wb') as wf:
+        wf.write(full_bytestring)
+
+
+def read_classification_array(classification_filename):
+    with open(classification_filename, 'rb') as rf:
+        bitstring = rf.read()
+    length_bytes = bitstring[0: 4]
+    length_value = np.frombuffer(length_bytes, dtype=np.uint32)[0]
+    classification_bitstring = bitstring[4 : 4 + 4*length_value]
+    md5_checksum = bitstring[4 + 4*length_value : ]
+    classification_array = np.frombuffer(classification_bitstring, dtype=np.uint32)
+
+    length_uint32 = np.array([classification_array.shape[0]], dtype=np.uint32)
+    length_bitstring = length_uint32.tobytes()
+    array_bitstring = length_bitstring + classification_array.tobytes()
+
+    md5 = hashlib.md5()
+    md5.update(array_bitstring)
+    md5_read = md5.digest()
+    assert(md5_checksum == md5_read)
+    assert(length_value == classification_array.shape[0])
+    return classification_array
