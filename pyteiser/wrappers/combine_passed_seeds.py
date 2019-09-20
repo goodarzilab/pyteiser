@@ -88,27 +88,6 @@ def collect_all_the_passing_seeds(filenames_list):
     return all_seeds_passed, all_profiles_passed_array
 
 
-def write_seeds_passed(seeds_passed_list, combined_seeds_filename):
-    seeds_bitstrings = []
-
-    for motif in seeds_passed_list:
-        motif.compress()
-        seeds_bitstrings.append(motif.bytestring)
-
-    total_bitstring = b''.join(seeds_bitstrings)
-    #print("Total number is: ", len(seeds_bitstrings))
-
-    with open(combined_seeds_filename, 'wb') as wf:
-        wf.write(total_bitstring)
-
-
-def write_profiles_passed(profiles_passed_array, combined_profiles_filename):
-    with open(combined_profiles_filename, 'wb') as wf:
-        for i in range(profiles_passed_array.shape[0]):
-            current_profile = structures.w_profile(profiles_passed_array[i].shape[0])
-            current_profile.values = profiles_passed_array[i]
-            current_profile.compress()
-            wf.write(current_profile.bytestring)
 
 
 def main():
@@ -118,8 +97,8 @@ def main():
                                     args.passed_profiles_folder, args.passed_profiles_filename_template,
                                     args.input_indices_list_file)
     seeds_passed_list, profiles_passed_array = collect_all_the_passing_seeds(filenames_list)
-    write_seeds_passed(seeds_passed_list, args.combined_seeds_filename)
-    write_profiles_passed(profiles_passed_array, args.combined_profiles_filename)
+    IO.write_list_of_seeds(seeds_passed_list, args.combined_seeds_filename)
+    IO.write_array_of_profiles(profiles_passed_array, args.combined_profiles_filename)
 
 
 if __name__ == "__main__":

@@ -349,3 +349,25 @@ def read_profile_pass_individual_file(inp_filename):
     return profiles_array
 
 
+def write_list_of_seeds(seeds_passed_list, combined_seeds_filename):
+    seeds_bitstrings = []
+
+    for motif in seeds_passed_list:
+        motif.compress()
+        seeds_bitstrings.append(motif.bytestring)
+
+    total_bitstring = b''.join(seeds_bitstrings)
+    #print("Total number is: ", len(seeds_bitstrings))
+
+    with open(combined_seeds_filename, 'wb') as wf:
+        wf.write(total_bitstring)
+
+
+def write_array_of_profiles(profiles_passed_array, combined_profiles_filename):
+    with open(combined_profiles_filename, 'wb') as wf:
+        for i in range(profiles_passed_array.shape[0]):
+            current_profile = structures.w_profile(profiles_passed_array[i].shape[0])
+            current_profile.values = profiles_passed_array[i]
+            current_profile.compress()
+            wf.write(current_profile.bytestring)
+

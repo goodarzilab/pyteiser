@@ -103,6 +103,7 @@ def mut_info(X, Y, x_bins, y_bins, base=None):
     return res
 
 
+# calculate I(X,Y|Z)
 # this is based on calculations in Infotheo R package source code
 # link: https://cran.r-project.org/web/packages/infotheo/index.html
 # to prove, that it's the correct formula, use Cover & Thomas:
