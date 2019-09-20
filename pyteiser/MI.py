@@ -105,6 +105,9 @@ def mut_info(X, Y, x_bins, y_bins, base=None):
 
 # this is based on calculations in Infotheo R package source code
 # link: https://cran.r-project.org/web/packages/infotheo/index.html
+# to prove, that it's the correct formula, use Cover & Thomas:
+# decompose I(X;Y|Z) by formula (2.60) and then apply chain rule (2.14)
+# to each summand to decompose it
 @numba.jit(cache=True, nopython=True, nogil=True)
 def cond_mut_info(X, Y, Z, x_bins, y_bins, z_bins, base=None):
     c_yz = histogram_2D(Y, Z, y_bins, z_bins)
@@ -123,7 +126,7 @@ def cond_mut_info(X, Y, Z, x_bins, y_bins, z_bins, base=None):
     flatten_c_xyz = c_xyz.flatten()
     H_xyz = entropy_empirical(flatten_c_xyz, flatten_c_xyz.sum(), base=base)
 
-    Ires = H_yz - H_z - H_xyz + H_xz
+    Ires = H_yz + H_xz - H_z - H_xyz
 
     return Ires
 
