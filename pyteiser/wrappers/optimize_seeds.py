@@ -44,11 +44,21 @@ NUMBER_MODIFIED_MOTIFS_2 = 46
 
 def handler():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--combined_passed_seeds_filename", help="file with the seeds that have passed the threshold", type=str)
+
+    parser.add_argument("--unique_seeds_filename", help="output: best representatives of each family", type=str)
+    parser.add_argument("--unique_profiles_filename", help="output: profiles of best representatives of each family",
+                                                                                                        type=str)
+    parser.add_argument("--families_classification_filename", help="output: classification of all the passed seeds"
+                                                                   "to unique families", type=str)
+
+
+
+
     parser.add_argument("--rna_bin_file", help="referense transcriptome in binary format", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
 
+    parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--maxfreq", help="", type=float)
     parser.add_argument("--n_permutations", help="number of permutations for the rank test for a seed", type=int)
     parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
@@ -58,10 +68,24 @@ def handler():
                                                                 "pass to consider the motif robust", type=float)
 
     parser.set_defaults(
-        combined_passed_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_passed_100k_tarbp2_utrs.bin',
+        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_tarbp2_utrs.bin",
+        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_unique_100k_tarbp2_utrs.bin",
+        # families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_tarbp2_utrs_classification.bin",
+
+
+        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_snrnpa1.bin",
+        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_unique_100k_snrnpa1.bin",
+        # families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_snrnpa1_classification.bin",
+
+
+        unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
+        unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
+        families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_classification.bin",
+
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
+        nbins=15,
         maxfreq = 0.5, # default value from Hani's program is 0.5
         n_permutations=1000,  # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
         jackknife_n_samples = 10,
@@ -73,6 +97,18 @@ def handler():
     args = parser.parse_args()
 
     return args
+
+
+def import_modules():
+    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if package_home_path not in sys.path:
+        sys.path.append(package_home_path)
+
+    global MI
+    global IO
+
+    import MI
+    import IO
 
 
 
@@ -141,30 +177,14 @@ def elongate_motif(counter, index, n_motifs_list, n_seqs_list,
     return bestmi, lastmyfreq, n_bestmotif
 
 
-def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile, nbins,
-                    profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
+# def optimize_motifs(number_signigicant_seeds, discr_exp_profile, nbins,
+#                     profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
+def optimize_motifs(seeds_initial, profiles_initial, index_array, discr_exp_profile, nbins, ):
 
-    seed_indices_sorted = np.argsort(MI_values_array)[::-1]
-    signif_indices = seed_indices_sorted[0 : number_signigicant_seeds]
-
-    print("There are %d signif seeds in total" % number_signigicant_seeds)
-    for counter, index in enumerate(signif_indices):
-        profile = profiles_array[index]
+    print("Starting with %d initial seeds" % len(seeds_initial))
+    for i, motif in enumerate(seeds_initial):
+        profile = profiles_initial[i]
         active_profile = profile[index_array]
-        current_MI = MI_values_array[index]
-
-        # check how much information it adds to the previous guys
-        if opt_count > 0 and minr>0:
-            minratio = minCondInfoNormalized()
-        else:
-            minratio = minr + 1
-
-        if minratio < minr:
-            print("seed %d killed by motif %d (ratio=%f).\n", i, midx, minratio)
-            continue
-        else:
-            print("optimizing")
-
 
         n_bestmotif = n_motifs_list[index].copy()
 
@@ -214,37 +234,40 @@ def optimize_motifs(number_signigicant_seeds, MI_values_array, discr_exp_profile
 
 
 
-def read_input_files(seeds_filename_full, rna_bin_filename):
+def read_sequences(rna_bin_filename):
     seqs_dict, seqs_order = IO.read_rna_bin_file(rna_bin_filename)
-    w_motifs_list = IO.read_motif_file(seeds_filename_full)
     w_seqs_list = [seqs_dict[name] for name in seqs_order]
-    n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
 
-    return n_motifs_list, n_seqs_list
+    return n_seqs_list
 
 
 
 
 
 def main():
+    import_modules()
     args = handler()
 
-    # read seeds and sequences
-    n_motifs_list, n_seqs_list = read_input_files(args.seed_file, args.rna_bin_file)
+    index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
+    seeds_initial = IO.read_motif_file(args.unique_seeds_filename)
+    profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename)
+
+    print(len(seeds_initial))
+    print(profiles_initial.shape)
+
+    # classif_array = IO.read_classification_array(args.families_classification_filename)
+
+    # read sequences
+    # n_seqs_list = read_sequences(args.rna_bin_file)
 
     # read expression profile
-    index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
-
-    # read precalculated MI values
-    MI_values_array, nbins = IO.read_MI_values(args.MI_values_file)
-
-    # read precalculated threshold
-    number_signigicant_seeds = IO.read_seed_significancy_threshold(args.threshold_file)
+    # index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
 
 
     # optimize motifs
-    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    # discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
     optimize_motifs(number_signigicant_seeds,
                     MI_values_array, discr_exp_profile, nbins,
                        profiles_array, index_array,

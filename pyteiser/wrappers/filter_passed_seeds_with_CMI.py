@@ -22,7 +22,7 @@ def handler():
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--min_ratio", help="threshold on ratio of CMI/MI for the conditional "
                                             "information test for seed novelty", type=int)
-    parser.add_argument("--do_print", help="number of bins for discretization of expression profile", type=int)
+    parser.add_argument("--do_print", help="should it print the output or not", type=bool)
 
     parser.set_defaults(
         # combined_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_passed_100k_tarbp2_utrs.bin",
@@ -36,8 +36,6 @@ def handler():
         families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_classification.bin",
 
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
-
-
 
         nbins=15,
         min_ratio=5,
@@ -167,14 +165,14 @@ def main():
     classification_array, N_families = filter_CMI(seeds_passed, profiles_passed,
                                                discr_exp_profile, index_array,
                                                args.nbins, args.min_ratio,
-                                               do_print = True)
+                                               do_print = args.do_print)
 
     MI_values_array = calculate_MIs_all_seeds(profiles_passed, discr_exp_profile,
                             index_array, args.nbins)
 
     seeds_unique, profiles_unique = choose_best_reps_for_families(seeds_passed, profiles_passed,
                                   classification_array, N_families,
-                                  MI_values_array, do_print=False)
+                                  MI_values_array, do_print=args.do_print)
 
     IO.write_list_of_seeds(seeds_unique, args.unique_seeds_filename)
     IO.write_array_of_profiles(profiles_unique, args.unique_profiles_filename)

@@ -13,6 +13,7 @@ if subpackage_folder_path not in sys.path:
 
 import glob_var
 import structures
+import type_conversions
 
 
 
@@ -81,6 +82,14 @@ def read_fasta(infile, do_print = False, how_often_print = 1000):
                     print("Read sequence number ", ind)
 
     return tr_dict_loc, seqs_order
+
+
+def read_bin_sequences(rna_bin_filename):
+    seqs_dict, seqs_order = read_rna_bin_file(rna_bin_filename)
+    w_seqs_list = [seqs_dict[name] for name in seqs_order]
+    n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
+
+    return n_seqs_list
 
 
 def compress_named_sequences(seq_objects_dict, seqs_order,
