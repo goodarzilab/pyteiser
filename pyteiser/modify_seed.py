@@ -25,9 +25,18 @@ def modify_base(source_motif, position):
 
     modified_motifs = [0] * len(glob_var.NT_LIST)
 
-    for nt in glob_var.NT_LIST:
-        curr_change = source_motif.copy()
-        curr_change.sequence[position] = nt
+    init_stem_length = source_motif.stem_length
+    init_loop_length = source_motif.loop_length
+
+    init_sequence = source_motif.sequence
+    init_structure = source_motif.structure
+
+    for i, nt in enumerate(glob_var.NT_LIST):
+        curr_sequence = init_sequence.copy()
+        curr_sequence[position] = nt
+        curr_change = structures.n_motif(init_stem_length, init_loop_length,
+                                         curr_sequence, init_structure)
+        modified_motifs[i] = curr_change
 
     return modified_motifs
 
