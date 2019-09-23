@@ -61,6 +61,10 @@ def handler():
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--maxfreq", help="", type=float)
     parser.add_argument("--n_permutations", help="number of permutations for the rank test for a seed", type=int)
+    parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
+                                                 " for a seed to be considered", type=int)
+    parser.add_argument("--random_noseed", help="when choosing the order of positions to optimize, "
+                                                "do not set the random number generator to a specific seed", type=bool)
     parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
     parser.add_argument("--jackknife_fraction_retain", help="what fraction of the sample to retain for each test",
                                                                                     type=float)
@@ -87,7 +91,9 @@ def handler():
 
         nbins=15,
         maxfreq = 0.5, # default value from Hani's program is 0.5
+        min_occurences=10,
         n_permutations=1000,  # takes 1 second per 100 permutations, Hani's default number of permutations is 1*10^6
+        random_noseed=0,
         jackknife_n_samples = 10,
         jackknife_fraction_retain = 0.66,
         jackknife_min_fraction_passed = 0.6,
@@ -115,32 +121,36 @@ def import_modules():
 def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profile, nbins,
                             bestmi, n_bestmotif, lastmyfreq, args, do_print = True):
 
-    for j in range(len(n_modified_motifs)):
+    for curr_motif in n_modified_motifs:
         # limit it to the expressed sequences only
         # change the matchmaking procedure to incorporate degenerative nucleotides
-        current_profile, time_spent = matchmaker.calculate_profile_one_motif(n_modified_motifs[j],
+        current_profile, time_spent = matchmaker.calculate_profile_one_motif(curr_motif,
                                                                              seqs_of_interest,
                                                                             is_degenerate = True)
         myfreq = current_profile.values.sum() / float(len(seqs_of_interest))
         tempmi = MI.mut_info(current_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
 
-        print(tempmi)
+        print(tempmi, curr_motif.sequence)
 
-        if tempmi > bestmi and current_profile.sum() > 10 and (myfreq < args.maxfreq or myfreq < lastmyfreq):
-            n_bestmotif = structures.copy_n_motif(n_modified_motifs[j])
+        if tempmi > bestmi and current_profile.sum() > args.min_occurences and (myfreq < args.maxfreq or myfreq < lastmyfreq):
+            n_bestmotif = structures.copy_n_motif(curr_motif)
             w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
             bestmi = tempmi
             lastmyfreq = myfreq
             if do_print:
-                print("new motif (mi = %.4f): %s\n" % (bestmi, w_bestmotif.print_sequence(return_string=True)))
+                print("new motif (mi = %.4f): %s" % (bestmi, w_bestmotif.print_sequence(return_string=True)))
+                print("Current frequency: %.4f" % lastmyfreq)
     return bestmi, lastmyfreq, n_bestmotif
 
 
 # optimize sequence of all the positions individually in random order
 def optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
                             discr_exp_profile, nbins, lastmyfreq, args,
-                            do_print = False):
+                            do_print = False, random_noseed=False):
     bestmi = init_best_MI
+
+    if random_noseed:
+        np.random.seed(1543)
 
     # create a random index so that we optimize each position not from left to right but rather in random order
     k_inc = np.arange(n_bestmotif.length)
@@ -160,22 +170,30 @@ def optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
     return bestmi, lastmyfreq, n_bestmotif
 
 
-def elongate_motif(counter, index, n_motifs_list, n_seqs_list,
-                    discr_exp_profile, nbins, active_profile,
-                    bestmi, n_bestmotif, lastmyfreq, args):
-    print("Elongating the motif %d" % counter)
+def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
+                   discr_exp_profile, nbins, lastmyfreq,
+                   args, do_print = False):
+    bestmi = init_best_MI
 
-    premi = bestmi
+    keep_elongating = True
 
-    # TODO: how to I to a first iteration of this?
-    # TODO: also why premi >= bestmi, shouldn't it go the other way??
+    # simple emulator of do {} while {} in python: https://stackoverflow.com/questions/743164/emulate-a-do-while-loop-in-python
+    while keep_elongating:
+        n_elongated_motifs = modify_seed.elongate_motif(n_bestmotif)
 
-    while premi >= bestmi and n_bestmotif.length > n_motifs_list[index].length:
-        n_elongated_motifs = modify_seed.elongate_motif(n_motifs_list[index])
-        for j in range(len(n_elongated_motifs)):
-            bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
-                                                          n_seqs_list, discr_exp_profile, nbins,
-                                                          bestmi, n_bestmotif, lastmyfreq, args)
+        old_best_mi = bestmi
+        old_best_motif = structures.copy_n_motif(n_bestmotif)
+
+        # new_bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
+        #                                             seqs_of_interest, discr_exp_profile, nbins,
+        #                                             bestmi, n_bestmotif, lastmyfreq, args,
+        #                                             do_print = do_print)
+
+        new_bestmi = 0
+
+        keep_elongating = ((new_bestmi >= old_best_mi) and
+                           (n_bestmotif.length > old_best_motif.length))
+
     return bestmi, lastmyfreq, n_bestmotif
 
 
@@ -186,11 +204,14 @@ def optimize_motifs(seeds_initial, profiles_initial,
                     args, do_print = True):
 
     print("Starting with %d initial seeds" % len(seeds_initial))
+
+    seeds_initial = seeds_initial[40:]
+    profiles_initial = profiles_initial[40:]
+
     for i, motif in enumerate(seeds_initial):
         profile = profiles_initial[i]
         active_profile = profile[index_array]
-
-        n_bestmotif = seeds_initial[i].copy()
+        n_bestmotif = type_conversions.w_to_n_motif(seeds_initial[i])
 
         # initial mi value
         init_best_MI = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
@@ -201,15 +222,17 @@ def optimize_motifs(seeds_initial, profiles_initial,
             print("Initial MI = %.5f" % init_best_MI)
             w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
             print("initial motif: %s" % w_bestmotif.print_sequence(return_string=True))
+            print("Initial frequency: %.4f" % lastmyfreq)
 
-        bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
+        # bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
+        #                     discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print,
+        #                     random_noseed = args.random_noseed)
+
+        if do_print:
+            print("Elongating motif %d" % i)
+
+        bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
                             discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
-
-
-        # bestmi, lastmyfreq, n_bestmotif = elongate_motif(counter, index,
-        #                n_motifs_list, n_seqs_list,
-        #                discr_exp_profile, nbins, active_profile,
-        #                bestmi, n_bestmotif, lastmyfreq, args)
         #
         # bestmotif_profile, _ = matchmaker.calculate_profile_one_motif(n_bestmotif, n_seqs_list)
         # bestmotif_active_profile = bestmotif_profile[index_array]

@@ -1,6 +1,7 @@
 import numpy as np
 import hashlib
 import numba
+import copy
 
 import os
 import sys
@@ -14,6 +15,7 @@ if subpackage_folder_path not in sys.path:
     sys.path.append(subpackage_folder_path)
 
 import glob_var
+import type_conversions
 
 
 class w_motif:
@@ -345,9 +347,21 @@ class n_sequence:
             return False
 
 
-# Some functions that break numba compilation if I put them inside the class
-@numba.jit(cache=True, nopython=True, nogil=True)
+# Get a deep copy of an n_motif
+# I can deep copy numpy arrays, like sequence and structure
+# but I can't deepcopy features like stem_length and loop_length, because for small integers (less than 256)
+# Python actually keeps only 1 copy of those in memory and they don't get copied
+# see answer by Yu Hao here: https://stackoverflow.com/questions/31621997/why-deepcopy-of-list-of-integers-returns-the-same-integers-in-memory
+#
+# For copying arrays, I have two options: (1) I can use deepcopy, it's safer but it's not numba-compatible
+# Alternatively, I can use np.copy(). The array copy created by np.copy doesn't change when the original
+# array gets changed. See examples in the source code:
+# https://github.com/numpy/numpy/blob/v1.17.0/numpy/lib/function_base.py#L745-L790
+@numba.jit(nopython=True, nogil=True)
 def copy_n_motif(motif):
-    motif_copy = n_motif(motif.stem_length, motif.loop_length,
-                         motif.sequence, motif.structure)
+    copy_sequence = np.copy(motif.sequence) # alternatively, use copy.deepcopy
+    copy_structure = np.copy(motif.structure) # alternatively, use copy.deepcopy
+
+    motif_copy = n_motif(motif.stem_length, motif.loop_length, copy_sequence, copy_structure)
+
     return motif_copy

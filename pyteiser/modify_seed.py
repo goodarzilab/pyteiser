@@ -71,15 +71,34 @@ def elongate_motif(source_motif):
     modified_motifs = [0] * number_elongated_variants
 
     motif_index = 0
-    modified_motifs[motif_index] = source_motif.copy()
+    modified_motifs[motif_index] = structures.copy_n_motif(source_motif)
 
-    for struct_mode in range(1, 3+1):
+    for struct_mode in glob_var.STRUCT_LIST:
         for nt in glob_var.NT_LIST:
             motif_index += 1
-            current_variation = template_motif.copy()
+            current_variation = structures.copy_n_motif(template_motif)
             # fill in the first nucleotide
             current_variation.sequence[0] = nt
             current_variation.structure[0] = struct_mode
+            # adjust the linear length
+            if nt == glob_var._stem:
+                current_variation.linear_length = current_variation.stem_length * 2 + current_variation.loop_length
+            else: # in this case, we only add 1 position to the motif and not 2; we have to modify
+                # linear length accordingly
+                current_variation.linear_length = current_variation.stem_length * 2 - 1 + current_variation.loop_length
             modified_motifs[motif_index] = current_variation
+            #print(motif_index, current_variation.sequence, modified_motifs[motif_index].sequence)
+
+    # print(len(modified_motifs))
+    # for x in modified_motifs:
+    #     print(x.sequence)
+    print(id(modified_motifs))
+    print(modified_motifs[1])
+    print(id(modified_motifs[1].sequence), id(modified_motifs[2].sequence), id(modified_motifs[3].sequence))
+    print(modified_motifs[1].sequence is modified_motifs[2].sequence)
+    print(modified_motifs[1].sequence, modified_motifs[2].sequence, modified_motifs[3].sequence)
+    print('\n\n\n')
+    for i, mot in enumerate(modified_motifs):
+        print(i, mot.sequence, mot.structure)
 
     return modified_motifs
