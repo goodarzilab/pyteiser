@@ -59,7 +59,6 @@ def create_template_elongated_motif(source_motif):
 
 
 # this function creates an array of motifs each having one additional phrase compared to source_motif
-# modified_motifs will have 46 members - why??
 # modified_motifs will have 1 + 2 * 15 members: the source motif + 2 structures (loop and stem) by
 # 15 degenerate nucleotides
 # source_motif itself will also be one of the members of modified_motifs
@@ -71,13 +70,13 @@ def elongate_motif(source_motif):
     modified_motifs = [0] * number_elongated_variants
 
     motif_index = 0
-    modified_motifs[motif_index] = source_motif.copy()
+    modified_motifs[motif_index] = structures.copy_n_motif(source_motif)
 
 
     for struct_mode in glob_var.STRUCT_LIST:
         for nt in glob_var.NT_LIST:
             motif_index += 1
-            current_variation = template_motif.copy()
+            current_variation = structures.copy_n_motif(template_motif)
             # fill in the first nucleotide
             current_variation.sequence[0] = nt
             current_variation.structure[0] = struct_mode
@@ -88,8 +87,5 @@ def elongate_motif(source_motif):
                 # linear length accordingly
                 current_variation.linear_length = current_variation.stem_length * 2 - 1 + current_variation.loop_length
             modified_motifs[motif_index] = current_variation
-
-    for i, mot in enumerate(modified_motifs):
-        print(i, mot.sequence)
 
     return modified_motifs
