@@ -258,6 +258,25 @@ class n_motif:
         self.structure = structure
 
 
+    # Get a deep copy of an n_motif
+    # I can deep copy numpy arrays, like sequence and structure
+    # but I can't deepcopy features like stem_length and loop_length, because for small integers (less than 256)
+    # Python actually keeps only 1 copy of those in memory and they don't get copied
+    # see answer by Yu Hao here: https://stackoverflow.com/questions/31621997/why-deepcopy-of-list-of-integers-returns-the-same-integers-in-memory
+    #
+    # For copying arrays, I have two options: (1) I can use deepcopy, it's safer but it's not numba-compatible
+    # Alternatively, I can use np.copy(). The array copy created by np.copy doesn't change when the original
+    # array gets changed. See examples in the source code:
+    # https://github.com/numpy/numpy/blob/v1.17.0/numpy/lib/function_base.py#L745-L790
+    def copy(self):
+        copy_sequence = np.copy(self.sequence)  # alternatively, use copy.deepcopy
+        copy_structure = np.copy(self.structure)  # alternatively, use copy.deepcopy
+
+        motif_copy = n_motif(self.stem_length, self.loop_length, copy_sequence, copy_structure)
+
+        return motif_copy
+
+
 spec_sequence = [
     ('length', numba.uint32),
     ('nts', numba.uint8[:])
@@ -345,23 +364,3 @@ class n_sequence:
             if nt_degen == self.nts[ind]:
                 return True
             return False
-
-
-# Get a deep copy of an n_motif
-# I can deep copy numpy arrays, like sequence and structure
-# but I can't deepcopy features like stem_length and loop_length, because for small integers (less than 256)
-# Python actually keeps only 1 copy of those in memory and they don't get copied
-# see answer by Yu Hao here: https://stackoverflow.com/questions/31621997/why-deepcopy-of-list-of-integers-returns-the-same-integers-in-memory
-#
-# For copying arrays, I have two options: (1) I can use deepcopy, it's safer but it's not numba-compatible
-# Alternatively, I can use np.copy(). The array copy created by np.copy doesn't change when the original
-# array gets changed. See examples in the source code:
-# https://github.com/numpy/numpy/blob/v1.17.0/numpy/lib/function_base.py#L745-L790
-@numba.jit(nopython=True, nogil=True)
-def copy_n_motif(motif):
-    copy_sequence = np.copy(motif.sequence) # alternatively, use copy.deepcopy
-    copy_structure = np.copy(motif.structure) # alternatively, use copy.deepcopy
-
-    motif_copy = n_motif(motif.stem_length, motif.loop_length, copy_sequence, copy_structure)
-
-    return motif_copy

@@ -133,7 +133,7 @@ def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profi
         print(tempmi, curr_motif.sequence)
 
         if tempmi > bestmi and current_profile.sum() > args.min_occurences and (myfreq < args.maxfreq or myfreq < lastmyfreq):
-            n_bestmotif = structures.copy_n_motif(curr_motif)
+            n_bestmotif = curr_motif.copy()
             w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
             bestmi = tempmi
             lastmyfreq = myfreq
@@ -182,7 +182,7 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
         n_elongated_motifs = modify_seed.elongate_motif(n_bestmotif)
 
         old_best_mi = bestmi
-        old_best_motif = structures.copy_n_motif(n_bestmotif)
+        old_best_motif = n_bestmotif.copy()
 
         # new_bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
         #                                             seqs_of_interest, discr_exp_profile, nbins,
