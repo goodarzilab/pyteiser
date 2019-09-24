@@ -23,6 +23,7 @@ import modify_seed
 import type_conversions
 import matchmaker
 import statistic_tests
+import copy
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
@@ -45,8 +46,6 @@ NUMBER_MODIFIED_MOTIFS_2 = 46
 def handler():
     parser = argparse.ArgumentParser()
 
-
-
     # parser.add_argument("--profiles_folder", help="", type=str)
     # parser.add_argument("--MI_values_folder", help="", type=str)
     # parser.add_argument("--passed_seed_folder", help="", type=str)
@@ -58,8 +57,6 @@ def handler():
     # parser.add_argument("--passed_seed_filename_template", help="", type=str)
     # parser.add_argument("--passed_profiles_filename_template", help="", type=str)
     # parser.add_argument("--seed_filename_template", help="", type=str)
-
-
 
 
     parser.add_argument("--unique_seeds_filename", help="best representatives of each family", type=str)
@@ -111,8 +108,8 @@ def handler():
         families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_classification.bin",
         optimized_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_optimized.bin',
         optimized_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_optimized.bin',
-        optimized_MI_pv_zscores_filename='',
-        robustness_array_filename='/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_robustness.bin',
+        optimized_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/optimized_seeds_characteristics/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_characteristics.bin',
+        robustness_array_filename='/Users/student/Documents/hani/programs/pyteiser/data/seeds_robustness/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_robustness.bin',
 
 
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
@@ -165,8 +162,8 @@ def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profi
             bestmi = tempmi
             lastmyfreq = myfreq
             if do_print:
-                print("new motif (mi = %.4f): %s" % (bestmi, w_bestmotif.print_sequence(return_string=True)))
-                print("Current frequency: %.4f" % lastmyfreq)
+                print("New motif (MI = %.4f): %s" % (bestmi, w_bestmotif.print_sequence(return_string=True)))
+                #print("Current frequency: %.4f" % lastmyfreq)
     return bestmi, lastmyfreq, n_bestmotif
 
 
@@ -222,13 +219,22 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
     return bestmi, lastmyfreq, n_bestmotif
 
 
-def check_robustness(n_bestmotif, seqs_of_interest,
-                    discr_exp_profile, nbins, args,
-                    do_print = False):
+def get_characteristics(n_bestmotif, seqs_of_interest,
+                        discr_exp_profile, nbins, args,
+                        do_print = False):
     bestmotif_profile, _time = matchmaker.calculate_profile_one_motif(n_bestmotif, seqs_of_interest)
     bestmotif_mi = MI.mut_info(bestmotif_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
     pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_profile.values, discr_exp_profile, nbins,
                                                                bestmotif_mi, args.n_permutations)
+    if do_print:
+        print("The final p-value is: %.4f, z-score is: %.3f" % (pvalue, z_score))
+    return bestmotif_profile, bestmotif_mi, pvalue, z_score
+
+
+def check_robustness(bestmotif_profile,
+                    discr_exp_profile, nbins, args,
+                    do_print = False):
+
 
     passed_jacknife = statistic_tests.jackknife_test(
                         bestmotif_profile.values, discr_exp_profile, nbins,
@@ -238,20 +244,20 @@ def check_robustness(n_bestmotif, seqs_of_interest,
                         args.jackknife_fraction_retain,
                         args.jackknife_min_fraction_passed,
                         do_print = do_print)
-    if do_print:
-        print("The final p-value is: %.4f, z-score is: %.3f" % (pvalue, z_score))
 
-    return pvalue, z_score, passed_jacknife
+
+    return passed_jacknife
 
 
 
 def optimize_motifs(seeds_initial, profiles_initial,
                     discr_exp_profile, nbins, index_array, seqs_of_interest,
                     args, do_print = True):
-    seeds_optimized = [0] * len(seeds_initial)
-    profiles_optimized = [0] * len(seeds_initial)
-    MI_values = np.array(len(seeds_initial), dtype=np.float64)
-
+    seeds_optimized = copy.deepcopy(seeds_initial)
+    profiles_optimized = np.zeros((len(seeds_initial), discr_exp_profile.shape[0]), dtype=bool)
+    # seed_charact_array keeps MI values, p-values and z-scores
+    seed_charact_array = np.zeros((len(seeds_initial), 3), dtype=np.float64)
+    robustness_array = np.zeros(len(seeds_initial), dtype=bool)
 
     print("Starting with %d initial seeds" % len(seeds_initial))
 
@@ -267,39 +273,56 @@ def optimize_motifs(seeds_initial, profiles_initial,
         init_best_MI = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
         lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
 
-        # if do_print:
-        #     print("Optimzing the sequence of motif %d" % i)
-        #     print("Initial MI = %.5f" % init_best_MI)
-        #     w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
-        #     print("initial motif: %s" % w_bestmotif.print_sequence(return_string=True))
-        #     print("Initial frequency: %.4f" % lastmyfreq)
-
-        # bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
-        #                     discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print,
-        #                     random_noseed = args.random_noseed)
-
-        # if do_print:
-        #     print("Elongating motif %d" % i)
-
-        # bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
-        #                     discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
-
         if do_print:
             w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
+            print("Optimzing the sequence of motif %d (sequence is %s). Initial MI = %.5f" %
+                            (i, w_bestmotif.print_sequence(return_string=True), init_best_MI))
+            #print("Initial frequency: %.4f" % lastmyfreq)
+
+        bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
+                            discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print,
+                            random_noseed = args.random_noseed)
+
+        if do_print:
+            print("Elongating motif %d" % i)
+
+        bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
+                            discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
+
+        w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
+        bestmotif_profile, bestmotif_mi, pvalue, z_score = get_characteristics(
+                                                            n_bestmotif, seqs_of_interest,
+                                                            discr_exp_profile, nbins, args,
+                                                            do_print=do_print)
+
+        if do_print:
             print("Checking robustness of the optimized motif %d (sequence %s)" %
                   (i, w_bestmotif.print_sequence(return_string=True)))
 
-        is_robust = check_robustness(n_bestmotif, seqs_of_interest,
-                        discr_exp_profile, nbins, args,
-                        do_print = do_print)
+        is_robust = check_robustness(bestmotif_profile,
+                                    discr_exp_profile, nbins, args,
+                                    do_print = do_print)
 
-
-        # TODO: stopped at line 271 of mi_optimize.c
+        seeds_optimized[i] = w_bestmotif
+        profiles_optimized[i] = bestmotif_profile.values
+        seed_charact_array[i, : ] = np.array([bestmotif_mi, pvalue, z_score], dtype=np.float64)
+        robustness_array[i] = is_robust
 
         break
 
+    return seeds_optimized, profiles_optimized, \
+           seed_charact_array, robustness_array
 
 
+
+
+def write_outputs(seeds_optimized, profiles_optimized,
+                  seed_charact_array, robustness_array,
+                  args):
+    IO.write_list_of_seeds(seeds_optimized, args.optimized_seeds_filename)
+    IO.write_array_of_profiles(profiles_optimized, args.optimized_profiles_filename)
+    IO.write_np_array(seed_charact_array, args.optimized_MI_pv_zscores_filename)
+    IO.write_np_array(robustness_array, args.robustness_array_filename)
 
 
 
@@ -328,28 +351,13 @@ def main():
     profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename)
 
     seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
-    optimize_motifs(seeds_initial, profiles_initial,
-                    discr_exp_profile, args.nbins, index_array, seqs_of_interest,
-                    args, do_print=True)
-
-
-    # classif_array = IO.read_classification_array(args.families_classification_filename)
-
-    # read sequences
-    # n_seqs_list = read_sequences(args.rna_bin_file)
-
-    # read expression profile
-    # index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
-
-
-    # optimize motifs
-    # discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
-    # optimize_motifs(number_signigicant_seeds,
-    #                 MI_values_array, discr_exp_profile, nbins,
-    #                    profiles_array, index_array,
-    #                 n_motifs_list, n_seqs_list,
-    #                    args, do_print=True)
-
+    seeds_optimized, profiles_optimized, \
+    seed_charact_array, robustness_array  = optimize_motifs(seeds_initial, profiles_initial,
+                                            discr_exp_profile, args.nbins, index_array, seqs_of_interest,
+                                            args, do_print=True)
+    write_outputs(seeds_optimized, profiles_optimized,
+                  seed_charact_array, robustness_array,
+                  args)
 
 
 

@@ -416,3 +416,40 @@ def read_classification_array(classification_filename):
     assert(md5_checksum == md5_read)
     assert(length_value == classification_array.shape[0])
     return classification_array
+
+
+def write_np_array(inp_array, out_filename):
+    length_uint32 = np.array([inp_array.shape[0]], dtype=np.uint32)
+    length_bitstring = length_uint32.tobytes()
+    array_bitstring = length_bitstring + inp_array.tobytes()
+
+    md5 = hashlib.md5()
+    md5.update(array_bitstring)
+    md5_checksum = md5.digest()
+
+    full_bytestring = array_bitstring + md5_checksum
+
+    with open(out_filename, 'wb') as wf:
+        wf.write(full_bytestring)
+
+
+def read_np_array(inp_filename, dtype):
+    with open(inp_filename, 'rb') as rf:
+        bitstring = rf.read()
+    length_bytes = bitstring[0: 4]
+    length_value = np.frombuffer(length_bytes, dtype=np.uint32)[0]
+    output_bitstring = bitstring[4 : 4 + 4*length_value]
+    md5_checksum = bitstring[4 + 4*length_value : ]
+    output_array = np.frombuffer(output_bitstring, dtype=dtype)
+
+    length_uint32 = np.array([output_array.shape[0]], dtype=np.uint32)
+    length_bitstring = length_uint32.tobytes()
+    array_bitstring = length_bitstring + output_array.tobytes()
+
+    md5 = hashlib.md5()
+    md5.update(array_bitstring)
+    md5_read = md5.digest()
+    assert(md5_checksum == md5_read)
+    assert(length_value == output_array.shape[0])
+    return output_array
+
