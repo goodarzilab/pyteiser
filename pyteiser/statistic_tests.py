@@ -48,24 +48,33 @@ def MI_get_pvalue_and_zscore(active_profile, discr_exp_profile,
 
 
 def jackknife_test(active_profile, discr_exp_profile, nbins,
-                    n_permutations,
-                    n_samples, fraction_retain, min_fraction_passed):
+                    n_permutations, max_pvalue, n_samples,
+                   fraction_retain, min_fraction_passed,
+                   do_print = False):
     total_number_passed = 0
 
-    for i in n_samples:
-        subsampl_index_array = np.subsample
+    for j in range(n_samples):
+        full_indices_array = np.arange(active_profile.shape[0])
+        how_many_keep = int(fraction_retain * active_profile.shape[0])
+        subsampl_index_array = np.random.choice(full_indices_array, size=how_many_keep, replace=False)
         curr_profile = active_profile[subsampl_index_array]
         curr_exp_profile = discr_exp_profile[subsampl_index_array]
         curr_MI = MI.mut_info(curr_profile, curr_exp_profile, x_bins=2, y_bins=nbins)
-    # jn = 10
-    # jn_t = 6
-    # jn_f = 3
-    # pass = 0
-    # do jn iterations:
-        # subsample 1-1/jn_f = 2/3 of all the data
-        # for subsample: calculate MI
-        # for subsample: calculate p-value
-        # if pvalue < max_pvalue:
-            # pass += 1
-    # if pass > jn_t: passed
-    pass
+        pvalue, z_score = MI_get_pvalue_and_zscore(curr_profile, discr_exp_profile, nbins,
+                                                   curr_MI, n_permutations)
+        if do_print:
+            print("Iteration %d. p-value: %.5f; max_pvalue: %.5f, z-score: %.2f" % (j, pvalue, max_pvalue, z_score))
+        if pvalue < max_pvalue:
+            total_number_passed += 1
+
+    fraction_passed = total_number_passed / float(n_samples)
+    if do_print:
+        print("%.2f subsamples passed the test; required fraction is %.2f" % (fraction_passed, min_fraction_passed))
+    if fraction_passed >= min_fraction_passed:
+        if do_print:
+            print("Passed robustness test")
+        return True
+    else:
+        if do_print:
+            print("Did not pass robustness test")
+        return False

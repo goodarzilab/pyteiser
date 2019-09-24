@@ -45,13 +45,35 @@ NUMBER_MODIFIED_MOTIFS_2 = 46
 def handler():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--unique_seeds_filename", help="output: best representatives of each family", type=str)
-    parser.add_argument("--unique_profiles_filename", help="output: profiles of best representatives of each family",
-                                                                                                        type=str)
-    parser.add_argument("--families_classification_filename", help="output: classification of all the passed seeds"
+
+
+    # parser.add_argument("--profiles_folder", help="", type=str)
+    # parser.add_argument("--MI_values_folder", help="", type=str)
+    # parser.add_argument("--passed_seed_folder", help="", type=str)
+    # parser.add_argument("--passed_profiles_folder", help="", type=str)
+    # parser.add_argument("--seed_folder", help="", type=str)
+    #
+    # parser.add_argument("--profiles_filename_template", help="", type=str)
+    # parser.add_argument("--MI_values_filename_template", help="", type=str)
+    # parser.add_argument("--passed_seed_filename_template", help="", type=str)
+    # parser.add_argument("--passed_profiles_filename_template", help="", type=str)
+    # parser.add_argument("--seed_filename_template", help="", type=str)
+
+
+
+
+    parser.add_argument("--unique_seeds_filename", help="best representatives of each family", type=str)
+    parser.add_argument("--unique_profiles_filename", help="profiles of best representatives of each family",
+                                                                                             type=str)
+    parser.add_argument("--families_classification_filename", help="classification of all the passed seeds"
                                                                    "to unique families", type=str)
 
-
+    parser.add_argument("--optimized_seeds_filename", help="output: optimized seeds", type=str)
+    parser.add_argument("--optimized_profiles_filename", help="output: profiles of optimized seeds", type=str)
+    parser.add_argument("--optimized_MI_pv_zscores_filename", help="output: MI values, p-values and z-scores "
+                                                                   "of optimized seeds", type=str)
+    parser.add_argument("--robustness_array_filename", help="output: vector indicating which seeds "
+                                                            "have passed the robustness test", type=str)
 
 
     parser.add_argument("--rna_bin_file", help="referense transcriptome in binary format", type=str)
@@ -59,12 +81,14 @@ def handler():
                                                 "the reference transcriptome", type=str)
 
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
-    parser.add_argument("--maxfreq", help="", type=float)
-    parser.add_argument("--n_permutations", help="number of permutations for the rank test for a seed", type=int)
+    parser.add_argument("--maxfreq", help="maximal seed frequency in the sequences analyzed", type=float)
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
                                                  " for a seed to be considered", type=int)
     parser.add_argument("--random_noseed", help="when choosing the order of positions to optimize, "
                                                 "do not set the random number generator to a specific seed", type=bool)
+    parser.add_argument("--jackknife_n_permutations", help="number of permutations for pvalue calculation in "
+                                                           "jackknife test", type=int)
+    parser.add_argument("--jackknife_max_pvalue", help="maximal pvalue for jackknife test", type=float)
     parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
     parser.add_argument("--jackknife_fraction_retain", help="what fraction of the sample to retain for each test",
                                                                                     type=float)
@@ -85,6 +109,11 @@ def handler():
         unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
         unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
         families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_classification.bin",
+        optimized_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_optimized.bin',
+        optimized_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_optimized.bin',
+        optimized_MI_pv_zscores_filename='',
+        robustness_array_filename='/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_robustness.bin',
+
 
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -96,6 +125,8 @@ def handler():
         random_noseed=0,
         jackknife_n_samples = 10,
         jackknife_fraction_retain = 0.66,
+        jackknife_n_permutations=1000,
+        jackknife_max_pvalue=0.0001,
         jackknife_min_fraction_passed = 0.6,
 
     )
@@ -127,8 +158,6 @@ def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profi
                                                                             is_degenerate = True)
         myfreq = current_profile.values.sum() / float(len(seqs_of_interest))
         tempmi = MI.mut_info(current_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
-
-        print(tempmi, curr_motif.sequence)
 
         if tempmi > bestmi and current_profile.sum() > args.min_occurences and (myfreq < args.maxfreq or myfreq < lastmyfreq):
             n_bestmotif = structures.copy_n_motif(curr_motif)
@@ -187,19 +216,42 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
                                                     bestmi, n_bestmotif, lastmyfreq, args,
                                                     do_print = do_print)
 
-        new_bestmi = 0
-
         keep_elongating = ((new_bestmi >= old_best_mi) and
                            (n_bestmotif.length > old_best_motif.length))
 
     return bestmi, lastmyfreq, n_bestmotif
 
 
-# def optimize_motifs(number_signigicant_seeds, discr_exp_profile, nbins,
-#                     profiles_array, index_array, n_motifs_list, n_seqs_list, args, do_print = False):
+def check_robustness(n_bestmotif, seqs_of_interest,
+                    discr_exp_profile, nbins, args,
+                    do_print = False):
+    bestmotif_profile, _time = matchmaker.calculate_profile_one_motif(n_bestmotif, seqs_of_interest)
+    bestmotif_mi = MI.mut_info(bestmotif_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
+    pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_profile.values, discr_exp_profile, nbins,
+                                                               bestmotif_mi, args.n_permutations)
+
+    passed_jacknife = statistic_tests.jackknife_test(
+                        bestmotif_profile.values, discr_exp_profile, nbins,
+                        args.jackknife_n_permutations,
+                        args.jackknife_max_pvalue,
+                        args.jackknife_n_samples,
+                        args.jackknife_fraction_retain,
+                        args.jackknife_min_fraction_passed,
+                        do_print = do_print)
+    if do_print:
+        print("The final p-value is: %.4f, z-score is: %.3f" % (pvalue, z_score))
+
+    return pvalue, z_score, passed_jacknife
+
+
+
 def optimize_motifs(seeds_initial, profiles_initial,
                     discr_exp_profile, nbins, index_array, seqs_of_interest,
                     args, do_print = True):
+    seeds_optimized = [0] * len(seeds_initial)
+    profiles_optimized = [0] * len(seeds_initial)
+    MI_values = np.array(len(seeds_initial), dtype=np.float64)
+
 
     print("Starting with %d initial seeds" % len(seeds_initial))
 
@@ -215,40 +267,32 @@ def optimize_motifs(seeds_initial, profiles_initial,
         init_best_MI = MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
         lastmyfreq = active_profile.sum() / float(active_profile.shape[0])
 
-        if do_print:
-            print("Optimzing the sequence of motif %d" % i)
-            print("Initial MI = %.5f" % init_best_MI)
-            w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
-            print("initial motif: %s" % w_bestmotif.print_sequence(return_string=True))
-            print("Initial frequency: %.4f" % lastmyfreq)
+        # if do_print:
+        #     print("Optimzing the sequence of motif %d" % i)
+        #     print("Initial MI = %.5f" % init_best_MI)
+        #     w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
+        #     print("initial motif: %s" % w_bestmotif.print_sequence(return_string=True))
+        #     print("Initial frequency: %.4f" % lastmyfreq)
 
         # bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
         #                     discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print,
         #                     random_noseed = args.random_noseed)
 
-        if do_print:
-            print("Elongating motif %d" % i)
+        # if do_print:
+        #     print("Elongating motif %d" % i)
 
-        bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
-                            discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
-        #
-        # bestmotif_profile, _ = matchmaker.calculate_profile_one_motif(n_bestmotif, n_seqs_list)
-        # bestmotif_active_profile = bestmotif_profile[index_array]
-        # bestmotif_mi = MI.mut_info(bestmotif_active_profile, discr_exp_profile, x_bins=2, y_bins=nbins)
-        # pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_active_profile, discr_exp_profile, nbins,
-        #                                                            bestmotif_mi, args.n_permutations)
-        # print("The findal z-score is: %.3f", z_score)
-        #
-        # passed_jacknife = statistic_tests.jackknife_test(args.jackknife_n_samples,
-        #                                                 args.jackknife_fraction_retain,
-        #                                                 args.jackknife_min_fraction_passed)
-        #
-        #
-        # pv_defined = True
-        # if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
-        #     check = 1  # seed passed
-        # else:
-        #     check = -1  # seed didn't pass
+        # bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
+        #                     discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
+
+        if do_print:
+            w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
+            print("Checking robustness of the optimized motif %d (sequence %s)" %
+                  (i, w_bestmotif.print_sequence(return_string=True)))
+
+        is_robust = check_robustness(n_bestmotif, seqs_of_interest,
+                        discr_exp_profile, nbins, args,
+                        do_print = do_print)
+
 
         # TODO: stopped at line 271 of mi_optimize.c
 
