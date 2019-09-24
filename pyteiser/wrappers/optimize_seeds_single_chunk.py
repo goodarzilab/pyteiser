@@ -23,7 +23,7 @@ import modify_seed
 import type_conversions
 import matchmaker
 import statistic_tests
-import copy
+import math
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
@@ -45,19 +45,6 @@ NUMBER_MODIFIED_MOTIFS_2 = 46
 
 def handler():
     parser = argparse.ArgumentParser()
-
-    # parser.add_argument("--profiles_folder", help="", type=str)
-    # parser.add_argument("--MI_values_folder", help="", type=str)
-    # parser.add_argument("--passed_seed_folder", help="", type=str)
-    # parser.add_argument("--passed_profiles_folder", help="", type=str)
-    # parser.add_argument("--seed_folder", help="", type=str)
-    #
-    # parser.add_argument("--profiles_filename_template", help="", type=str)
-    # parser.add_argument("--MI_values_filename_template", help="", type=str)
-    # parser.add_argument("--passed_seed_filename_template", help="", type=str)
-    # parser.add_argument("--passed_profiles_filename_template", help="", type=str)
-    # parser.add_argument("--seed_filename_template", help="", type=str)
-
 
     parser.add_argument("--unique_seeds_filename", help="best representatives of each family", type=str)
     parser.add_argument("--unique_profiles_filename", help="profiles of best representatives of each family",
@@ -91,6 +78,8 @@ def handler():
                                                                                     type=float)
     parser.add_argument("--jackknife_min_fraction_passed", help="what fraction of all iterations should"
                                                                 "pass to consider the motif robust", type=float)
+
+    parser.add_argument("--size_of_chunks", help="how many seeds should 1 process take on", type=float)
 
     parser.set_defaults(
         # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_tarbp2_utrs.bin",
@@ -126,6 +115,7 @@ def handler():
         jackknife_max_pvalue=0.0001,
         jackknife_min_fraction_passed = 0.6,
 
+        size_of_chunks=10,
     )
 
     args = parser.parse_args()
@@ -134,16 +124,44 @@ def handler():
 
 
 def import_modules():
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
 
     global MI
     global IO
+    global sge
 
     import MI
     import IO
+    import sge
 
+
+
+def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks):
+    seeds_number = len(seeds_initial)
+    print("Starting with %d initial seeds" % seeds_number)
+
+    number_of_chunks = math.ceil(seeds_number / size_of_chunks)
+
+    profiles_chunks = np.array_split(profiles_initial, number_of_chunks)
+    seed_array = np.array(seeds_initial)
+    seed_chunks = np.array_split(seed_array, number_of_chunks)
+
+    for pr_ch, s_ch in zip(profiles_chunks, seed_chunks):
+        assert(len(pr_ch) == len(s_ch))
+
+    return seed_chunks, profiles_chunks
+
+
+def pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict):
+    chunk_number = env_variables_dict["task_id"] - 1
+    print("Processing the chunk number ", chunk_number)
+    seed_right_chunk = seed_chunks[chunk_number]
+    profiles_right_chunk = profiles_chunks[chunk_number]
+
+    return seed_right_chunk, profiles_right_chunk
 
 
 def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profile, nbins,
@@ -260,11 +278,6 @@ def optimize_motifs(seeds_initial, profiles_initial,
     seed_charact_array = np.zeros((len(seeds_initial), 3), dtype=np.float64)
     robustness_array = np.zeros(len(seeds_initial), dtype=bool)
 
-    print("Starting with %d initial seeds" % len(seeds_initial))
-
-    seeds_initial = seeds_initial[46:]
-    profiles_initial = profiles_initial[46:]
-
     for i, motif in enumerate(seeds_initial):
         profile = profiles_initial[i]
         active_profile = profile[index_array]
@@ -348,10 +361,16 @@ def main():
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
     seeds_initial = IO.read_motif_file(args.unique_seeds_filename)
     profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename)
-
     seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
+
+    # get the task id
+    env_variables_dict = sge.get_env_variables()
+    seed_chunks, profiles_chunks = chunk_up_input_files(seeds_initial, profiles_initial, args.size_of_chunks)
+    seed_right_chunk, profiles_right_chunk = pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict)
+
+
     seeds_optimized, profiles_optimized, \
-    seed_charact_array, robustness_array  = optimize_motifs(seeds_initial, profiles_initial,
+    seed_charact_array, robustness_array  = optimize_motifs(seed_right_chunk, profiles_right_chunk,
                                             discr_exp_profile, args.nbins, index_array, seqs_of_interest,
                                             args, do_print=True)
     write_outputs(seeds_optimized, profiles_optimized,
