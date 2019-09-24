@@ -262,8 +262,8 @@ def optimize_motifs(seeds_initial, profiles_initial,
 
     print("Starting with %d initial seeds" % len(seeds_initial))
 
-    seeds_initial = seeds_initial[40:]
-    profiles_initial = profiles_initial[40:]
+    seeds_initial = seeds_initial[46:]
+    profiles_initial = profiles_initial[46:]
 
     for i, motif in enumerate(seeds_initial):
         profile = profiles_initial[i]
@@ -287,7 +287,7 @@ def optimize_motifs(seeds_initial, profiles_initial,
         if do_print:
             print("Elongating motif %d" % i)
 
-        bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
+        bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, bestmi, seqs_of_interest,
                             discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
 
         w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
@@ -308,8 +308,6 @@ def optimize_motifs(seeds_initial, profiles_initial,
         profiles_optimized[i] = bestmotif_profile.values
         seed_charact_array[i, : ] = np.array([bestmotif_mi, pvalue, z_score], dtype=np.float64)
         robustness_array[i] = is_robust
-
-        break
 
     return seeds_optimized, profiles_optimized, \
            seed_charact_array, robustness_array

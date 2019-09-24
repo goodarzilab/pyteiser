@@ -48,15 +48,44 @@ def import_modules():
 
     global structures
     global IO
+    global type_conversions
 
     import structures
     import IO
+    import type_conversions
+
+
+def print_read_out_arrays(seeds_optimized, profiles_optimized,
+                          seed_charact_array, robustness_array):
+    print(seed_charact_array.shape)
+    for i in range(len(seeds_optimized)):
+        string_to_print = "Seed %d. Sequence: %s. " % (i, seeds_optimized[i].print_sequence(return_string=True))
+        string_to_print += "MI: %.3f; p-value: %.5f; z-score: %.1f. " % \
+                           (seed_charact_array[i,0], seed_charact_array[i,1], seed_charact_array[i,2])
+        string_to_print += "It binds %d sequences. Robustness: %d" % (profiles_optimized[i].sum(), robustness_array[i])
+
+        print(string_to_print)
 
 
 
 
+def main():
+    import_modules()
+    args = handler()
+
+    seeds_optimized = IO.read_motif_file(args.optimized_seeds_filename)
+    profiles_optimized = IO.unpack_profiles_file(args.optimized_profiles_filename)
+    seed_charact_array = IO.read_np_array(args.optimized_MI_pv_zscores_filename, np.dtype('float64'))
+    robustness_array = IO.read_np_array(args.robustness_array_filename, np.dtype('bool'))
+
+    print_read_out_arrays(seeds_optimized, profiles_optimized,
+                          seed_charact_array, robustness_array)
 
 
+
+
+if __name__ == "__main__":
+    main()
 
 
 

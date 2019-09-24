@@ -419,15 +419,15 @@ def read_classification_array(classification_filename):
 
 
 def write_np_array(inp_array, out_filename):
-    length_uint32 = np.array([inp_array.shape[0]], dtype=np.uint32)
-    length_bitstring = length_uint32.tobytes()
-    array_bitstring = length_bitstring + inp_array.tobytes()
+    shape_n_dimensions = len(inp_array.shape)
+    n_dimentions_bitstring = np.uint8(shape_n_dimensions).tobytes()
+    shape_array_bitstring = np.array(inp_array.shape, dtype=np.uint32).tobytes()
 
+    array_bitstring = inp_array.tobytes()
     md5 = hashlib.md5()
     md5.update(array_bitstring)
     md5_checksum = md5.digest()
-
-    full_bytestring = array_bitstring + md5_checksum
+    full_bytestring = n_dimentions_bitstring + shape_array_bitstring + array_bitstring + md5_checksum
 
     with open(out_filename, 'wb') as wf:
         wf.write(full_bytestring)
@@ -436,20 +436,23 @@ def write_np_array(inp_array, out_filename):
 def read_np_array(inp_filename, dtype):
     with open(inp_filename, 'rb') as rf:
         bitstring = rf.read()
-    length_bytes = bitstring[0: 4]
-    length_value = np.frombuffer(length_bytes, dtype=np.uint32)[0]
-    output_bitstring = bitstring[4 : 4 + 4*length_value]
-    md5_checksum = bitstring[4 + 4*length_value : ]
+
+    n_dimentions_bitstring = bitstring[0 : 1]
+    n_dimentions = np.frombuffer(n_dimentions_bitstring, dtype=np.uint8)[0]
+    shape_array_bitstring = bitstring[1 : 1 + 4 * n_dimentions]
+    shape_array = np.frombuffer(shape_array_bitstring, dtype=np.uint32)
+    flatten_length = int(np.prod(shape_array))
+
+    output_bitstring = bitstring[1 + 4 * n_dimentions :
+                                1 + 4 * n_dimentions + dtype.itemsize * flatten_length]
+    md5_checksum = bitstring[1 + 4 * n_dimentions + dtype.itemsize * flatten_length : ]
     output_array = np.frombuffer(output_bitstring, dtype=dtype)
+    reshaped_array = np.reshape(output_array, shape_array, order='C')
 
-    length_uint32 = np.array([output_array.shape[0]], dtype=np.uint32)
-    length_bitstring = length_uint32.tobytes()
-    array_bitstring = length_bitstring + output_array.tobytes()
-
+    array_bitstring = reshaped_array.tobytes()
     md5 = hashlib.md5()
     md5.update(array_bitstring)
     md5_read = md5.digest()
     assert(md5_checksum == md5_read)
-    assert(length_value == output_array.shape[0])
-    return output_array
+    return reshaped_array
 
