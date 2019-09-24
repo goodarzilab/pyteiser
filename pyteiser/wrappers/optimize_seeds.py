@@ -222,7 +222,8 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
 def get_characteristics(n_bestmotif, seqs_of_interest,
                         discr_exp_profile, nbins, args,
                         do_print = False):
-    bestmotif_profile, _time = matchmaker.calculate_profile_one_motif(n_bestmotif, seqs_of_interest)
+    bestmotif_profile, _time = matchmaker.calculate_profile_one_motif(n_bestmotif, seqs_of_interest,
+                                                                      is_degenerate = True)
     bestmotif_mi = MI.mut_info(bestmotif_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
     pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_profile.values, discr_exp_profile, nbins,
                                                                bestmotif_mi, args.n_permutations)
