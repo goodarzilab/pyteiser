@@ -18,7 +18,7 @@ import structures
 
 
 
-@numba.jit(cache=True, nopython=True, nogil=True)
+@numba.jit(cache=False, nopython=True, nogil=True)
 def match_motif_seq(n_motif, n_sequence, ind, is_degenerate = False):
     # this function only works with n_motif and n_sequence classes,
     # not with w_motif and w_sequence
@@ -45,7 +45,7 @@ def match_motif_seq(n_motif, n_sequence, ind, is_degenerate = False):
     return True
 
 
-@numba.jit(cache=True, nopython=True, nogil=True)
+@numba.jit(cache=False, nopython=True, nogil=True)
 def is_there_motif_instance(n_motif, n_sequence, is_degenerate = False):
     # this function only works with n_motif and n_sequence classes,
     # not with w_motif and w_sequence
