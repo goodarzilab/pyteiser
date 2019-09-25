@@ -1,46 +1,9 @@
 import numpy as np
 import argparse
-import hashlib
-import numba
-import timeit
-
 import os
 import sys
-
-# to make sure relative imports work when some of the wrappers is being implemented as a script
-# see more detailed explanation in the test files
-
-current_script_path = sys.argv[0]
-subpackage_folder_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
-if subpackage_folder_path not in sys.path:
-    sys.path.append(subpackage_folder_path)
-
-import IO
-import MI
-import structures
-import glob_var
-import modify_seed
-import type_conversions
-import matchmaker
-import statistic_tests
 import math
-
-MASK_OUT_SEED_VALUE = np.float64(-1)
-
-NUMBER_MODIFIED_MOTIFS_2 = 46
-
-
-# This script implements greedy search of threshold for statistically significant seeds
-# "Greedy" in this context means that it's using a simple objective function
-# so "greedy" refers to computational time. Therefore, it's not robust and can find quite
-# different (and therefore imprecise) thresholds on each run. The advantage is that it works faster
-# For precise threshold identification, something more advanced (like maybe simulated annealing)
-# has to be implemented. However, Hani claims that in practice it doesn't matter because seeds are
-# redundant and if a good seed didn't pass for some reason there is always a similar seed that did
-
-
-
-# add seeds file to the parameters!
+import copy
 
 
 def handler():
@@ -49,20 +12,22 @@ def handler():
     parser.add_argument("--unique_seeds_filename", help="best representatives of each family", type=str)
     parser.add_argument("--unique_profiles_filename", help="profiles of best representatives of each family",
                                                                                              type=str)
-    parser.add_argument("--families_classification_filename", help="classification of all the passed seeds"
-                                                                   "to unique families", type=str)
-
-    parser.add_argument("--optimized_seeds_filename", help="output: optimized seeds", type=str)
-    parser.add_argument("--optimized_profiles_filename", help="output: profiles of optimized seeds", type=str)
-    parser.add_argument("--optimized_MI_pv_zscores_filename", help="output: MI values, p-values and z-scores "
-                                                                   "of optimized seeds", type=str)
-    parser.add_argument("--robustness_array_filename", help="output: vector indicating which seeds "
-                                                            "have passed the robustness test", type=str)
-
 
     parser.add_argument("--rna_bin_file", help="referense transcriptome in binary format", type=str)
     parser.add_argument("--exp_mask_file", help="file with binary expression file, pre-overlapped with "
                                                 "the reference transcriptome", type=str)
+
+
+    parser.add_argument("--optimized_seeds_folder", help="output: optimized seeds", type=str)
+    parser.add_argument("--optimized_profiles_folder", help="output: profiles of optimized seeds", type=str)
+    parser.add_argument("--optimized_MI_pv_zscores_folder", help="output: MI values, p-values and z-scores", type=str)
+    parser.add_argument("--robustness_array_folder", help="output: vector indicating which seeds have passed the robustness test", type=str)
+
+    parser.add_argument("--optimized_seeds_filename_template", help="", type=str)
+    parser.add_argument("--optimized_profiles_filename_template", help="", type=str)
+    parser.add_argument("--optimized_MI_pv_zscores_filename_template", help="", type=str)
+    parser.add_argument("--robustness_array_filename_template", help="", type=str)
+
 
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--maxfreq", help="maximal seed frequency in the sequences analyzed", type=float)
@@ -82,24 +47,12 @@ def handler():
     parser.add_argument("--size_of_chunks", help="how many seeds should 1 process take on", type=float)
 
     parser.set_defaults(
-        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_tarbp2_utrs.bin",
-        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_unique_100k_tarbp2_utrs.bin",
-        # families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_tarbp2_utrs_classification.bin",
-
-
-        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_snrnpa1.bin",
-        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_unique_100k_snrnpa1.bin",
-        # families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/seeds_unique_100k_snrnpa1_classification.bin",
-
-
-        unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
-        unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
-        families_classification_filename="/Users/student/Documents/hani/programs/pyteiser/data/seeds_family_classification/seeds_4-7_4-9_4-6_14-20_combined/test_1_2_classification.bin",
-        optimized_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_optimized.bin',
-        optimized_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_optimized.bin',
-        optimized_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/optimized_seeds_characteristics/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_characteristics.bin',
-        robustness_array_filename='/Users/student/Documents/hani/programs/pyteiser/data/seeds_robustness/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_robustness.bin',
-
+        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
+        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
+        # optimized_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_optimized.bin',
+        # optimized_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_optimized.bin',
+        # optimized_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/optimized_seeds_characteristics/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_characteristics.bin',
+        # robustness_array_filename='/Users/student/Documents/hani/programs/pyteiser/data/seeds_robustness/seeds_4-7_4-9_4-6_14-20_individual/test_1_2_robustness.bin',
 
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
@@ -125,6 +78,7 @@ def handler():
 
 def import_modules():
     current_wd = os.getenv('SGE_O_WORKDIR')
+
     subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
     if subpackage_folder_path not in sys.path:
         sys.path.append(subpackage_folder_path)
@@ -132,10 +86,20 @@ def import_modules():
     global MI
     global IO
     global sge
+    global structures
+    global modify_seed
+    global type_conversions
+    global matchmaker
+    global statistic_tests
 
     import MI
     import IO
     import sge
+    import structures
+    import modify_seed
+    import type_conversions
+    import matchmaker
+    import statistic_tests
 
 
 
@@ -156,7 +120,7 @@ def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks):
 
 
 def pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict):
-    chunk_number = env_variables_dict["task_id"] - 1
+    chunk_number = int(env_variables_dict["task_id"]) - 1
     print("Processing the chunk number ", chunk_number)
     seed_right_chunk = seed_chunks[chunk_number]
     profiles_right_chunk = profiles_chunks[chunk_number]
@@ -326,21 +290,6 @@ def optimize_motifs(seeds_initial, profiles_initial,
            seed_charact_array, robustness_array
 
 
-
-
-def write_outputs(seeds_optimized, profiles_optimized,
-                  seed_charact_array, robustness_array,
-                  args):
-    IO.write_list_of_seeds(seeds_optimized, args.optimized_seeds_filename)
-    IO.write_array_of_profiles(profiles_optimized, args.optimized_profiles_filename)
-    IO.write_np_array(seed_charact_array, args.optimized_MI_pv_zscores_filename)
-    IO.write_np_array(robustness_array, args.robustness_array_filename)
-
-
-
-
-
-
 def read_sequences(rna_bin_filename):
     seqs_dict, seqs_order = IO.read_rna_bin_file(rna_bin_filename)
     w_seqs_list = [seqs_dict[name] for name in seqs_order]
@@ -349,6 +298,21 @@ def read_sequences(rna_bin_filename):
     return n_seqs_list
 
 
+def make_output_filenames(env_variables_dict, args):
+    file_index_to_use =  env_variables_dict["task_id"]
+
+    seed_filename_short = "%s_%s.bin" % (args.optimized_seeds_filename_template, file_index_to_use)
+    profiles_filename_short = "%s_%s.bin" % (args.optimized_profiles_filename_template, file_index_to_use)
+    char_filename_short = "%s_%s.bin" % (args.optimized_MI_pv_zscores_filename_template, file_index_to_use)
+    robustness_filename_short = "%s_%s.bin" % (args.robustness_array_filename_template, file_index_to_use)
+
+    seeds_filename_full = os.path.join(args.optimized_seeds_folder, seed_filename_short)
+    profiles_filename_full = os.path.join(args.optimized_profiles_folder, profiles_filename_short)
+    char_filename_full = os.path.join(args.optimized_MI_pv_zscores_folder, char_filename_short)
+    robustness_filename_full = os.path.join(args.robustness_array_folder, robustness_filename_short)
+
+    return seeds_filename_full, profiles_filename_full, \
+           char_filename_full, robustness_filename_full
 
 
 
@@ -368,14 +332,19 @@ def main():
     seed_chunks, profiles_chunks = chunk_up_input_files(seeds_initial, profiles_initial, args.size_of_chunks)
     seed_right_chunk, profiles_right_chunk = pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict)
 
+    seeds_filename_full, profiles_filename_full, \
+    char_filename_full, robustness_filename_full = make_output_filenames(env_variables_dict, args)
+
 
     seeds_optimized, profiles_optimized, \
     seed_charact_array, robustness_array  = optimize_motifs(seed_right_chunk, profiles_right_chunk,
                                             discr_exp_profile, args.nbins, index_array, seqs_of_interest,
                                             args, do_print=True)
-    write_outputs(seeds_optimized, profiles_optimized,
-                  seed_charact_array, robustness_array,
-                  args)
+
+    IO.write_list_of_seeds(seeds_optimized, seeds_filename_full)
+    IO.write_array_of_profiles(profiles_optimized, profiles_filename_full)
+    IO.write_np_array(seed_charact_array, char_filename_full)
+    IO.write_np_array(robustness_array, robustness_filename_full)
 
 
 

@@ -8,13 +8,14 @@ import math
 def handler():
     parser = argparse.ArgumentParser()
 
-    #script to submit itself
+    # script to submit itself
     parser.add_argument("--script_to_sumbit", help="", type=str)
     parser.add_argument("--do_print_command", help="if the script should print the command it's submitting", type=str)
 
-    # list of input file indices (to create mapping to task numbers)
-    parser.add_argument("--input_indices_list_file", help="input: list of indices of files to process", type=str)
-    parser.add_argument("--mapping_task_ids_folder", help="output: mapping of file indices to task ids", type=str)
+    # a single input file for optimize_seeds script to determine the number of chunks
+    # and the size of chunk
+    parser.add_argument("--unique_seeds_filename", help="best representatives of each family", type=str)
+    parser.add_argument("--size_of_chunks", help="how many seeds should 1 process take on", type=float)
 
     # qsub submission parameters
     parser.add_argument("--python_binary", help="S parameter of qsub", type=str)
@@ -49,7 +50,9 @@ def handler():
         include_queue_parameter='y',
         queue='long.q',
         restart='yes',
-        do_print_command='no'
+        do_print_command='no',
+
+        size_of_chunks=10,
     )
 
     args, unknown = parser.parse_known_args()
@@ -111,6 +114,8 @@ def construct_command(args, unknown_args, number_of_tasks):
     # add the script to run
     command_template += "{} ".format(args.script_to_sumbit)
 
+    # add unique_seeds_filename parameter
+    command_template += "--unique_seeds_filename {} ".format(args.unique_seeds_filename)
     # add the parameter defining the size of each chunk
     command_template += "--size_of_chunks {} ".format(args.size_of_chunks)
 
