@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/matchmaker.py" afterPath="$PROJECT_DIR$/pyteiser/matchmaker.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_matchmaker.py" afterPath="$PROJECT_DIR$/tests/test_matchmaker.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,8 +61,18 @@
       <file leaf-file-name="matchmaker.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/matchmaker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+            <state relative-caret-position="100">
+              <caret line="41" column="63" selection-start-line="41" selection-start-column="63" selection-end-line="41" selection-end-column="63" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="210" column="34" selection-start-line="210" selection-start-column="34" selection-end-line="210" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -104,7 +116,6 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles_v2.py" />
         <option value="$PROJECT_DIR$/pyteiser/sge.py" />
         <option value="$PROJECT_DIR$/helper_scripts/parse_list_incomplete_files.py" />
-        <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" />
         <option value="$PROJECT_DIR$/helper_scripts/write_threshold_values.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" />
@@ -131,6 +142,7 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_universal_submission.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/qsub_optimize_seeds.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" />
+        <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
         <option value="$PROJECT_DIR$/pyteiser/matchmaker.py" />
       </list>
     </option>
@@ -169,43 +181,9 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/matchmaker.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
   </component>
-  <component name="RunManager" selected="Python.combine_optimized_seeds">
-    <configuration default="false" name="MI" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/MI.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_MI" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_MI.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.test_matchmaker">
     <configuration default="false" name="filter_passed_seeds_with_CMI" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -253,6 +231,45 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/combine_optimized_seeds.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest test_profiles_compression_decompression" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="test_profiles_compression_decompression" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_FUNCTION" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_matchmaker" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -392,19 +409,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.MI" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test_MI" />
-      <item index="2" class="java.lang.String" itemvalue="Python.filter_passed_seeds_with_CMI" />
-      <item index="3" class="java.lang.String" itemvalue="Python.optimize_seeds" />
-      <item index="4" class="java.lang.String" itemvalue="Python.combine_optimized_seeds" />
+      <item index="0" class="java.lang.String" itemvalue="Python.filter_passed_seeds_with_CMI" />
+      <item index="1" class="java.lang.String" itemvalue="Python.optimize_seeds" />
+      <item index="2" class="java.lang.String" itemvalue="Python.combine_optimized_seeds" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest test_profiles_compression_decompression" />
+      <item index="4" class="java.lang.String" itemvalue="Python.test_matchmaker" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.combine_optimized_seeds" />
-        <item index="1" class="java.lang.String" itemvalue="Python.optimize_seeds" />
-        <item index="2" class="java.lang.String" itemvalue="Python.filter_passed_seeds_with_CMI" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test_MI" />
-        <item index="4" class="java.lang.String" itemvalue="Python.MI" />
+        <item index="0" class="java.lang.String" itemvalue="Python.test_matchmaker" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest test_profiles_compression_decompression" />
+        <item index="2" class="java.lang.String" itemvalue="Python.combine_optimized_seeds" />
+        <item index="3" class="java.lang.String" itemvalue="Python.optimize_seeds" />
+        <item index="4" class="java.lang.String" itemvalue="Python.filter_passed_seeds_with_CMI" />
       </list>
     </recent_temporary>
   </component>
@@ -421,13 +438,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00093" summary="added tests for degenerate matchmaker">
-      <created>1567808449289</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1567808449289</updated>
     </task>
     <task id="LOCAL-00094" summary="prepare MI calculations for qsub submissions">
       <created>1568064259845</created>
@@ -765,7 +775,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569427826046</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="try no cache">
+      <created>1569430849549</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1569430849549</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -789,6 +806,9 @@
     </history-entry>
     <history-entry file="Unittest_test_np_unique_return_counts - 2019.08.21 at 16h 00m 41s.xml">
       <configuration name="Unittest test_np_unique_return_counts" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_test_profiles_compression_decompression - 2019.09.25 at 10h 05m 07s.xml">
+      <configuration name="Unittest test_profiles_compression_decompression" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -847,7 +867,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixed small bug in the submission script" />
     <MESSAGE value="add seed into discretize function" />
     <MESSAGE value="combine seeds above threshold" />
     <MESSAGE value="update threshold script output" />
@@ -872,7 +891,8 @@
     <MESSAGE value="fixed reading of characteristic array" />
     <MESSAGE value="qsub_optimize_seeds first version" />
     <MESSAGE value="qsub_optimize_seeds second version" />
-    <option name="LAST_COMMIT_MESSAGE" value="qsub_optimize_seeds second version" />
+    <MESSAGE value="try no cache" />
+    <option name="LAST_COMMIT_MESSAGE" value="try no cache" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1028,14 +1048,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="130" column="44" selection-start-line="130" selection-start-column="44" selection-end-line="130" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -1210,10 +1222,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="210" column="34" selection-start-line="210" selection-start-column="34" selection-end-line="210" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/matchmaker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+        <state relative-caret-position="100">
+          <caret line="41" column="63" selection-start-line="41" selection-start-column="63" selection-end-line="41" selection-end-column="63" />
           <folding />
         </state>
       </provider>

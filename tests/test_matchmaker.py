@@ -256,10 +256,10 @@ def main():
     test_matchmaker_degenerate()
 
     # test that the number of instances identified is correct
-    # test_calculate_seed_profiles(args)
+    test_calculate_seed_profiles(args)
 
     # test that I can
-    test_profiles_compression_decompression(args)
+    # test_profiles_compression_decompression(args)
 
 
 if __name__ == "__main__":
