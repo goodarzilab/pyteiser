@@ -116,22 +116,6 @@ def read_chunks(filenames_tuples_list):
     return seeds_optimized_list, profiles_optimized_array, seed_charact_array, robustness_array
 
 
-
-
-
-# def print_read_out_arrays(seeds_optimized, profiles_optimized,
-#                           seed_charact_array, robustness_array):
-#     print(seed_charact_array.shape)
-#     for i in range(len(seeds_optimized)):
-#         string_to_print = "Seed %d. Sequence: %s. " % (i, seeds_optimized[i].print_sequence(return_string=True))
-#         string_to_print += "MI: %.3f; p-value: %.5f; z-score: %.1f. " % \
-#                            (seed_charact_array[i,0], seed_charact_array[i,1], seed_charact_array[i,2])
-#         string_to_print += "It binds %d sequences. Robustness: %d" % (profiles_optimized[i].sum(), robustness_array[i])
-#
-#         print(string_to_print)
-#
-
-
 def main():
     import_modules()
     args = handler()
@@ -147,10 +131,6 @@ def main():
     IO.write_np_array(seed_charact_array, args.combined_MI_pv_zscores_filename)
     IO.write_np_array(robustness_array, args.combined_robustness_filename)
 
-
-    #
-    # print_read_out_arrays(seeds_optimized, profiles_optimized,
-    #                       seed_charact_array, robustness_array)
 
 
 
