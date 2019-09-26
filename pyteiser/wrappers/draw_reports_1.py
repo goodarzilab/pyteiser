@@ -58,11 +58,18 @@ def read_seeds_and_characteristics(args):
 
 def print_read_out_arrays(seeds_optimized, profiles_optimized,
                           seed_charact_array, robustness_array):
-    for i in range(len(seeds_optimized)):
+    MI_values_array = seed_charact_array[:, 0]
+    seed_indices_sorted = np.argsort(MI_values_array)[::-1]
+
+    for i in seed_indices_sorted:
+        is_robust = robustness_array[i]
+        if not is_robust:
+            continue
+
         string_to_print = "Seed %d. Sequence: %s. " % (i, seeds_optimized[i].print_sequence(return_string=True))
         string_to_print += "MI: %.3f; p-value: %.5f; z-score: %.1f. " % \
                            (seed_charact_array[i,0], seed_charact_array[i,1], seed_charact_array[i,2])
-        string_to_print += "It binds %d sequences. Robustness: %d" % (profiles_optimized[i].sum(), robustness_array[i])
+        string_to_print += "It binds %d sequences." % (profiles_optimized[i].sum())
 
         print(string_to_print)
 
