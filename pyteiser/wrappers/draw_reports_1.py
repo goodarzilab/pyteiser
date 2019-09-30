@@ -74,6 +74,7 @@ def print_read_out_arrays(seeds_optimized, profiles_optimized,
         print(string_to_print)
 
 
+CATS!!!!!
 
 
 def main():
