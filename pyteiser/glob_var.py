@@ -76,6 +76,10 @@ _nt_to_char_mapping = {'U' : _U,
                        'H' : _H,
                        'V' : _V}
 
+
+
+
+
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}
 

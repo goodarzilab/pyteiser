@@ -15,15 +15,15 @@ def handler():
     parser.add_argument("--combined_robustness_filename", help="", type=str)
 
     parser.set_defaults(
-        # combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
-        # combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/profiles_optimized_100k_tarbp2_utrs_10k.bin',
-        # combined_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_characteristics_optimized_100k_tarbp2_utrs_10k.bin',
-        # combined_robustness_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/robustness_optimized_100k_tarbp2_utrs_10k.bin',
+        combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
+        combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/profiles_optimized_100k_tarbp2_utrs_10k.bin',
+        combined_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_characteristics_optimized_100k_tarbp2_utrs_10k.bin',
+        combined_robustness_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/robustness_optimized_100k_tarbp2_utrs_10k.bin',
 
-        combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/seed_optimized_100k_snrnpa1_10k.bin',
-        combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/profiles_optimized_100k_snrnpa1_10k.bin',
-        combined_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/seed_characteristics_optimized_100k_snrnpa1_10k.bin',
-        combined_robustness_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/robustness_optimized_100k_snrnpa1_10k.bin',
+        # combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/seed_optimized_100k_snrnpa1_10k.bin',
+        # combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/profiles_optimized_100k_snrnpa1_10k.bin',
+        # combined_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/seed_characteristics_optimized_100k_snrnpa1_10k.bin',
+        # combined_robustness_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/robustness_optimized_100k_snrnpa1_10k.bin',
     )
 
     args = parser.parse_args()
@@ -74,7 +74,6 @@ def print_read_out_arrays(seeds_optimized, profiles_optimized,
         print(string_to_print)
 
 
-CATS!!!!!
 
 
 def main():
