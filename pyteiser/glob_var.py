@@ -59,6 +59,7 @@ _char_to_nt_mapping = {_U : 'U',
                         _V : 'V'
                        }
 
+
 _nt_to_char_mapping = {'U' : _U,
                        'T' : _U,
                        'C' : _C,
@@ -76,8 +77,23 @@ _nt_to_char_mapping = {'U' : _U,
                        'H' : _H,
                        'V' : _V}
 
-
-
+# see Thruston's responce here for set initiation with single string argument https://stackoverflow.com/questions/17373161/use-curly-braces-to-initialize-a-set-in-python
+_degenerate_nts_mapping = {'U' : set('U'),
+                       'T' : set('U'),
+                       'C' : set('C'),
+                       'G' : set('G'),
+                       'A' : set('A'),
+                       'N' : set(''),
+                       'Y' : set('UC'),
+                       'R' : set('AG'),
+                       'K' : set('UG'),
+                       'M' : set('AC'),
+                       'S' : set('GC'),
+                       'W' : set('AU'),
+                       'B' : set('GUC'),
+                       'D' : set('GAU'),
+                       'H' : set('ACU'),
+                       'V' : set('GCA')}
 
 
 _char_to_struct_mapping = {_stem : '<',
