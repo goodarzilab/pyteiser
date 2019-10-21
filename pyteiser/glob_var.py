@@ -77,8 +77,25 @@ _nt_to_char_mapping = {'U' : _U,
                        'H' : _H,
                        'V' : _V}
 
+_degenerate_nts_mapping = {_U : set([_U]),
+                       _C : set([_C]),
+                       _G : set([_G]),
+                       _A : set([_A]),
+                       _N : set([]),
+                       _Y : set([_U, _C]),
+                       _R : set([_A, _G]),
+                       _K : set([_U, _G]),
+                       _M : set([_A, _C]),
+                       _S : set([_G, _C]),
+                       _W : set([_A, _U]),
+                       _B : set([_G, _U, _C]),
+                       _D : set([_G, _A, _U]),
+                       _H : set([_A, _C, _U]),
+                       _V : set([_G, _C, _A])}
+
+
 # see Thruston's responce here for set initiation with single string argument https://stackoverflow.com/questions/17373161/use-curly-braces-to-initialize-a-set-in-python
-_degenerate_nts_mapping = {'U' : set('U'),
+_degenerate_nts_char_mapping = {'U' : set('U'),
                        'T' : set('U'),
                        'C' : set('C'),
                        'G' : set('G'),
@@ -95,6 +112,15 @@ _degenerate_nts_mapping = {'U' : set('U'),
                        'H' : set('ACU'),
                        'V' : set('GCA')}
 
+_complementary_nt_sets_dict = {
+                        _U : set([_A, _G]),
+                        _G : set([_U, _C]),
+                        _C : set([_G]),
+                        _A : set([_U])}
+
+
+
+PWM_LABELS = ['A','C','G','U']
 
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}
