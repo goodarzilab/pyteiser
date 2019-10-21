@@ -118,6 +118,22 @@ _complementary_nt_sets_dict = {
                         _C : set([_G]),
                         _A : set([_U])}
 
+_complementary_deg_nt_dict = {
+                        _U: _R,
+                        _C: _G,
+                        _G: _Y,
+                        _A: _U,
+                        _N: _N,
+                        _Y: _R,
+                        _R: _Y,
+                        _K: _N,
+                        _M: _K,
+                        _S: _B,
+                        _W: _D,
+                        _B: _N,
+                        _D: _N,
+                        _H: _D,
+                        _V: _B}
 
 
 PWM_LABELS = ['A','C','G','U']
