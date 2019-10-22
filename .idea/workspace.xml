@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/IO.py" afterPath="$PROJECT_DIR$/pyteiser/IO.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/glob_var.py" afterPath="$PROJECT_DIR$/pyteiser/glob_var.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/modify_seed.py" afterPath="$PROJECT_DIR$/pyteiser/modify_seed.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/representation.py" afterPath="$PROJECT_DIR$/pyteiser/representation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/structures.py" afterPath="$PROJECT_DIR$/pyteiser/structures.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/type_conversions.py" afterPath="$PROJECT_DIR$/pyteiser/type_conversions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_matchmaker.py" afterPath="$PROJECT_DIR$/tests/test_matchmaker.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,24 +24,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="representation.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="representation.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/representation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+            <state relative-caret-position="593">
+              <caret line="42" column="7" selection-start-line="42" selection-start-column="7" selection-end-line="42" selection-end-column="7" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="type_conversions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="25" column="51" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="51" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -55,22 +39,10 @@
       <file leaf-file-name="test_drawing_representation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_drawing_representation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+            <state relative-caret-position="540">
+              <caret line="36" column="47" selection-start-line="36" selection-start-column="47" selection-end-line="36" selection-end-column="47" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="839">
-              <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -79,60 +51,8 @@
       <file leaf-file-name="glob_var.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="702">
-              <caret line="41" column="33" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="modify_seed.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/modify_seed.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="474">
+            <state relative-caret-position="570">
               <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="optimize_seeds_single_chunk.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="606">
-              <caret line="272" column="44" selection-start-line="272" selection-start-column="44" selection-end-line="272" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="qsub_optimize_seeds.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_optimize_seeds.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-138">
-              <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sge.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pyteiser/sge.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="23" column="38" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_matchmaker.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -153,7 +73,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tests/test_IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/binarize_sequences.py" />
         <option value="$PROJECT_DIR$/pyteiser/seeds_generator.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py" />
@@ -200,10 +119,11 @@
         <option value="$PROJECT_DIR$/pyteiser/glob_var.py" />
         <option value="$PROJECT_DIR$/tests/test_matchmaker.py" />
         <option value="$PROJECT_DIR$/pyteiser/type_conversions.py" />
-        <option value="$PROJECT_DIR$/pyteiser/representation.py" />
         <option value="$PROJECT_DIR$/pyteiser/modify_seed.py" />
         <option value="$PROJECT_DIR$/pyteiser/structures.py" />
+        <option value="$PROJECT_DIR$/tests/test_elongated_seed_profile.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" />
+        <option value="$PROJECT_DIR$/pyteiser/representation.py" />
       </list>
     </option>
   </component>
@@ -241,26 +161,9 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/wrappers/qsub_optimize_seeds.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/glob_var.py" />
   </component>
-  <component name="RunManager" selected="Python.optimize_seeds_single_chunk">
-    <configuration default="false" name="test_matchmaker" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_matchmaker.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.representation">
     <configuration default="false" name="test_drawing_representation" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -274,23 +177,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_drawing_representation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="representation" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/representation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -328,6 +214,40 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_elongated_seed_profile" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_elongated_seed_profile.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="representation" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/representation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -467,19 +387,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.test_matchmaker" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
-      <item index="2" class="java.lang.String" itemvalue="Python.representation" />
-      <item index="3" class="java.lang.String" itemvalue="Python.modify_seed" />
-      <item index="4" class="java.lang.String" itemvalue="Python.optimize_seeds_single_chunk" />
+      <item index="0" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
+      <item index="1" class="java.lang.String" itemvalue="Python.modify_seed" />
+      <item index="2" class="java.lang.String" itemvalue="Python.optimize_seeds_single_chunk" />
+      <item index="3" class="java.lang.String" itemvalue="Python.test_elongated_seed_profile" />
+      <item index="4" class="java.lang.String" itemvalue="Python.representation" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.optimize_seeds_single_chunk" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
-        <item index="2" class="java.lang.String" itemvalue="Python.modify_seed" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test_matchmaker" />
-        <item index="4" class="java.lang.String" itemvalue="Python.representation" />
+        <item index="0" class="java.lang.String" itemvalue="Python.representation" />
+        <item index="1" class="java.lang.String" itemvalue="Python.test_elongated_seed_profile" />
+        <item index="2" class="java.lang.String" itemvalue="Python.optimize_seeds_single_chunk" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
+        <item index="4" class="java.lang.String" itemvalue="Python.modify_seed" />
       </list>
     </recent_temporary>
   </component>
@@ -496,20 +416,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00101" summary="fixed float/int bug in thresholding">
-      <created>1568082394212</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1568082394212</updated>
-    </task>
-    <task id="LOCAL-00102" summary="thresholding confuses last positive and first negative seeds: fixed">
-      <created>1568086075542</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1568086075542</updated>
     </task>
     <task id="LOCAL-00103" summary="thresholding confuses last positive and first negative seeds: fixed">
       <created>1568090528881</created>
@@ -840,7 +746,21 @@
       <option name="project" value="LOCAL" />
       <updated>1571722238176</updated>
     </task>
-    <option name="localTasksCounter" value="150" />
+    <task id="LOCAL-00150" summary="test the individual matches for one elongated motif">
+      <created>1571777223818</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1571777223818</updated>
+    </task>
+    <task id="LOCAL-00151" summary="test the individual matches for one elongated motif">
+      <created>1571777267496</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1571777267496</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -878,7 +798,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18910256" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18910256" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -925,7 +845,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add find_missing_files and updat histogram_2D" />
     <MESSAGE value="fixed imports in combine_passed_seeds" />
     <MESSAGE value="added combining profiles in combine_passed_seeds" />
     <MESSAGE value="created filter_passed_seeds_with_CMI" />
@@ -950,7 +869,8 @@
     <MESSAGE value="cats" />
     <MESSAGE value="degenerate complementary mapping" />
     <MESSAGE value="fixed the adjustment of linear lenght after structure change in n_motif" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed the adjustment of linear lenght after structure change in n_motif" />
+    <MESSAGE value="test the individual matches for one elongated motif" />
+    <option name="LAST_COMMIT_MESSAGE" value="test the individual matches for one elongated motif" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -965,7 +885,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/random_scripts/find_incomplete_profiles.py" />
     <entry file="file://$PROJECT_DIR$/random_scripts/launch_individual_processes.py" />
     <entry file="file://$PROJECT_DIR$/random_scripts/parse_list_incomplete_files.py" />
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles.py" />
@@ -1193,17 +1112,7 @@
         <state relative-caret-position="0">
           <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_drawing_representation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1224,22 +1133,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="41" column="33" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/sge.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -1248,54 +1141,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_optimize_seeds.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_elongated_seed_profile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-138">
-          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="25" column="51" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/representation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+        <state relative-caret-position="284">
+          <caret line="63" column="84" selection-start-line="63" selection-start-column="84" selection-end-line="63" selection-end-column="84" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_matchmaker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="839">
-          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="370">
+          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/modify_seed.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="474">
-          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+        <state relative-caret-position="64">
+          <caret line="33" column="28" selection-start-line="33" selection-start-column="28" selection-end-line="33" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="217" column="45" selection-start-line="217" selection-start-column="45" selection-end-line="217" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="25" column="51" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_drawing_representation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="36" column="47" selection-start-line="36" selection-start-column="47" selection-end-line="36" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_optimize_seeds.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="606">
-          <caret line="272" column="44" selection-start-line="272" selection-start-column="44" selection-end-line="272" selection-end-column="44" />
+        <state relative-caret-position="923">
+          <caret line="352" column="21" selection-start-line="352" selection-start-column="21" selection-end-line="352" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/representation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="593">
+          <caret line="42" column="7" selection-start-line="42" selection-start-column="7" selection-end-line="42" selection-end-column="7" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

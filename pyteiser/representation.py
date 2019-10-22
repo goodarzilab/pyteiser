@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import seqlogo
 import os
 import sys
 
@@ -13,7 +15,33 @@ import modify_seed
 import type_conversions
 
 
+def draw_pic():
+    ACGT_frequencies = np.zeros((4, 4))
+    ACGT_frequencies[0, 0] = 1
+    ACGT_frequencies[1, 1] = 1
+    ACGT_frequencies[1, 2] = 1
+    ACGT_frequencies[2, 1] = 1
+    ACGT_frequencies[2, 2] = 1
+    ACGT_frequencies[2, 3] = 1
+    ACGT_frequencies[3, 1] = 1
+    ACGT_frequencies[3, 2] = 1
+    ACGT_frequencies[3, 3] = 1
+    ACGT_frequencies[3, 0] = 1
 
+    ACGT_frequencies = ACGT_frequencies / ACGT_frequencies.sum(axis=1, keepdims=True)
+    ACGT_frequencies_pd = pd.DataFrame(ACGT_frequencies)
+
+
+    background_NA_dict = {nt: 0.25 for nt in 'ACGU'}
+    background_NA_list = np.array(list(background_NA_dict.values()))
+
+    ACGT_ppm_temp = seqlogo.Ppm(ACGT_frequencies_pd, alphabet_type='RNA', background=background_NA_list)
+    ACGT_ppm_temp.idxmax = ACGT_frequencies_pd.idxmax
+    ACGT_frequencies_ppm = seqlogo.Ppm(ACGT_ppm_temp, alphabet_type='RNA', alphabet='ACGU',
+                                       background=background_NA_list)
+
+    seqlogo.seqlogo(ACGT_frequencies_ppm, color_scheme='classic',
+                    format='png', size='medium', filename='/Users/student/Desktop/a2.png')
 
 
 
@@ -42,4 +70,9 @@ def generate_PWM_from_motif(inp_w_motif, do_print = True):
 
 
 
+
+
     return pwm
+
+
+draw_pic()
