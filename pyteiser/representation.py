@@ -9,55 +9,37 @@ if subpackage_folder_path not in sys.path:
 
 import glob_var
 
-
-
-def adjust_linear_length(w_motif):
-    stem_count = np.count_nonzero(w_motif.structure == glob_var._stem)
-    loop_count = np.count_nonzero(w_motif.structure == glob_var._loop)
-    w_motif.linear_length = 2 * stem_count + loop_count
-
-
-
-def get_linear_sequence(w_motif):
-    w_motif.print()
-
-    full_sequence = np.zeros(w_motif.linear_length)
-
-    left_index = 0
-    right_index = left_index + w_motif.linear_length - 1
-
-    for i in range(w_motif.length):
-
-
-        print(left_index, right_index)
-
-        current_nt = w_motif.sequence[left_index]
-        complementary_nt = glob_var._complementary_deg_nt_dict[current_nt]
-
-        if w_motif.structure[i] == glob_var._stem:
-            full_sequence[right_index] = complementary_nt
-        full_sequence[left_index] = w_motif.sequence[left_index]
-
-        left_index += 1
-        right_index -= 1
+import modify_seed
+import type_conversions
 
 
 
 
 
 
-def generate_PWM_from_motif(inp_w_motif):
+
+def generate_PWM_from_motif(inp_w_motif, do_print = True):
     pwm = np.zeros((inp_w_motif.linear_length, 4))
 
     labels = glob_var.PWM_LABELS
 
-    inp_w_motif.print()
-    inp_w_motif.print_linear_sequence()
+    if do_print:
+        print("Short motif representation:")
+        inp_w_motif.print()
+        print("Full motif representation:")
+        inp_w_motif.print_linear()
+        print()
 
-    # adjust_linear_length(inp_w_motif)
-    # get_linear_sequence(inp_w_motif)
+    inp_n_motif = type_conversions.w_to_n_motif(inp_w_motif)
+    m_seeds = modify_seed.elongate_motif(inp_n_motif)
+
+    for seed in m_seeds:
+        current_w_seed = type_conversions.n_to_w_motif(seed)
+        current_w_seed.print()
+        current_w_seed.print_linear()
+        print()
+
 
 
 
     return pwm
-# _degenerate_nts_mapping

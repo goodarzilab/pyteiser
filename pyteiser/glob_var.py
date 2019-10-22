@@ -39,6 +39,7 @@ _stem = np.uint8(1)
 _loop = np.uint8(2)
 
 STRUCT_LIST = np.array([_stem, _loop])
+STRUCT_LIST_CHAR = ['stem', 'loop']
 
 _increment = np.uint8(1)
 

@@ -36,6 +36,7 @@ def decompress_motifs_from_bitstring(bitstring):
         current_motif = structures.w_motif(stem_length, loop_length)
         current_motif.sequence = curr_sequence
         current_motif.structure = curr_structure
+        current_motif.adjust_linear_length()
         current_motif.compress()
 
         # current_motif.print_sequence()

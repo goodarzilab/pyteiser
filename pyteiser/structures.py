@@ -49,21 +49,27 @@ class w_motif:
             return string_to_print
 
     def print_linear_structure(self, return_string = False):
-        linear_structure_array = [] * self.linear_length
+        linear_structure_array = [None] * self.linear_length
 
         left_index = 0
         right_index = left_index + self.linear_length - 1
 
         for i in range(self.length):
-            linear_structure_array = #self.sequence[left_index]
-
             if self.structure[i] == glob_var._stem:
-                self.linear_sequence[right_index] = complementary_nt
+                linear_structure_array[right_index] = '>'
+                linear_structure_array[left_index] = '<'
                 left_index += 1
                 right_index -= 1
             else:
+                linear_structure_array[left_index] = '.'
                 left_index += 1
 
+        string_to_print = ''.join(linear_structure_array)
+
+        if not return_string:
+            print(string_to_print)
+        else:
+            return string_to_print
 
 
     def print_structure(self, return_string = False):
@@ -77,6 +83,11 @@ class w_motif:
     def print(self):
         self.print_sequence()
         self.print_structure()
+
+
+    def print_linear(self):
+        self.print_linear_sequence()
+        self.print_linear_structure()
 
 
     def eq(self, other):
@@ -134,6 +145,7 @@ class w_motif:
         motif_copy = w_motif(self.stem_length, self.loop_length)
         motif_copy.sequence = self.sequence
         motif_copy.structure = self.structure
+        motif_copy.adjust_linear_length()
         return motif_copy
 
 
@@ -144,12 +156,12 @@ class w_motif:
 
 
     def change_structure_position(self, position, st_type):
-        if st_type == 'loop':
+        if st_type == glob_var._loop:
             self.structure[position] = glob_var._loop
-        elif st_type == 'stem':
+        elif st_type == glob_var._stem:
             self.structure[position] = glob_var._stem
         else:
-            print("Inappropriate secondary structure keyword!")
+            print("Inappropriate secondary structure value!")
             sys.exit(1)
         self.adjust_linear_length()
 
@@ -330,6 +342,13 @@ class n_motif:
         stem_count = np.sum(self.structure == glob_var._stem)
         loop_count = np.sum(self.structure == glob_var._loop)
         self.linear_length = 2 * stem_count + loop_count
+
+    def change_structure_position(self, position, st_type):
+        if st_type == glob_var._loop:
+            self.structure[position] = glob_var._loop
+        elif st_type == glob_var._stem:
+            self.structure[position] = glob_var._stem
+        self.adjust_linear_length()
 
 
 spec_sequence = [

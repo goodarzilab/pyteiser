@@ -139,13 +139,13 @@ def test_matchmaker_degenerate():
 def test_matchmaker_elongated_seed():
     test_motif_1 = structures.w_motif(5, 6)
     test_motif_1.from_string("NNVBGNSBGNN")
-    test_motif_1.change_structure_position(0, 'loop')
+    test_motif_1.change_structure_position(0, glob_var._loop)
     #test_motif_1.print()
 
     test_motif_2 = structures.w_motif(6, 6)
     test_motif_2.from_string("ANGAGCAANNNA")
-    test_motif_2.change_structure_position(1, 'loop')
-    test_motif_2.change_structure_position(3, 'loop')
+    test_motif_2.change_structure_position(1, glob_var._loop)
+    test_motif_2.change_structure_position(3, glob_var._loop)
     #test_motif_2.print()
 
     test_string_1 = 'AAGGGAGGGAACCCU'

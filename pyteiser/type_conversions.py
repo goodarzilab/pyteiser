@@ -24,6 +24,7 @@ def n_to_w_motif(curr_n_motif):
                                       curr_n_motif.loop_length)
     curr_w_motif.sequence = curr_n_motif.sequence
     curr_w_motif.structure = curr_n_motif.structure
+    curr_w_motif.adjust_linear_length()
 
     return curr_w_motif
 

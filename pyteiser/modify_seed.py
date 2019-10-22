@@ -53,6 +53,8 @@ def create_template_elongated_motif(source_motif):
     template.sequence[1:] = source_motif.sequence
     template.structure[0] = glob_var._stem
     template.structure[1:] = source_motif.structure
+    # don't need to adjust linear length here since I am reformatting it into n_motif
+    # and when I do it the reformatting of linear length happens automatically
     n_template = type_conversions.w_to_n_motif(template)
     return n_template
 
@@ -79,7 +81,9 @@ def elongate_motif(source_motif):
             current_variation = structures.copy_n_motif(template_motif)
             # fill in the first nucleotide
             current_variation.sequence[0] = nt
-            current_variation.structure[0] = struct_mode
+
+            current_variation.change_structure_position(0, struct_mode) # TODO
+
             # adjust the linear length
             if nt == glob_var._stem:
                 current_variation.linear_length = current_variation.stem_length * 2 + current_variation.loop_length
