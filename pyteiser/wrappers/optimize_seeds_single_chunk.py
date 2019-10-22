@@ -47,21 +47,21 @@ def handler():
     parser.add_argument("--size_of_chunks", help="how many seeds should 1 process take on", type=float)
 
     parser.set_defaults(
-        unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
-        unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
-
-        optimized_seeds_folder='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined',
-        optimized_profiles_folder='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined',
-        optimized_MI_pv_zscores_folder='/Users/student/Documents/hani/programs/pyteiser/data/optimized_seeds_characteristics/seeds_4-7_4-9_4-6_14-20_individual',
-        robustness_array_folder='/Users/student/Documents/hani/programs/pyteiser/data/seeds_robustness/seeds_4-7_4-9_4-6_14-20_individual',
-
-        optimized_seeds_filename_template='test_1_2_seeds_optimized',
-        optimized_profiles_filename_template='test_1_2_profiles_optimized',
-        optimized_MI_pv_zscores_filename_template='test_1_2_characteristics',
-        robustness_array_filename_template='test_1_2_robustness',
-
-        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
-        exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
+        # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
+        # unique_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin",
+        #
+        # optimized_seeds_folder='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined',
+        # optimized_profiles_folder='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined',
+        # optimized_MI_pv_zscores_folder='/Users/student/Documents/hani/programs/pyteiser/data/optimized_seeds_characteristics/seeds_4-7_4-9_4-6_14-20_individual',
+        # robustness_array_folder='/Users/student/Documents/hani/programs/pyteiser/data/seeds_robustness/seeds_4-7_4-9_4-6_14-20_individual',
+        #
+        # optimized_seeds_filename_template='test_1_2_seeds_optimized',
+        # optimized_profiles_filename_template='test_1_2_profiles_optimized',
+        # optimized_MI_pv_zscores_filename_template='test_1_2_characteristics',
+        # robustness_array_filename_template='test_1_2_robustness',
+        #
+        # rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        # exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
 
         nbins=15,
         maxfreq = 0.5, # default value from Hani's program is 0.5
