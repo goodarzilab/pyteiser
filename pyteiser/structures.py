@@ -42,17 +42,28 @@ class w_motif:
 
     def print_linear_sequence(self, return_string = False):
         self.get_linear_sequence()
-        print(self.linear_sequence)
-
-        for x in self.linear_sequence:
-            print(x)
-            print(glob_var._char_to_nt_mapping[x])
-
         string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.linear_sequence])
         if not return_string:
             print(string_to_print)
         else:
             return string_to_print
+
+    def print_linear_structure(self, return_string = False):
+        linear_structure_array = [] * self.linear_length
+
+        left_index = 0
+        right_index = left_index + self.linear_length - 1
+
+        for i in range(self.length):
+            linear_structure_array = #self.sequence[left_index]
+
+            if self.structure[i] == glob_var._stem:
+                self.linear_sequence[right_index] = complementary_nt
+                left_index += 1
+                right_index -= 1
+            else:
+                left_index += 1
+
 
 
     def print_structure(self, return_string = False):
@@ -144,7 +155,6 @@ class w_motif:
 
 
     def get_linear_sequence(self):
-        self.adjust_linear_length()
         self.linear_sequence = np.zeros(self.linear_length, dtype=np.uint8)
 
         left_index = 0
@@ -154,12 +164,18 @@ class w_motif:
             current_nt = self.sequence[left_index]
             complementary_nt = glob_var._complementary_deg_nt_dict[current_nt]
 
-            if self.structure[i] == glob_var._stem:
-                self.linear_sequence[right_index] = complementary_nt
             self.linear_sequence[left_index] = self.sequence[left_index]
 
-            left_index += 1
-            right_index -= 1
+            if self.structure[i] == glob_var._stem:
+                self.linear_sequence[right_index] = complementary_nt
+                left_index += 1
+                right_index -= 1
+            else:
+                left_index += 1
+
+
+
+
 
 
 
