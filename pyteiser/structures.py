@@ -26,14 +26,29 @@ class w_motif:
         self.stem_length = np.uint8(stem_length)
         self.loop_length = np.uint8(loop_length)
         self.length = stem_length + loop_length
-        self.linear_length = stem_length * 2 + loop_length
         self.sequence = np.ones(shape=self.length, dtype=np.uint8)
         self.structure = np.repeat(np.array([glob_var._stem, glob_var._loop], dtype=np.uint8),
                                    np.array([stem_length, loop_length], dtype=np.uint8))
+        self.adjust_linear_length()
 
 
     def print_sequence(self, return_string = False):
         string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.sequence])
+        if not return_string:
+            print(string_to_print)
+        else:
+            return string_to_print
+
+
+    def print_linear_sequence(self, return_string = False):
+        self.get_linear_sequence()
+        print(self.linear_sequence)
+
+        for x in self.linear_sequence:
+            print(x)
+            print(glob_var._char_to_nt_mapping[x])
+
+        string_to_print = ''.join([glob_var._char_to_nt_mapping[x] for x in self.linear_sequence])
         if not return_string:
             print(string_to_print)
         else:
@@ -78,6 +93,7 @@ class w_motif:
                 sys.exit(1)
             np.put(self.sequence, ind, current_nt)
 
+
     def compress(self):
         # byte string representation of the motif
         # first, 2 bytes keep stem_length and loop_length
@@ -102,11 +118,48 @@ class w_motif:
         self.bytestring = motif_bytestring
         self.md5 = md5_checksum
 
+
     def copy(self):
         motif_copy = w_motif(self.stem_length, self.loop_length)
         motif_copy.sequence = self.sequence
         motif_copy.structure = self.structure
         return motif_copy
+
+
+    def adjust_linear_length(self):
+        stem_count = np.sum(self.structure == glob_var._stem)
+        loop_count = np.sum(self.structure == glob_var._loop)
+        self.linear_length = 2 * stem_count + loop_count
+
+
+    def change_structure_position(self, position, st_type):
+        if st_type == 'loop':
+            self.structure[position] = glob_var._loop
+        elif st_type == 'stem':
+            self.structure[position] = glob_var._stem
+        else:
+            print("Inappropriate secondary structure keyword!")
+            sys.exit(1)
+        self.adjust_linear_length()
+
+
+    def get_linear_sequence(self):
+        self.adjust_linear_length()
+        self.linear_sequence = np.zeros(self.linear_length, dtype=np.uint8)
+
+        left_index = 0
+        right_index = left_index + self.linear_length - 1
+
+        for i in range(self.length):
+            current_nt = self.sequence[left_index]
+            complementary_nt = glob_var._complementary_deg_nt_dict[current_nt]
+
+            if self.structure[i] == glob_var._stem:
+                self.linear_sequence[right_index] = complementary_nt
+            self.linear_sequence[left_index] = self.sequence[left_index]
+
+            left_index += 1
+            right_index -= 1
 
 
 
@@ -253,9 +306,14 @@ class n_motif:
         self.stem_length = stem_length
         self.loop_length = loop_length
         self.length = stem_length + loop_length
-        self.linear_length = stem_length * 2 + loop_length
         self.sequence = sequence
         self.structure = structure
+        self.adjust_linear_length()
+
+    def adjust_linear_length(self):
+        stem_count = np.sum(self.structure == glob_var._stem)
+        loop_count = np.sum(self.structure == glob_var._loop)
+        self.linear_length = 2 * stem_count + loop_count
 
 
 spec_sequence = [

@@ -10,10 +10,11 @@ if subpackage_folder_path not in sys.path:
 import glob_var
 
 
-def complementary_degenerate(deg_nt):
-    deg_nt_char = glob_var._char_to_nt_mapping[deg_nt]
-    participants = glob_var._degenerate_nts_mapping[deg_nt_char]
-    print(participants)
+
+def adjust_linear_length(w_motif):
+    stem_count = np.count_nonzero(w_motif.structure == glob_var._stem)
+    loop_count = np.count_nonzero(w_motif.structure == glob_var._loop)
+    w_motif.linear_length = 2 * stem_count + loop_count
 
 
 
@@ -22,19 +23,24 @@ def get_linear_sequence(w_motif):
 
     full_sequence = np.zeros(w_motif.linear_length)
 
+    left_index = 0
+    right_index = left_index + w_motif.linear_length - 1
+
     for i in range(w_motif.length):
-        left_index = i
-        right_index = left_index + w_motif.linear_length - 1
+
+
+        print(left_index, right_index)
 
         current_nt = w_motif.sequence[left_index]
+        complementary_nt = glob_var._complementary_deg_nt_dict[current_nt]
 
-        current_nt_char = glob_var._char_to_nt_mapping[current_nt]
+        if w_motif.structure[i] == glob_var._stem:
+            full_sequence[right_index] = complementary_nt
+        full_sequence[left_index] = w_motif.sequence[left_index]
 
-        print(w_motif.structure[i], w_motif.sequence[i], current_nt_char)
-        complementary_degenerate(current_nt)
+        left_index += 1
+        right_index -= 1
 
-        # full_sequence[left_index] = w_motif.sequence[left_index]
-        # full_sequence[right_index] = complementary_degenerate(current_nt)
 
 
 
@@ -45,7 +51,11 @@ def generate_PWM_from_motif(inp_w_motif):
 
     labels = glob_var.PWM_LABELS
 
-    get_linear_sequence(inp_w_motif)
+    inp_w_motif.print()
+    inp_w_motif.print_linear_sequence()
+
+    # adjust_linear_length(inp_w_motif)
+    # get_linear_sequence(inp_w_motif)
 
 
 

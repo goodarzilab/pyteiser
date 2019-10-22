@@ -24,6 +24,7 @@ if package_home_path not in sys.path:
 
 import pyteiser.structures as structures
 import pyteiser.IO as IO
+import pyteiser.glob_var as glob_var
 import pyteiser.matchmaker as matchmaker
 import pyteiser.type_conversions as type_conversions
 import pyteiser.wrappers.calculate_seed_profiles as calculate_seed_profiles
@@ -132,6 +133,47 @@ def test_matchmaker_degenerate():
 
     assert(np.array_equal(boolean_matchmaker_res, boolean_matchmaker_desired))
     assert(indices_matchmaker_res == indices_matchmaker_desired)
+
+
+
+def test_matchmaker_elongated_seed():
+    test_motif_1 = structures.w_motif(5, 6)
+    test_motif_1.from_string("NNVBGNSBGNN")
+    test_motif_1.change_structure_position(0, 'loop')
+    #test_motif_1.print()
+
+    test_motif_2 = structures.w_motif(6, 6)
+    test_motif_2.from_string("ANGAGCAANNNA")
+    test_motif_2.change_structure_position(1, 'loop')
+    test_motif_2.change_structure_position(3, 'loop')
+    #test_motif_2.print()
+
+    test_string_1 = 'AAGGGAGGGAACCCU'
+    test_sequence_1 = structures.w_sequence(len(test_string_1))
+    test_sequence_1.from_sequence(test_string_1)
+
+    test_string_2 = 'ACGAGCAAAAAAGCCU'
+    test_sequence_2 = structures.w_sequence(len(test_string_2))
+    test_sequence_2.from_sequence(test_string_2)
+
+    w_motifs = [test_motif_1, test_motif_2]
+    w_sequences = [test_sequence_1, test_sequence_2]
+
+    n_motifs = type_conversions.w_to_n_motifs_list(w_motifs)
+    n_sequences = type_conversions.w_to_n_sequences_list(w_sequences)
+
+    boolean_matchmaker_desired = np.array([[1, 0], [0, 1]], dtype=bool)
+    boolean_matchmaker_res = np.zeros(shape=(2, 2), dtype=bool)
+
+    for i, mt in enumerate(n_motifs):
+        for k, sq in enumerate(n_sequences):
+            is_match = matchmaker.is_there_motif_instance(mt, sq, is_degenerate=True)
+            boolean_matchmaker_res[i,k] = is_match
+
+    assert(np.array_equal(boolean_matchmaker_res, boolean_matchmaker_desired))
+
+
+
 
 
 def test_current_pair(stem = 4, loop = 7,
@@ -254,9 +296,10 @@ def main():
     # test individual cases
     test_matchmaker_non_degenerate()
     test_matchmaker_degenerate()
+    test_matchmaker_elongated_seed()
 
     # test that the number of instances identified is correct
-    test_calculate_seed_profiles(args)
+    # test_calculate_seed_profiles(args)
 
     # test that I can
     # test_profiles_compression_decompression(args)
