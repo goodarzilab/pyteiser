@@ -26,6 +26,7 @@ def handler():
 
     parser.set_defaults(
         seeds_bin_file = '/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
+        temp_folder = '/Users/student/Documents/hani/programs/pyteiser/data/temp_plots'
     )
 
     args = parser.parse_args()
@@ -33,11 +34,9 @@ def handler():
     return args
 
 
-def test_representation(w_motif):
-    pwm = representation.generate_PWM_from_motif(w_motif)
-
-    # w_motif.print()
-    # print(pwm)
+def test_representation(w_motif, temp_folder):
+    test_motif_filename = os.path.join(temp_folder, "test_motif.eps")
+    representation.draw_weblogo(w_motif, test_motif_filename)
 
 
 
@@ -46,7 +45,7 @@ def main():
 
     w_motifs_list = IO.read_motif_file(args.seeds_bin_file)
 
-    test_representation(w_motifs_list[0])
+    test_representation(w_motifs_list[2], args.temp_folder)
 
 
 

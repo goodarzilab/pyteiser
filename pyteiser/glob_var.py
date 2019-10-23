@@ -137,7 +137,13 @@ _complementary_deg_nt_dict = {
                         _V: _B}
 
 
-PWM_LABELS = ['A','C','G','U']
+_rna_alphabet_list = ['A','C','G','U']
+_rna_alphabet_nt_mapping = {_A: 0,
+                            _C: 1,
+                            _G: 2,
+                            _U: 3}
+_rna_alphabet_string = ''.join(_rna_alphabet_list)
+
 
 _char_to_struct_mapping = {_stem : '<',
                            _loop : '.'}
