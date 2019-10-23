@@ -25,7 +25,8 @@ def handler():
     parser.add_argument("--seeds_bin_file", type=str)
 
     parser.set_defaults(
-        seeds_bin_file = '/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
+        #seeds_bin_file = '/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
+        seeds_bin_file='/Users/student/Documents/hani/programs/pyteiser/data/test_seeds/optimized_seeds_12.bin',
         temp_folder = '/Users/student/Documents/hani/programs/pyteiser/data/temp_plots'
     )
 
@@ -35,8 +36,14 @@ def handler():
 
 
 def test_representation(w_motif, temp_folder):
-    test_motif_filename = os.path.join(temp_folder, "test_motif.eps")
-    representation.draw_weblogo(w_motif, test_motif_filename)
+    # test_motif_filename = os.path.join(temp_folder, "test_motif.eps")
+    # representation.draw_weblogo(w_motif, test_motif_filename)
+    pass
+
+def test_RNAstructure_plotting(w_motifs_list):
+    representation.playground(w_motifs_list)
+    # representation.draw_secondary_structure_dev(w_motifs_list)
+
 
 
 
@@ -46,6 +53,10 @@ def main():
     w_motifs_list = IO.read_motif_file(args.seeds_bin_file)
 
     test_representation(w_motifs_list[2], args.temp_folder)
+
+    test_RNAstructure_plotting(w_motifs_list[0:10])
+
+
 
 
 
