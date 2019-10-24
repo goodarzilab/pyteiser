@@ -73,7 +73,7 @@ def playground(w_motifs_list):
         for k, ind_axes in enumerate(axes_row):
             ind_axes.set_title('Axes %d %d' % (i, k))
             ind_axes.axis('off')
-            draw_one_motif(ind_axes, w_motifs_list[i])
+            draw_one_motif_v2(ind_axes, w_motifs_list[i])
             #ind_axes.plot(w_motifs_list[i].sequence)
 
     # for i in range(len(w_motifs_list)):
@@ -105,7 +105,112 @@ def draw_secondary_structure_dev(w_motifs_list):
 
 
 
-def draw_one_motif(current_ax, w_motif):
+# def draw_one_motif(current_ax, w_motif):
+#     sequence_string = w_motif.print_linear_sequence(return_string=True)
+#     structure_string = w_motif.print_linear_structure(return_string = True)
+#     print(structure_string)
+#
+#     xbase = 1
+#     ybase = 1
+#
+#     drawRNA(current_ax, structure_string, sequence_string, l=0, r=len(structure_string), lx=0, ly=0, rx=1, ry=0, colors={})
+#
+#     # l = 0
+#     # r = w_motif.linear_length
+#     #
+#     # L = 0
+#     # count = 2
+#     # for i in range(l+1, r):
+#     #     if structure_string[i] == ">":
+#     #         L -= 1
+#     #     if L == 0:
+#     #         count += 1
+#     #     if structure_string[i] == "<":
+#     #         L += 1
+#     #
+#     # print(count, L)
+#
+#
+#
+#
+# def drawRNA(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
+#     print(l, r, lx, ly, rx, ry)
+#
+#     L = 0
+#     count = 2
+#     for i in range(l+1, r):
+#         if structure[i] == ">":
+#             L -= 1
+#         if L == 0:
+#             count += 1
+#         if structure[i] == "<":
+#             L += 1
+#
+#     th = 2 * 3.14159 / count
+#     R = 1 / (2*math.sin(th/2))
+#     h = R * math.cos(th/2)
+#     (cx, cy) = (((lx+rx)/2.0)+h*(ly-ry), ((ly+ry)/2.0)+h*(rx-lx))
+#     deg = math.atan2(ly-cy,lx-cx)
+#
+#
+#     (i2,x2,y2) = (l,lx,ly)
+#
+#     for i in range(l+1, r):
+#         if structure[i] == ">": # TODO: something about this is wrong
+#             L -= 1
+#         if L == 0:
+#             deg -= th
+#             (x,y) = (cx+R*math.cos(deg), cy+R*math.sin(deg))
+#             # p.setcolour(118, 118, 118)
+#             # p.setlinewidth (0.5)
+#
+#             print("X: ", deg, round(x,2), round(x2,2))
+#             current_ax.plot([x2 * 10, x * 10], [y2 * 10, y * 10])
+#
+#
+#             # p.setlinewidth (0.1)
+#             # p.setcolour("black")
+#             if structure[i] == ">":
+#                 drawRNA(current_ax, structure, bases, i2, i, x2, y2, x, y, colors)
+#             # col = colors->{bases->[i2]}
+#             # p.setcolour(@col)
+#             # p->circle({filled=>1},x2*10+xbase,y2*10+ybase,3)
+#             # p->setcolour("black")
+#             # p->circle({filled=>0},x2*10+xbase,y2*10+ybase,3)
+#             # p->text({align=>"center", rotate=>"0"}, x2*10+xbase,y2*10+ybase-1.5, bases->[i2])
+#             (x2,y2)=(x,y)
+#             i2 = i
+#         if structure[i] == "<":
+#             L += 1
+#     # p.setcolour(118, 118, 118)
+#     # p.setlinewidth (0.5)
+#     # current_ax.plot([x2 * 10, x * 10], [y2 * 10, y * 10])
+#     # p.line(x2*10+xbase,y2*10+ybase,rx*10+xbase,ry*10+ybase)
+#     # p.setlinewidth (0.1)
+#     # p.setcolour("black")
+#     # #my col = colors->{bases->[r-1]}
+#     # #p->setcolour(@col)
+#     # p.circle({filled=>1},x2*10+xbase,y2*10+ybase,3)
+#     # p.setcolour("black")
+#     # p.circle({filled=>0},x2*10+xbase,y2*10+ybase,3)
+#     # p.text({align=>"center", rotate=>"0"}, x2*10+xbase,y2*10+ybase-1.5, bases->[r-1])
+#     # p.setcolour(118, 118, 118)
+#     # p.line(lx*10+xbase,ly*10+ybase,rx*10+xbase,ry*10+ybase) unless (lx==0 || ly==0)   ## 3-5 pair
+#     # p.setcolour("black")
+#     # my col = colors->{bases->[r]}
+#     # p->setcolour(@col)
+#     # #p->box({filled=>1},rx*10-2.5+xbase,ry*10+ybase-2,rx*10+2.5+xbase,ry*10+ybase+3)
+#     # p->circle({filled=>1},rx*10+xbase,ry*10+ybase,3)
+#     # p->setcolour("black")
+#     # #p->box({filled=>0},rx*10-2.5+xbase,ry*10+ybase-2,rx*10+2.5+xbase,ry*10+ybase+3)
+#     # p->circle({filled=>0},rx*10+xbase,ry*10+ybase,3)
+#     #
+#     # p->text({align=>"center", rotate=>"0"}, rx*10+xbase,ry*10+ybase-1.5, bases->[r])
+#     # #p->text({align=>"center", rotate=>"90"}, rx*10+xbase+1.5,ry*10+ybase+0.5, bases->[r])
+#     # }
+
+
+def draw_one_motif_v2(current_ax, w_motif):
     sequence_string = w_motif.print_linear_sequence(return_string=True)
     structure_string = w_motif.print_linear_structure(return_string = True)
     print(structure_string)
@@ -113,7 +218,7 @@ def draw_one_motif(current_ax, w_motif):
     xbase = 1
     ybase = 1
 
-    drawRNA(current_ax, structure_string, sequence_string, l=0, r=len(structure_string), lx=0, ly=0, rx=1, ry=0, colors={})
+    drawRNA_v2(current_ax, structure_string, sequence_string, l=0, r=len(structure_string), lx=0, ly=0, rx=1, ry=0, colors={})
 
     # l = 0
     # r = w_motif.linear_length
@@ -133,12 +238,13 @@ def draw_one_motif(current_ax, w_motif):
 
 
 
-def drawRNA(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
+def drawRNA_v2(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
     print(l, r, lx, ly, rx, ry)
 
     L = 0
     count = 2
     for i in range(l+1, r):
+        print("Intermediate: %d, %d" % (count, L))
         if structure[i] == ">":
             L -= 1
         if L == 0:
@@ -146,16 +252,20 @@ def drawRNA(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
         if structure[i] == "<":
             L += 1
 
+    print("Count: %d, L: %d" % (count, L))
+    print()
+
     th = 2 * 3.14159 / count
     R = 1 / (2*math.sin(th/2))
     h = R * math.cos(th/2)
     (cx, cy) = (((lx+rx)/2.0)+h*(ly-ry), ((ly+ry)/2.0)+h*(rx-lx))
     deg = math.atan2(ly-cy,lx-cx)
 
+
     (i2,x2,y2) = (l,lx,ly)
 
     for i in range(l+1, r):
-        if structure[i] == ">":
+        if structure[i] == ">": # TODO: something about this is wrong
             L -= 1
         if L == 0:
             deg -= th
@@ -169,7 +279,7 @@ def drawRNA(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
             # p.setlinewidth (0.1)
             # p.setcolour("black")
             if structure[i] == ">":
-                drawRNA(current_ax, structure, bases, i2, i, x2, y2, x, y, colors)
+                drawRNA_v2(current_ax, structure, bases, i2, i, x2, y2, x, y, colors)
             # col = colors->{bases->[i2]}
             # p.setcolour(@col)
             # p->circle({filled=>1},x2*10+xbase,y2*10+ybase,3)
@@ -180,29 +290,3 @@ def drawRNA(current_ax, structure, bases, l, r, lx, ly, rx, ry, colors):
             i2 = i
         if structure[i] == "<":
             L += 1
-    # p.setcolour(118, 118, 118)
-    # p.setlinewidth (0.5)
-    current_ax.plot([x2 * 10, x * 10], [y2 * 10, y * 10])
-    # p.line(x2*10+xbase,y2*10+ybase,rx*10+xbase,ry*10+ybase)
-    # p.setlinewidth (0.1)
-    # p.setcolour("black")
-    # #my col = colors->{bases->[r-1]}
-    # #p->setcolour(@col)
-    # p.circle({filled=>1},x2*10+xbase,y2*10+ybase,3)
-    # p.setcolour("black")
-    # p.circle({filled=>0},x2*10+xbase,y2*10+ybase,3)
-    # p.text({align=>"center", rotate=>"0"}, x2*10+xbase,y2*10+ybase-1.5, bases->[r-1])
-    # p.setcolour(118, 118, 118)
-    # p.line(lx*10+xbase,ly*10+ybase,rx*10+xbase,ry*10+ybase) unless (lx==0 || ly==0)   ## 3-5 pair
-    # p.setcolour("black")
-    # my col = colors->{bases->[r]}
-    # p->setcolour(@col)
-    # #p->box({filled=>1},rx*10-2.5+xbase,ry*10+ybase-2,rx*10+2.5+xbase,ry*10+ybase+3)
-    # p->circle({filled=>1},rx*10+xbase,ry*10+ybase,3)
-    # p->setcolour("black")
-    # #p->box({filled=>0},rx*10-2.5+xbase,ry*10+ybase-2,rx*10+2.5+xbase,ry*10+ybase+3)
-    # p->circle({filled=>0},rx*10+xbase,ry*10+ybase,3)
-    #
-    # p->text({align=>"center", rotate=>"0"}, rx*10+xbase,ry*10+ybase-1.5, bases->[r])
-    # #p->text({align=>"center", rotate=>"90"}, rx*10+xbase+1.5,ry*10+ybase+0.5, bases->[r])
-    # }
