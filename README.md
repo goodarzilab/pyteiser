@@ -8,4 +8,4 @@ numba
 pandas
 
 Other software:
-ViennaRNA
+ViennaRNA (install from conda: https://anaconda.org/bioconda/viennarna)
