@@ -93,10 +93,9 @@ def parse_RNAfold_output(infile):
         sequence_itself = splitted_string[0]
         sequence_length = len(sequence_itself)
         folded_structure = splitted_string[1][0 : sequence_length]
+        encoded_structure = encode_folded_structure(folded_structure, sequence_length)
 
-        encode_folded_structure(folded_structure, sequence_length)
-
-    return folded_structure
+    return encoded_structure
 
 
 def call_RNAfold(curr_sequence, args):
@@ -111,28 +110,41 @@ def call_RNAfold(curr_sequence, args):
     with open(os.path.join(RNAfold_output_filename), 'w') as fout:
         subprocess.call(command_to_run, stdout=fout, shell=True)
 
-    parse_RNAfold_output(RNAfold_output_filename)
+    encoded_structure = parse_RNAfold_output(RNAfold_output_filename)
+
     os.remove(fasta_sequence_filename)
     os.remove(RNAfold_output_filename)
+
+    return encoded_structure
 
 
 def chunk_up_one_sequence(w_sequence, window_length, args):
     sequence_string = w_sequence.print(return_string = True)
+    number_starting_points = len(sequence_string) - window_length + 1
+    folded_structures_array = np.zeros((number_starting_points, window_length))
 
-    for i in range(len(sequence_string) - window_length + 1):
+    for i in range(number_starting_points):
         current_sequence = sequence_string[i : i + window_length]
-
-        call_RNAfold(current_sequence, args)
+        encoded_structure = call_RNAfold(current_sequence, args)
+        folded_structures_array[i] = encoded_structure
         #print(current_sequence)
 
-        break
+        if i > 2:
+            break
+
+    print(folded_structures_array.shape)
+    print(folded_structures_array)
+
+    return folded_structures_array
+
 
 
 
 
 def fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args):
     for seq_name in seqs_order:
-        chunk_up_one_sequence(seqs_dict[seq_name], window_length, args)
+        folded_structures_array = chunk_up_one_sequence(seqs_dict[seq_name], window_length, args)
+        current_bytestring = IO.write_np_array(folded_structures_array, out_filename = '', return_bytestring=False)
 
         break
 

@@ -419,7 +419,7 @@ def read_classification_array(classification_filename):
     return classification_array
 
 
-def write_np_array(inp_array, out_filename):
+def write_np_array(inp_array, out_filename, return_bytestring = False):
     shape_n_dimensions = len(inp_array.shape)
     n_dimentions_bitstring = np.uint8(shape_n_dimensions).tobytes()
     shape_array_bitstring = np.array(inp_array.shape, dtype=np.uint32).tobytes()
@@ -430,8 +430,11 @@ def write_np_array(inp_array, out_filename):
     md5_checksum = md5.digest()
     full_bytestring = n_dimentions_bitstring + shape_array_bitstring + array_bitstring + md5_checksum
 
-    with open(out_filename, 'wb') as wf:
-        wf.write(full_bytestring)
+    if return_bytestring:
+        return full_bytestring
+    else:
+        with open(out_filename, 'wb') as wf:
+            wf.write(full_bytestring)
 
 
 def read_np_array(inp_filename, dtype):
