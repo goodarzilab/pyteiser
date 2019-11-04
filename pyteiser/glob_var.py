@@ -41,6 +41,16 @@ _loop = np.uint8(2)
 STRUCT_LIST = np.array([_stem, _loop])
 STRUCT_LIST_CHAR = ['stem', 'loop']
 
+_left_stem = np.uint(5)
+_right_stem = np.uint(6)
+_char_to_extended_structure = {
+                    "(" : _left_stem,
+                    "<" : _left_stem,
+                    "." : _loop,
+                    ")" : _right_stem,
+                    ">" : _right_stem
+                    }
+
 _increment = np.uint8(1)
 
 _char_to_nt_mapping = {_U : 'U',

@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import argparse
 import math
+import subprocess
 
 
 # this script folds sequences from the reference transcriptome
@@ -30,6 +31,7 @@ def handler():
 
     parser.set_defaults(
         rna_bin_filename = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        temp_folder = '/Users/student/Documents/hani/programs/pyteiser/data/temp_rnafold',
         max_stem_length = 7,
         max_loop_length = 9,
         elongation_buffer_length = 6,
@@ -49,10 +51,12 @@ def import_modules():
     global structures
     global IO
     global type_conversions
+    global glob_var
 
     import structures
     import IO
     import type_conversions
+    import glob_var
 
 
 def calculate_window_length(args, do_print = True):
@@ -64,13 +68,52 @@ def calculate_window_length(args, do_print = True):
     return window_length
 
 
-def call_RNAfold(curr_sequence):
-    # TODO: create random file name
-    # TODO: run RNAfold
-    fasta_sequence_file =
-    command_to_run = "RNAfold --noPS --noLP < %s" % (full_name_confile, fasta_sequence_file)
-    with open(os.path.join(current_outfile), 'w') as fout:
+def generate_random_file_name(length_name = 7):
+    rand_int_array = np.random.randint(10, size=length_name, dtype=np.uint8)
+    rand_str_array = [str(x) for x in rand_int_array]
+    rand_str = "".join(rand_str_array)
+    return rand_str
+
+
+def encode_folded_structure(dot_string, sequence_length):
+    encoded_structure = np.zeros(sequence_length, dtype=np.uint8)
+
+    for i in range(sequence_length):
+        current_symbol = dot_string[i]
+        current_encoding = glob_var._char_to_extended_structure[current_symbol]
+        encoded_structure[i] = current_encoding
+
+    return encoded_structure
+
+
+def parse_RNAfold_output(infile):
+    with open(infile, 'r') as rf:
+        full_string = rf.read()
+        splitted_string = full_string.split('\n')
+        sequence_itself = splitted_string[0]
+        sequence_length = len(sequence_itself)
+        folded_structure = splitted_string[1][0 : sequence_length]
+
+        encode_folded_structure(folded_structure, sequence_length)
+
+    return folded_structure
+
+
+def call_RNAfold(curr_sequence, args):
+    rand_str = generate_random_file_name()
+    fasta_sequence_filename = os.path.join(args.temp_folder, rand_str + '.fa')
+    RNAfold_output_filename = os.path.join(args.temp_folder, rand_str + '_folded.fa')
+
+    with open(fasta_sequence_filename, 'w') as wf:
+        wf.write(curr_sequence)
+
+    command_to_run = "RNAfold --noPS --noLP < %s" % (fasta_sequence_filename)
+    with open(os.path.join(RNAfold_output_filename), 'w') as fout:
         subprocess.call(command_to_run, stdout=fout, shell=True)
+
+    parse_RNAfold_output(RNAfold_output_filename)
+    os.remove(fasta_sequence_filename)
+    os.remove(RNAfold_output_filename)
 
 
 def chunk_up_one_sequence(w_sequence, window_length, args):
@@ -78,7 +121,11 @@ def chunk_up_one_sequence(w_sequence, window_length, args):
 
     for i in range(len(sequence_string) - window_length + 1):
         current_sequence = sequence_string[i : i + window_length]
-        print(current_sequence)
+
+        call_RNAfold(current_sequence, args)
+        #print(current_sequence)
+
+        break
 
 
 
