@@ -20,22 +20,28 @@ import subprocess
 def handler():
     parser = argparse.ArgumentParser()
     parser.add_argument("--rna_bin_filename", type=str)
+    parser.add_argument("--folded_bin_filename", type=str)
     parser.add_argument("--temp_folder", type=str)
 
     parser.add_argument("--max_stem_length", type=int)
     parser.add_argument("--max_loop_length", type=int)
     parser.add_argument("--elongation_buffer_length", type=int)
     parser.add_argument("--surrounding_buffer_length", type=int)
+    parser.add_argument("--do_print", type=bool)
+    parser.add_argument("--how_often_print", type=int)
 
 
 
     parser.set_defaults(
         rna_bin_filename = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        folded_bin_filename = '/Users/student/Documents/hani/programs/pyteiser/data/transcriptome_folding/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_folded.bin',
         temp_folder = '/Users/student/Documents/hani/programs/pyteiser/data/temp_rnafold',
         max_stem_length = 7,
         max_loop_length = 9,
         elongation_buffer_length = 6,
         surrounding_buffer_length = 10,
+        do_print = 1,
+        how_often_print = 10,
     )
 
     args = parser.parse_args()
@@ -142,11 +148,21 @@ def chunk_up_one_sequence(w_sequence, window_length, args):
 
 
 def fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args):
-    for seq_name in seqs_order:
+    bytestrings_list = [b''] * len(seqs_order)
+
+    for i, seq_name in enumerate(seqs_order):
         folded_structures_array = chunk_up_one_sequence(seqs_dict[seq_name], window_length, args)
-        current_bytestring = IO.write_np_array(folded_structures_array, out_filename = '', return_bytestring=False)
+        current_bytestring = IO.write_np_array(folded_structures_array, out_filename = '', return_bytestring=True)
+        bytestrings_list[i] = current_bytestring
+
+        if args.do_print:
+            if i % args.how_often_print == 0:
+                print("%d sequences have been processed" % (i))
 
         break
+
+    full_bytestring = b''.join(bytestrings_list)
+    return full_bytestring
 
 
 def main():
@@ -155,7 +171,10 @@ def main():
 
     seqs_dict, seqs_order = IO.read_rna_bin_file(args.rna_bin_filename)
     window_length = calculate_window_length(args, do_print = True)
-    fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args)
+    bytestring = fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args)
+
+    with open(args.folded_bin_filename, 'wb') as wf:
+        wf.write(bytestring)
 
 
 
