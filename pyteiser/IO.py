@@ -437,10 +437,7 @@ def write_np_array(inp_array, out_filename, return_bytestring = False):
             wf.write(full_bytestring)
 
 
-def read_np_array(inp_filename, dtype):
-    with open(inp_filename, 'rb') as rf:
-        bitstring = rf.read()
-
+def read_np_array_from_bitstring(bitstring, dtype, return_length = False):
     n_dimentions_bitstring = bitstring[0 : 1]
     n_dimentions = np.frombuffer(n_dimentions_bitstring, dtype=np.uint8)[0]
     shape_array_bitstring = bitstring[1 : 1 + 4 * n_dimentions]
@@ -449,14 +446,50 @@ def read_np_array(inp_filename, dtype):
 
     output_bitstring = bitstring[1 + 4 * n_dimentions :
                                 1 + 4 * n_dimentions + dtype.itemsize * flatten_length]
-    md5_checksum = bitstring[1 + 4 * n_dimentions + dtype.itemsize * flatten_length : ]
+    md5_checksum = bitstring[1 + 4 * n_dimentions + dtype.itemsize * flatten_length :
+                            1 + 4 * n_dimentions + dtype.itemsize * flatten_length + 16]
     output_array = np.frombuffer(output_bitstring, dtype=dtype)
     reshaped_array = np.reshape(output_array, shape_array, order='C')
+
+    print(reshaped_array.shape)
+    print(reshaped_array)
+    print(md5_checksum)
 
     array_bitstring = reshaped_array.tobytes()
     md5 = hashlib.md5()
     md5.update(array_bitstring)
     md5_read = md5.digest()
     assert(md5_checksum == md5_read)
+
+    if not return_length:
+        return reshaped_array
+    else:
+        current_array_bitstr_length = 1 + 4 * n_dimentions + dtype.itemsize * flatten_length + 16
+        return reshaped_array, current_array_bitstr_length
+
+
+def read_np_array(inp_filename, dtype):
+    with open(inp_filename, 'rb') as rf:
+        bitstring = rf.read()
+
+    reshaped_array = read_np_array_from_bitstring(bitstring, dtype)
     return reshaped_array
+
+
+def read_multiple_np_arrays(inp_filename, dtype):
+    with open(inp_filename, 'rb') as rf:
+        bitstring = rf.read()
+
+    arrays_list = []
+    while len(bitstring) > 0:
+        curr_array, current_coord = read_np_array_from_bitstring(bitstring, dtype,
+                                                            return_length = True)
+        arrays_list.append(curr_array)
+        bitstring = bitstring[current_coord:]
+
+    return arrays_list
+
+
+
+
 

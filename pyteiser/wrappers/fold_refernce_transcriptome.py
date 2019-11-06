@@ -41,7 +41,7 @@ def handler():
         elongation_buffer_length = 6,
         surrounding_buffer_length = 10,
         do_print = 1,
-        how_often_print = 10,
+        how_often_print = 3,
     )
 
     args = parser.parse_args()
@@ -127,19 +127,15 @@ def call_RNAfold(curr_sequence, args):
 def chunk_up_one_sequence(w_sequence, window_length, args):
     sequence_string = w_sequence.print(return_string = True)
     number_starting_points = len(sequence_string) - window_length + 1
-    folded_structures_array = np.zeros((number_starting_points, window_length))
+    folded_structures_array = np.zeros((number_starting_points, window_length), dtype=np.uint8)
 
     for i in range(number_starting_points):
         current_sequence = sequence_string[i : i + window_length]
         encoded_structure = call_RNAfold(current_sequence, args)
         folded_structures_array[i] = encoded_structure
-        #print(current_sequence)
 
-        if i > 2:
-            break
-
-    print(folded_structures_array.shape)
-    print(folded_structures_array)
+    # print(folded_structures_array.shape)
+    # print(folded_structures_array)
 
     return folded_structures_array
 
@@ -159,7 +155,8 @@ def fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args):
             if i % args.how_often_print == 0:
                 print("%d sequences have been processed" % (i))
 
-        break
+        if i > 2:
+            break
 
     full_bytestring = b''.join(bytestrings_list)
     return full_bytestring
