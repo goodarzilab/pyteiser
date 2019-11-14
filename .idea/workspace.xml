@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/IO.py" afterPath="$PROJECT_DIR$/pyteiser/IO.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,8 +25,8 @@
       <file leaf-file-name="fold_refernce_transcriptome.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="157" column="17" selection-start-line="157" selection-start-column="17" selection-end-line="157" selection-end-column="17" />
+            <state relative-caret-position="306">
+              <caret line="115" column="4" selection-start-line="115" selection-start-column="4" selection-end-line="116" selection-end-column="64" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
                 <element signature="e#2224#2561#0" expanded="false" />
@@ -38,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="filter_profiles_by_folding.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="filter_profiles_by_folding.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+            <state relative-caret-position="90">
+              <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
                 <element signature="e#494#831#0" expanded="false" />
@@ -71,10 +68,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IO.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="IO.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
+            <state relative-caret-position="1016">
               <caret line="489" column="22" selection-start-line="489" selection-start-column="22" selection-end-line="489" selection-end-column="22" />
               <folding />
             </state>
@@ -96,9 +93,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/MI.py" />
-        <option value="$PROJECT_DIR$/tests/test_other.py" />
-        <option value="$PROJECT_DIR$/pyteiser/numba_replacement_functions.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds.py" />
         <option value="$PROJECT_DIR$/random_scripts/find_incomplete_profiles.py" />
         <option value="$PROJECT_DIR$/random_scripts/launch_individual_processes.py" />
@@ -147,6 +141,9 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
         <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py" />
+        <option value="$PROJECT_DIR$/pyteiser/launch_exceRpt_wrapper.py" />
+        <option value="$PROJECT_DIR$/../yikais_scripts/RNA-seq/scripts/rna-seq_MK_11_11_19.py" />
+        <option value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_MuTest2_WES.py" />
       </list>
     </option>
   </component>
@@ -184,9 +181,9 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pyteiser/wrappers/draw_reports_1.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_MuTest2_WES.py" />
   </component>
-  <component name="RunManager" selected="Python.fold_refernce_transcriptome">
+  <component name="RunManager" selected="Python.launch_MuTest2_WES">
     <configuration default="false" name="test_drawing_representation" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -221,23 +218,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="draw_reports_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser/wrappers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/draw_reports_1.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="fold_refernce_transcriptome" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -268,6 +248,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="launch_MuTest2_WES" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_MuTest2_WES.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -409,17 +406,17 @@
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
       <item index="1" class="java.lang.String" itemvalue="Python.representation" />
-      <item index="2" class="java.lang.String" itemvalue="Python.draw_reports_1" />
-      <item index="3" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
-      <item index="4" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
+      <item index="2" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
+      <item index="3" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
+      <item index="4" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
-        <item index="1" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
-        <item index="3" class="java.lang.String" itemvalue="Python.representation" />
-        <item index="4" class="java.lang.String" itemvalue="Python.draw_reports_1" />
+        <item index="0" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
+        <item index="1" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
+        <item index="2" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_drawing_representation" />
+        <item index="4" class="java.lang.String" itemvalue="Python.representation" />
       </list>
     </recent_temporary>
   </component>
@@ -436,13 +433,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564534094214</updated>
-    </task>
-    <task id="LOCAL-00110" summary="fixed bug with negative last_positive_seed index">
-      <created>1568416394425</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1568416394426</updated>
     </task>
     <task id="LOCAL-00111" summary="print discretization result">
       <created>1568509431719</created>
@@ -780,7 +770,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572911967602</updated>
     </task>
-    <option name="localTasksCounter" value="159" />
+    <task id="LOCAL-00159" summary="fold_reference_transcriptome draft 2">
+      <created>1573066125059</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1573066125059</updated>
+    </task>
+    <option name="localTasksCounter" value="160" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -818,7 +815,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13301282" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2724359" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -879,21 +876,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/qsub_calculate_seed_profiles_v2.py" />
-    <entry file="file://$PROJECT_DIR$/helper_scripts/parse_list_incomplete_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_comparisons_timing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="58" column="23" selection-start-line="58" selection-start-column="23" selection-end-line="58" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/preprocess_expression_profile_ensembl.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
@@ -1164,26 +1146,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="81">
-          <caret line="37" column="10" selection-start-line="37" selection-start-column="10" selection-end-line="37" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="17" column="69" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
           <folding />
         </state>
       </provider>
@@ -1204,18 +1170,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="489" column="22" selection-start-line="489" selection-start-column="22" selection-end-line="489" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="157" column="17" selection-start-line="157" selection-start-column="17" selection-end-line="157" selection-end-column="17" />
+        <state relative-caret-position="306">
+          <caret line="115" column="4" selection-start-line="115" selection-start-column="4" selection-end-line="116" selection-end-column="64" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
             <element signature="e#2224#2561#0" expanded="false" />
@@ -1223,14 +1181,64 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/launch_exceRpt_wrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="52" selection-start-line="0" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../yikais_scripts/RNA-seq/scripts/rna-seq_MK_11_11_19.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="37" column="10" selection-start-line="37" selection-start-column="10" selection-end-line="37" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        <state relative-caret-position="90">
+          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
             <element signature="e#494#831#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_MuTest2_WES.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1016">
+          <caret line="489" column="22" selection-start-line="489" selection-start-column="22" selection-end-line="489" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
