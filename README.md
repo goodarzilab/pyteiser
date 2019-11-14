@@ -53,25 +53,25 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 
 ### Steps of the pipeline:
 #### 1. Generate seeds
-Use pyteiser/seeds_generator.py
+	Use pyteiser/seeds_generator.py
 #### 2. Convert sequences from fasta to binary format
-Use pyteiser/wrappers/binarize_sequences.py
+	Use pyteiser/wrappers/binarize_sequences.py
 #### 3. Precalculate seed occurence profiles
-Use pyteiser/wrappers/calculate_seed_profiles.py - run on HPC!
+	Use pyteiser/wrappers/calculate_seed_profiles.py - run on HPC!
 #### 4. Preprocess the expression file of interest
-Use either pyteiser/wrappers/preprocess_expression_profile_ensembl.py or pyteiser/wrappers/preprocess_custom_expression_profile.py
+	Use either pyteiser/wrappers/preprocess_expression_profile_ensembl.py or pyteiser/wrappers/preprocess_custom_expression_profile.py
 #### 5. Calculate MI values for all the seeds
-Use pyteiser/wrappers/calculate_MI_profiles.py - run on HPC!
+	Use pyteiser/wrappers/calculate_MI_profiles.py - run on HPC!
 #### 6. Choose significance thresholds
-Use pyteiser/wrappers/choose_significant_seeds_v3.py - run on HPC!
+	Use pyteiser/wrappers/choose_significant_seeds_v3.py - run on HPC!
 #### 7. Combine seeds that passed
-Use pyteiser/wrappers/combine_passed_seeds.py
+	Use pyteiser/wrappers/combine_passed_seeds.py
 #### 8. Classify seeds by families
-Use pyteiser/wrappers/filter_passed_seeds_with_CMI.py
+	Use pyteiser/wrappers/filter_passed_seeds_with_CMI.py
 #### 9. Optimize seeds
-Use pyteiser/wrappers/optimize_seeds_single_chunk.py - run on HPC! You can submit it with pyteiser/wrappers/qsub_optimize_seeds.py
+	Use pyteiser/wrappers/optimize_seeds_single_chunk.py - run on HPC! You can submit it with pyteiser/wrappers/qsub_optimize_seeds.py
 #### 10. Combine optimized seeds
-Use pyteiser/wrappers/combine_optimized_seeds.py
+	Use pyteiser/wrappers/combine_optimized_seeds.py
 
 ### Citing
 See the preprint
