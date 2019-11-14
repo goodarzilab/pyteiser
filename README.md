@@ -16,7 +16,7 @@ Finally, the seeds that have passed all the tests are ranked by how informative 
 
 pyteiser is a successor of TEISER (see [link](https://tavazoielab.c2b2.columbia.edu/TEISER/)). pyteiser is built around the same concept. The overall pipeline is similar, however, several changes and improvements were made. pyteiser performs additional testing of seed matches using *in silico* RNA secondary structure prediction. The statistical tests and optimization algorithms were improved. pyteiser is also capable of handling SHAPE RNA secondary structure probing data; such data provide additional information about RNA secondary structures that do or do not exist in the cell *in vivo*.
 
-pyteiser is written in Python. The computationally heavy funcions are implemented efficiently through extensive usage on [numpy](https://numpy.org/) arrays and [numba](http://numba.pydata.org/) Python compiler.
+pyteiser is written in Python 3.7. The computationally heavy funcions are implemented efficiently through extensive usage on [numpy](https://numpy.org/) arrays and [numba](http://numba.pydata.org/) Python compiler.
 
 ## Getting started
 ### Requirements
@@ -27,11 +27,22 @@ pyteiser requires the following dependencies to be installed:
 	- pandas
 - Other tools:
 	- ViennaRNA
+It is highly recommended to install the dependencies through conda.
+install miniconda
+
 
 ### Installation
 Currently, pyteiser is distributed as a set of scripts rather than a pip-installable package. Release of pip-installable version is scheduled for February 2020. 
+You can either run a command `git clone https://github.com/goodarzilab/pyteiser.git` in your terminal or click "Clone or download" in the top right corner of this page.
 
-### Structure
+### Usage
+The package consists of:
+- set of modules where the core functions are implemented (`pyteiser/pyteiser`)
+- set of wrapper scripts that implement individual steps of the pipeline (`pyteiser/pyteiser/wrappers`)
+
+
+
+
 
 
 ## Steps:
@@ -45,3 +56,8 @@ Currently, pyteiser is distributed as a set of scripts rather than a pip-install
 #### 8. Classify seeds by families
 #### 9. Optimize seeds
 #### 10. Combine optimized seeds
+
+
+### About pyteiser
+pyteiser has been developed in Goodarzi lab at UCSF by Matvei Khoroshkin and Hani Goodarzi
+
