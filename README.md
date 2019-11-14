@@ -73,6 +73,9 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 #### 10. Combine optimized seeds
 	Use pyteiser/wrappers/combine_optimized_seeds.py
 
+### License
+MIT license
+
 ### Citing
 See the preprint
 
