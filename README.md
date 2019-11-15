@@ -1,3 +1,4 @@
+![Alt text](/images_github/pyteiser_logo_v2_hossein.png?raw=true)
 # Pyteiser
 A framework for identifying the structural motifs that are informative of whole-genome measurements across all the transcripts
 
