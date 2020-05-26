@@ -8,8 +8,11 @@ import subprocess
 
 def handler():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--folded_bin_filename", type=str)
+    parser.add_argument("--task_mapping_file", help="", type=str)
 
+    parser.add_argument("--profiles_folder", help="", type=str)
+    parser.add_argument("--inp_filename_template", help="", type=str)
+    parser.add_argument("--out_filename_template", help="", type=str)
 
     parser.set_defaults(
         folded_bin_filename = '/Users/student/Documents/hani/programs/pyteiser/data/transcriptome_folding/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_folded.bin',

@@ -74,6 +74,13 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 #### 10. Combine optimized seeds
 	Use pyteiser/wrappers/combine_optimized_seeds.py
 
+### Input files formats
+The user is expected to provide 2 input files: a table with the genome-wide measurements of interest and a fasta file with sequences of reference transcriptome.
+
+
+### Preprocessing of input files
+
+
 ### License
 MIT license
 
