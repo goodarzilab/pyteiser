@@ -127,8 +127,69 @@ def test_bins_fasta(args):
     # pr.md5 = md5_checksum
 
 
-def decompress_short_compression(inp_ditstring):
-    pass
+def decompress_short_compression(bitstring):
+    profiles_list = []
+    total_length = len(bitstring)
+    current_spot = 0
+    counter = 0
+
+    while current_spot < total_length:
+        # get the length of the profile
+        length_bitstring = bitstring[current_spot : current_spot + 4]
+        profile_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+        length = profile_length_np[0]
+
+        # get the number of indices (of True) of the profile
+        N_indices_bitstring = bitstring[current_spot + 4 : current_spot + 8]
+        N_indices_np = np.frombuffer(N_indices_bitstring, dtype=np.uint32)
+        N_indices = N_indices_np[0]
+
+        # get the number of bits used per index (compression width)
+        width_bitstring = bitstring[current_spot + 8 : current_spot + 12]
+        width_np = np.frombuffer(width_bitstring, dtype=np.uint32)
+        width = width_np[0]
+
+        # figure out how many bytes do we need to read out
+        length_packed = N_indices * width
+
+        if length_packed % 8 != 0:
+            length_packed = (length_packed // 8) + 1
+        else:
+            length_packed = length_packed // 8
+
+        values_bitstring = bitstring[current_spot + 12 : current_spot + 12 + length_packed]
+        md5_bitstring = bitstring[current_spot + 12 + length_packed :
+                                    current_spot + 12 + length_packed + 16]
+
+        current_spot += 12 + length_packed + 16
+
+        values_packed_bits = np.frombuffer(values_bitstring, dtype=np.uint8)
+
+        
+
+
+
+
+        values = np.unpackbits(values_packed_bits)
+        values = values[0 : profile_length]
+
+        current_profile = structures.w_profile(profile_length)
+        current_profile.values = values
+        current_profile.compress()
+
+        assert (md5_bitstring == current_profile.md5)
+
+        profiles_list.append(current_profile.values)
+
+        counter += 1
+        if counter % how_often_print == 0:
+            if do_print:
+                print("Decompressed profile number ", counter)
+
+    profiles_array = np.array(profiles_list, dtype=np.bool)
+
+    return profiles_array
+
 
 
 def test_compressing_decompressing_indices(args, decompressed_profiles_array):

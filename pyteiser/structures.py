@@ -347,10 +347,13 @@ class w_profile:
         N_indices_uint32 = np.array([N_indices], dtype=np.uint32)
         N_indices_bitstring = N_indices_uint32.tobytes()
 
+        width_uint32 = np.array([width], dtype=np.uint32)
+        width_bitstring = width_uint32.tobytes()
+
         indices_packbits = np.packbits(binary_bytes_array)
         indices_bitstring = indices_packbits.tobytes()
 
-        info_bitstring = length_bitstring + N_indices_bitstring + indices_bitstring
+        info_bitstring = length_bitstring + N_indices_bitstring + width_bitstring + indices_bitstring
 
         md5 = hashlib.md5()
         md5.update(info_bitstring)
