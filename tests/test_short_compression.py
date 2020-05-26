@@ -66,7 +66,6 @@ def test_bins_fasta(args):
 
 
 
-
 def test_compressing_decompressing_indices(args, decompressed_profiles_array):
     with open(args.compressed_profiles_file, 'wb') as wf:
         transcriptome_length = decompressed_profiles_array.shape[1]
@@ -86,10 +85,7 @@ def test_compressing_decompressing_indices(args, decompressed_profiles_array):
 def profiles_wrapper(args):
     profiles_filename = args.profiles_full_file
     decompressed_profiles_array = IO.unpack_profiles_file(profiles_filename, do_print = True)
-    current_array = decompressed_profiles_array[6, :]
     test_compressing_decompressing_indices(args, decompressed_profiles_array)
-
-
 
 
 def main():
