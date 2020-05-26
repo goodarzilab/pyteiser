@@ -218,6 +218,73 @@ def decompress_profiles(bitstring,
     return profiles_array
 
 
+def decompress_profiles_indices(bitstring,
+                        do_print=False, how_often_print=10000):
+    profiles_list = []
+    total_length = len(bitstring)
+    current_spot = 0
+    counter = 0
+
+    while current_spot < total_length:
+        # get the length of the profile
+        length_bitstring = bitstring[current_spot : current_spot + 4]
+        profile_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)
+        length = profile_length_np[0]
+
+        # get the number of indices (of True) of the profile
+        N_indices_bitstring = bitstring[current_spot + 4 : current_spot + 8]
+        N_indices_np = np.frombuffer(N_indices_bitstring, dtype=np.uint32)
+        N_indices = N_indices_np[0]
+
+        # get the number of bits used per index (compression width)
+        width_bitstring = bitstring[current_spot + 8 : current_spot + 12]
+        width_np = np.frombuffer(width_bitstring, dtype=np.uint32)
+        width = width_np[0]
+
+        # figure out how many bytes do we need to read out
+        length_packed = N_indices * width
+
+        if length_packed % 8 != 0:
+            length_packed = (length_packed // 8) + 1
+        else:
+            length_packed = length_packed // 8
+
+        # read out bitstring of the proper size
+        values_bitstring = bitstring[current_spot + 12 : current_spot + 12 + length_packed]
+        md5_bitstring = bitstring[current_spot + 12 + length_packed :
+                                    current_spot + 12 + length_packed + 16]
+        current_spot += 12 + length_packed + 16
+
+        # convert bitsting to 32-bit arrays representing indices
+        indices_packed_uint8 = np.frombuffer(values_bitstring, dtype=np.uint8)
+        binary_bytes_array = np.unpackbits(indices_packed_uint8)
+        binary_bytes_array = binary_bytes_array[0 : N_indices * width]
+        reshaped_binary_array = binary_bytes_array.reshape(N_indices, width)
+        full_binary_array = np.zeros((N_indices, 32), dtype=np.bool)
+        full_binary_array[:, 0:width] = reshaped_binary_array
+
+        # convert 32-bit arrays into a uint32 indices
+        reshaped_full_binary_array = full_binary_array.flatten()
+        reshaped_full_binary_string = np.packbits(reshaped_full_binary_array)
+        true_indices = np.frombuffer(reshaped_full_binary_string, dtype=np.uint32)
+
+        # create a new profile
+        curr_profile = structures.w_profile(length)
+        curr_profile.values[true_indices] = True
+        curr_profile.compress_indices()
+        assert (md5_bitstring == curr_profile.md5_indices)
+        profiles_list.append(curr_profile.values)
+
+        counter += 1
+        if counter % how_often_print == 0:
+            if do_print:
+                print("Decompressed profile number ", counter)
+
+    profiles_array = np.array(profiles_list, dtype=np.bool)
+
+    return profiles_array
+
+
 def decompress_exp_mask_file(bitstring):
     length_bitstring = bitstring[0 : 4]
     mask_length_np = np.frombuffer(length_bitstring, dtype=np.uint32)

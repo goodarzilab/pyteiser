@@ -157,38 +157,64 @@ def decompress_short_compression(bitstring):
         else:
             length_packed = length_packed // 8
 
+        # read out bitstring of the proper size
         values_bitstring = bitstring[current_spot + 12 : current_spot + 12 + length_packed]
         md5_bitstring = bitstring[current_spot + 12 + length_packed :
                                     current_spot + 12 + length_packed + 16]
-
         current_spot += 12 + length_packed + 16
 
-        values_packed_bits = np.frombuffer(values_bitstring, dtype=np.uint8)
+        # convert bitsting to 32-bit arrays representing indices
+        indices_packed_uint8 = np.frombuffer(values_bitstring, dtype=np.uint8)
+        binary_bytes_array = np.unpackbits(indices_packed_uint8)
+        binary_bytes_array = binary_bytes_array[0 : N_indices * width]
+        reshaped_binary_array = binary_bytes_array.reshape(N_indices, width)
+        full_binary_array = np.zeros((N_indices, 32), dtype=np.bool)
+        full_binary_array[:, 0:width] = reshaped_binary_array
 
-        
+        # convert 32-bit arrays into a uint32 indices
+        reshaped_full_binary_array = full_binary_array.flatten()
+        reshaped_full_binary_string = np.packbits(reshaped_full_binary_array)
+        true_indices = np.frombuffer(reshaped_full_binary_string, dtype=np.uint32)
 
-
-
-
-        values = np.unpackbits(values_packed_bits)
-        values = values[0 : profile_length]
-
-        current_profile = structures.w_profile(profile_length)
-        current_profile.values = values
-        current_profile.compress()
-
-        assert (md5_bitstring == current_profile.md5)
-
-        profiles_list.append(current_profile.values)
+        # create a new profile
+        curr_profile = structures.w_profile(length)
+        curr_profile.values[true_indices] = True
+        curr_profile.compress_indices()
+        assert (md5_bitstring == curr_profile.md5_indices)
+        profiles_list.append(curr_profile.values)
 
         counter += 1
-        if counter % how_often_print == 0:
-            if do_print:
-                print("Decompressed profile number ", counter)
+        # if counter % how_often_print == 0:
+        #     if do_print:
+        #         print("Decompressed profile number ", counter)
 
     profiles_array = np.array(profiles_list, dtype=np.bool)
 
     return profiles_array
+
+
+
+
+    #
+    #     values = np.unpackbits(values_packed_bits)
+    #     values = values[0 : profile_length]
+    #
+    #     current_profile = structures.w_profile(profile_length)
+    #     current_profile.values = values
+    #     current_profile.compress()
+    #
+    #     assert (md5_bitstring == current_profile.md5)
+    #
+    #     profiles_list.append(current_profile.values)
+    #
+    #     counter += 1
+    #     if counter % how_often_print == 0:
+    #         if do_print:
+    #             print("Decompressed profile number ", counter)
+    #
+    # profiles_array = np.array(profiles_list, dtype=np.bool)
+    #
+    # return profiles_array
 
 
 
@@ -204,7 +230,8 @@ def test_compressing_decompressing_indices(args, decompressed_profiles_array):
     with open(args.compressed_profiles_file, 'rb') as rf:
         bitstring = rf.read()
 
-    _ = decompress_short_compression(bitstring)
+    read_out_profiles_array = decompress_short_compression(bitstring)
+    assert (read_out_profiles_array == decompressed_profiles_array).all(), "decompression has changed the data!"
 
 
 def profiles_wrapper(args):

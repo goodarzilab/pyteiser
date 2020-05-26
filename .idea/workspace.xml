@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/structures.py" afterPath="$PROJECT_DIR$/pyteiser/structures.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/IO.py" afterPath="$PROJECT_DIR$/pyteiser/IO.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_short_compression.py" afterPath="$PROJECT_DIR$/tests/test_short_compression.py" />
     </list>
     <ignored path="pyteiser.iws" />
@@ -35,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IO.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="IO.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="182" column="19" selection-start-line="182" selection-start-column="19" selection-end-line="182" selection-end-column="19" />
+            <state relative-caret-position="-822">
+              <caret line="224" column="20" selection-start-line="224" selection-start-column="20" selection-end-line="224" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -48,8 +48,8 @@
       <file leaf-file-name="structures.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="348" column="0" selection-start-line="348" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
+            <state relative-caret-position="415">
+              <caret line="364" column="24" selection-start-line="364" selection-start-column="13" selection-end-line="364" selection-end-column="24" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -67,11 +67,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_short_compression.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test_short_compression.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_short_compression.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
+            <state relative-caret-position="68">
+              <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="192" selection-end-column="25" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
                 <element signature="e#2017#2728#0" expanded="false" />
@@ -127,7 +127,6 @@
         <option value="$PROJECT_DIR$/pyteiser/representation.py" />
         <option value="$PROJECT_DIR$/pyteiser/playground.py" />
         <option value="$PROJECT_DIR$/pyteiser/glob_var.py" />
-        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py" />
         <option value="$PROJECT_DIR$/pyteiser/launch_exceRpt_wrapper.py" />
         <option value="$PROJECT_DIR$/../yikais_scripts/RNA-seq/scripts/rna-seq_MK_11_11_19.py" />
@@ -147,6 +146,7 @@
         <option value="$PROJECT_DIR$/pyteiser/wrappers/playground.py" />
         <option value="$PROJECT_DIR$/pyteiser/structures.py" />
         <option value="$PROJECT_DIR$/tests/test_short_compression.py" />
+        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
       </list>
     </option>
   </component>
@@ -1205,31 +1205,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/structures.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="348" column="0" selection-start-line="348" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
+        <state relative-caret-position="415">
+          <caret line="364" column="24" selection-start-line="364" selection-start-column="13" selection-end-line="364" selection-end-column="24" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="182" column="19" selection-start-line="182" selection-start-column="19" selection-end-line="182" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_short_compression.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
+        <state relative-caret-position="68">
+          <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="192" selection-end-column="25" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
             <element signature="e#2017#2728#0" expanded="false" />
             <element signature="e#2730#2763#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-822">
+          <caret line="224" column="20" selection-start-line="224" selection-start-column="20" selection-end-line="224" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
