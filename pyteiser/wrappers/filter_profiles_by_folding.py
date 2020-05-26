@@ -22,7 +22,7 @@ def handler():
         profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
 
         are_seeds_degenerate='n',
-        n_profiles_check=1,
+        n_profiles_check=0,
 
     )
 
@@ -56,7 +56,7 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
     n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
 
-    return n_motifs_list, n_seqs_list
+    return w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list
 
 
 def make_sure_the_profile_is_correct(n_motifs_list, n_seqs_list,
@@ -77,17 +77,59 @@ def make_sure_the_profile_is_correct(n_motifs_list, n_seqs_list,
             assert (current_profile.values == known_profiles_array[i,:]).all(), "the provided file with profiles is not matching the seeds"
 
 
-def fold_instances():
-    # iterate over instances
-    true_indices = np.where(self.values)  # get indices
+def process_one_transcript_one_seed():
+    pass
+
+
+
+def process_one_profile_one_seed(w_motif, n_motif,
+                                 w_seqs_list, n_seqs_list,
+                                 profile, is_degenerate):
+    # get indices of all the matched transcripts
+    assert len(w_seqs_list) == profile.shape[0], "transcriptome length doesn't correspond to the profile length"
+    true_indices = np.where(profile)  # get indices
     true_indices = true_indices[0]  # for some reason np.where returns a tuple
+    if true_indices.shape[0] == 0:
+        print("There aren't any matches in this profile")
+        return profile
+
+    # iterate through all sequences that have a match
+    for k, idx in enumerate(true_indices):
+        curr_motif_instances = matchmaker.find_all_motif_instances(n_motif, n_seqs_list[idx], is_degenerate=is_degenerate)
+        print("Sequence %d, length %d" % (idx,n_seqs_list[idx].length))
+        print("Match indices: ", ", ".join([str(x) for x in curr_motif_instances]))
+
+
+        if k == 10:
+            break
+
+
+    # this function only works with n_motif and n_sequence classes,
+
+
+
+
+
+def fold_instances(w_motifs_list, w_seqs_list,
+                   n_motifs_list, n_seqs_list,
+                   profiles_array, is_degenerate):
+    # iterate over instances
+    #true_indices = np.where(self.values)  # get indices
+    #true_indices = true_indices[0]  # for some reason np.where returns a tuple
+
+    for i, w_motif in enumerate(w_motifs_list):
+        n_motif = n_motifs_list[i]
+        current_profile = profiles_array[i, :]
+        process_one_profile_one_seed(w_motif, n_motif, w_seqs_list, n_seqs_list,
+                                     current_profile, is_degenerate)
+        break
 
 
 def main():
     import_modules()
     args = handler()
 
-    n_motifs_list, n_seqs_list = read_input_files(args.seeds_file, args.rna_bin_file)
+    w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list  = read_input_files(args.seeds_file, args.rna_bin_file)
     decompressed_profiles_array = IO.unpack_profiles_file(args.profiles_full_file, do_print=True)
 
     if args.n_profiles_check > 0:
@@ -97,7 +139,15 @@ def main():
                                          n_to_check = args.n_profiles_check,
                                          do_print=True)
 
-    fold_instances()
+    if args.are_seeds_degenerate == 'yes' or args.are_seeds_degenerate == 'y':
+        are_seeds_degenerate = True
+    else:
+        are_seeds_degenerate = False
+
+    fold_instances(w_motifs_list, w_seqs_list,
+                   n_motifs_list, n_seqs_list,
+                   decompressed_profiles_array,
+                   is_degenerate = are_seeds_degenerate)
 
 
 
