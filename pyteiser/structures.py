@@ -321,6 +321,7 @@ class w_profile:
         N_indices = true_indices.shape[0]
         binary_array = np.zeros((N_indices, 32), dtype=np.bool)
         # iterate through all the indices and turn each into bin and then into 4 uint8 values
+
         for i, value in enumerate(true_indices):
             bit_string = struct.pack('I', value)
             curr_uint8 = np.frombuffer(bit_string, dtype=np.uint8)
