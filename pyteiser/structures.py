@@ -73,6 +73,25 @@ class w_motif:
             return string_to_print
 
 
+    def encode_linear_structure(self):
+        full_structure_array = np.ones(shape=self.linear_length, dtype=np.uint8)
+
+        left_index = 0
+        right_index = left_index + self.linear_length - 1
+
+        for i in range(self.length):
+            if self.structure[i] == glob_var._stem:
+                full_structure_array[right_index] = glob_var._right_stem
+                full_structure_array[left_index] = glob_var._left_stem
+                left_index += 1
+                right_index -= 1
+            else:
+                full_structure_array[left_index] = glob_var._loop
+                left_index += 1
+
+        self.full_structure_encoding = full_structure_array
+
+
     def print_structure(self, return_string = False):
         string_to_print = ''.join([glob_var._char_to_struct_mapping[x] for x in self.structure])
         if not return_string:

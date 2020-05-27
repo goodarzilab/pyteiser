@@ -51,6 +51,12 @@ _char_to_extended_structure = {
                     ">" : _right_stem
                     }
 
+_extended_structure_to_char = {
+    _left_stem : "<",
+    _right_stem : ">",
+    _loop : "."
+}
+
 _increment = np.uint8(1)
 
 _char_to_nt_mapping = {_U : 'U',

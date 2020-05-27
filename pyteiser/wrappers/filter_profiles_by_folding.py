@@ -49,6 +49,20 @@ def handler():
     return args
 
 
+def make_constraint_string(n_motif, w_motif, motif_linear_length,
+                           subsequence_n, is_degenerate):
+    # see -C parameter here: https://www.tbi.univie.ac.at/RNA/RNAfold.1.html
+    structure_array = np.full(shape=subsequence_n.length,
+                               fill_value=glob_var._loop,
+                               dtype=np.uint8)
+
+    subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
+    for subs_match in subs_instances:
+        structure_array[subs_match : subs_match + motif_linear_length] = w_motif.full_structure_encoding
+    constraint_string = ''.join([glob_var._extended_structure_to_char[x] for x in structure_array])
+    return constraint_string
+
+
 def import_modules():
     package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if package_home_path not in sys.path:
@@ -134,6 +148,7 @@ def process_one_profile_one_seed(w_motif, n_motif,
                                  do_print_subs_matches = True):
     # prepare
     motif_linear_length = w_motif.linear_length
+    w_motif.encode_linear_structure()
     if do_print:
         motif_linear_sequence = w_motif.print_linear_sequence(return_string = True)
         motif_linear_structure = w_motif.print_linear_structure(return_string = True)
@@ -156,14 +171,19 @@ def process_one_profile_one_seed(w_motif, n_motif,
             subsequence_n = extract_subsequence(n_seqs_list[idx], match_coord, motif_linear_length, window_size)
             subsequence_w = type_conversions.n_to_w_sequence(subsequence_n)
             subsequence_string = subsequence_w.print(return_string=True)
+            constraint_string = make_constraint_string(n_motif, w_motif, motif_linear_length,
+                                                       subsequence_n, is_degenerate)
             if do_print:
-                print("Sequence: ", subsequence_string)
+                print("Sequence:    ", subsequence_string)
+                print("Constraints: ", constraint_string)
             if do_print and do_print_subs_matches:
                 subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
                 for subs_match in subs_instances:
                     print("Match (coord %d): %s" % (subs_match, subsequence_string[subs_match : subs_match + motif_linear_length]))
                     print("Motif:            %s" % motif_linear_sequence)
                     print("Structure:        %s" % motif_linear_structure)
+
+            viennarna_command = ""
 
 
 
