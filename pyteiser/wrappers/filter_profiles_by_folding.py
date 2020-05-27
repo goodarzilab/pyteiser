@@ -17,7 +17,7 @@ import numpy as np
 import argparse
 import numba
 import math
-import subprocess
+from subprocess import PIPE, run, Popen
 
 
 def handler():
@@ -32,6 +32,10 @@ def handler():
                         help="number of profiles to test to see if the profiles file corresponds to the seeds file",
                         type=str)
     parser.add_argument("--window_size", help="the window surrounding a match that we are folding", type=int)
+    parser.add_argument("--MFE_ratio_thresh",
+                        help="minimal ratio of Minimal Folding Energies for a structure with or without fixed seed match",
+                        type=float)
+
 
     parser.set_defaults(
         rna_bin_file='/Users/student/Documents/hani/programs/pyteiser/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
@@ -41,6 +45,7 @@ def handler():
         are_seeds_degenerate='n',
         window_size=100,
         n_profiles_check=0,
+        MFE_ratio_thresh=0.5,
 
     )
 
@@ -51,6 +56,8 @@ def handler():
 
 def make_constraint_string(n_motif, w_motif, motif_linear_length,
                            subsequence_n, is_degenerate):
+    # make one constraint string for each match
+    constraint_strings = []
     # see -C parameter here: https://www.tbi.univie.ac.at/RNA/RNAfold.1.html
     structure_array = np.full(shape=subsequence_n.length,
                                fill_value=glob_var._loop,
@@ -59,8 +66,9 @@ def make_constraint_string(n_motif, w_motif, motif_linear_length,
     subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
     for subs_match in subs_instances:
         structure_array[subs_match : subs_match + motif_linear_length] = w_motif.full_structure_encoding
-    constraint_string = ''.join([glob_var._extended_structure_to_char[x] for x in structure_array])
-    return constraint_string
+        constraint_string = ''.join([glob_var._extended_structure_to_char[x] for x in structure_array])
+        constraint_strings.append(constraint_string)
+    return constraint_strings
 
 
 def import_modules():
@@ -140,13 +148,52 @@ def extract_subsequence(inp_seq, match_coord, motif_linear_length, window_size):
     return subsequence
 
 
+def parse_RNAfold_output(out_string):
+    energy_value = 0.
+    if out_string.startswith("ERROR"):
+        folded_properly = False
+        return (folded_properly, energy_value)
+    folded_properly = True
+    energy_term = out_string.split(' ')[-1].strip()
+    energy_value = float(energy_term[1:-1])
+    return (folded_properly, energy_value)
+
+
+def compare_folding_energies(default_result, constraint_result, ratio_threshold, do_print):
+    def_folded_properly, def_energy = parse_RNAfold_output(default_result)
+    constr_folded_properly, constr_energy = parse_RNAfold_output(constraint_result)
+
+    ratio_is_proper = False
+    if not constr_folded_properly:
+        if do_print:
+            print("The sequence can't be folded with the constrains corresponding to the matching seed")
+        return ratio_is_proper
+    if def_energy > 0:
+        print("The selected sequence does not fold properly!")
+        sys.exit(1)
+    if constr_energy > 0:
+        if do_print:
+            print("The sequence folding with the constrains corresponding to the matching seed has positive energy")
+        return ratio_is_proper
+    ratio = constr_energy / def_energy
+    if ratio >= ratio_threshold:
+        ratio_is_proper = True
+    if do_print:
+        string_to_pring = "The energy ratio is %.2f. The ratio is above threshold: %r" % (ratio, ratio_is_proper)
+        string_to_pring += " (energies are: %.1f, %.1f for constrained and unconstrained)" % (constr_energy, def_energy)
+        print(string_to_pring)
+    return ratio_is_proper
+
+
 def process_one_profile_one_seed(w_motif, n_motif,
                                  w_seqs_list, n_seqs_list,
                                  profile, window_size,
                                  is_degenerate,
+                                 MFE_ratio_thresh,
                                  do_print = True,
                                  do_print_subs_matches = True):
     # prepare
+    new_profile = 
     motif_linear_length = w_motif.linear_length
     w_motif.encode_linear_structure()
     if do_print:
@@ -163,6 +210,7 @@ def process_one_profile_one_seed(w_motif, n_motif,
 
     # iterate through all sequences that have a match
     for k, idx in enumerate(true_indices):
+        is_there_match = False
         curr_motif_instances = matchmaker.find_all_motif_instances(n_motif, n_seqs_list[idx], is_degenerate=is_degenerate)
         if do_print:
             print("Sequence %d, length %d" % (idx,n_seqs_list[idx].length))
@@ -171,19 +219,37 @@ def process_one_profile_one_seed(w_motif, n_motif,
             subsequence_n = extract_subsequence(n_seqs_list[idx], match_coord, motif_linear_length, window_size)
             subsequence_w = type_conversions.n_to_w_sequence(subsequence_n)
             subsequence_string = subsequence_w.print(return_string=True)
-            constraint_string = make_constraint_string(n_motif, w_motif, motif_linear_length,
+            constraint_strings = make_constraint_string(n_motif, w_motif, motif_linear_length,
                                                        subsequence_n, is_degenerate)
-            if do_print:
-                print("Sequence:    ", subsequence_string)
-                print("Constraints: ", constraint_string)
-            if do_print and do_print_subs_matches:
-                subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
-                for subs_match in subs_instances:
-                    print("Match (coord %d): %s" % (subs_match, subsequence_string[subs_match : subs_match + motif_linear_length]))
-                    print("Motif:            %s" % motif_linear_sequence)
-                    print("Structure:        %s" % motif_linear_structure)
+            for constraint_string in constraint_strings:
+                # print matches for debugging
+                if do_print:
+                    print("Sequence:    ", subsequence_string)
+                    print("Constraints: ", constraint_string)
+                if do_print and do_print_subs_matches:
+                    subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
+                    for subs_match in subs_instances:
+                        print("Match (coord %d): %s" % (subs_match, subsequence_string[subs_match : subs_match + motif_linear_length]))
+                        print("Motif:            %s" % motif_linear_sequence)
+                        print("Structure:        %s" % motif_linear_structure)
 
-            viennarna_command = ""
+                # fold with ViennaRNA
+                # to pipe two processes, I first need to use Popen like here: https://stackoverflow.com/questions/50682514/when-python3-chain-two-subprocess-run-such-as-bash-pipe-get-error-attributeer
+                # overall following the syntax from here: https://stackoverflow.com/questions/13332268/how-to-use-subprocess-command-with-pipes
+                printf_default = Popen(args=["printf", "%s" % subsequence_string], stdout=PIPE, stderr=PIPE)
+                RNAfold_default = run(["RNAfold"], stdin=printf_default.stdout, stdout=PIPE, stderr=PIPE, text=True)
+                printf_default.terminate()
+                default_result = RNAfold_default.stdout
+
+                constrained_arguments_list = ["RNAfold", "--enforceConstraint", "-C"]
+                printf_constraint = Popen(args=["printf", "%s\n%s" % (subsequence_string, constraint_string)], stdout=PIPE, stderr=PIPE)
+                RNAfold_constraint = run(constrained_arguments_list, stdin=printf_constraint.stdout, stdout=PIPE, stderr=PIPE, text=True)
+                printf_constraint.terminate()
+                constraint_result = RNAfold_constraint.stdout
+
+                # calculate ratio of energies and compare it to the threshold value
+                ratio_is_proper = compare_folding_energies(default_result, constraint_result, MFE_ratio_thresh, do_print=do_print)
+                is_there_match = is_there_match or ratio_is_proper
 
 
 
@@ -203,6 +269,7 @@ def process_one_profile_one_seed(w_motif, n_motif,
 def fold_instances(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
                    profiles_array, window_size,
+                   MFE_ratio_thresh,
                    is_degenerate):
     # iterate over instances
     #true_indices = np.where(self.values)  # get indices
@@ -212,7 +279,8 @@ def fold_instances(w_motifs_list, w_seqs_list,
         n_motif = n_motifs_list[i]
         current_profile = profiles_array[i, :]
         process_one_profile_one_seed(w_motif, n_motif, w_seqs_list, n_seqs_list,
-                                     current_profile, window_size, is_degenerate)
+                                     current_profile, window_size, is_degenerate,
+                                     MFE_ratio_thresh)
         break
 
 
@@ -239,6 +307,7 @@ def main():
                    n_motifs_list, n_seqs_list,
                    decompressed_profiles_array,
                    window_size = args.window_size,
+                   MFE_ratio_thresh = args.MFE_ratio_thresh,
                    is_degenerate = are_seeds_degenerate)
 
 

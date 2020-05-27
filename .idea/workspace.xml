@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/glob_var.py" afterPath="$PROJECT_DIR$/pyteiser/glob_var.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/structures.py" afterPath="$PROJECT_DIR$/pyteiser/structures.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
     </list>
     <ignored path="pyteiser.iws" />
@@ -27,10 +26,15 @@
       <file leaf-file-name="filter_profiles_by_folding.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="521">
-              <caret line="185" column="33" selection-start-line="185" selection-start-column="33" selection-end-line="185" selection-end-column="33" />
+            <state relative-caret-position="166">
+              <caret line="195" column="18" selection-start-line="195" selection-start-column="18" selection-end-line="195" selection-end-column="18" />
               <folding>
                 <element signature="e#1135#1144#0" expanded="true" />
+                <element signature="e#3769#4150#0" expanded="false" />
+                <element signature="e#4218#4607#0" expanded="false" />
+                <element signature="e#4900#5488#0" expanded="false" />
+                <element signature="e#5677#6709#0" expanded="false" />
+                <marker date="1590607570002" expanded="false" signature="2983:3740" ph="..." />
               </folding>
             </state>
           </provider>
@@ -1262,10 +1266,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="185" column="33" selection-start-line="185" selection-start-column="33" selection-end-line="185" selection-end-column="33" />
+        <state relative-caret-position="166">
+          <caret line="195" column="18" selection-start-line="195" selection-start-column="18" selection-end-line="195" selection-end-column="18" />
           <folding>
             <element signature="e#1135#1144#0" expanded="true" />
+            <element signature="e#3769#4150#0" expanded="false" />
+            <element signature="e#4218#4607#0" expanded="false" />
+            <element signature="e#4900#5488#0" expanded="false" />
+            <element signature="e#5677#6709#0" expanded="false" />
+            <marker date="1590607570002" expanded="false" signature="2983:3740" ph="..." />
           </folding>
         </state>
       </provider>
