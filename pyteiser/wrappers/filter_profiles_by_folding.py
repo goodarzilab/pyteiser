@@ -1,3 +1,16 @@
+# Hani's get_dG_ratio_to_optimum filter:
+# (see files folding_energy.c and matchmaker.c)
+# - returns the ratio of the dG for a fold that takes the shape of the "motif" at the specified position relative to the global minimum dG for folding
+# - mask motif match with Ns (function lcl_get_surrounding_sequence)
+# - make an alignment matrix (Nussinov style) of the whole transcript (lcl_get_minimum_energy); calculate minimum folding energy
+# - calculate folding energy for the motif (lcl_get_free_folding_energy); calculate MFE for the transcript that has the motif replaced by Ns (lcl_get_minimum_energy)
+# - return the ratio: (motif energy + MFE of all the rest) / MFE of the whole transcript
+# - if such ratio is smaller than a threshold value (dG_t), remove this match
+
+# Here, I will use a similar filter. However, there will be a few distinctions
+# - first of all, I don't think that MFE of the whole transcript is informative. Folding algorithms work well only in local context so I will use a window of 100 nt
+# - second of all, I will try using ViennaRNA; if it turns out to be too slow, I will use a dynamic algorithm as well
+
 import os
 import sys
 import numpy as np
@@ -99,6 +112,7 @@ def process_one_profile_one_seed(w_motif, n_motif,
         print("Sequence %d, length %d" % (idx,n_seqs_list[idx].length))
         print("Match indices: ", ", ".join([str(x) for x in curr_motif_instances]))
 
+        # analog of get_dG_ratio_to_optimum
 
         if k == 10:
             break
