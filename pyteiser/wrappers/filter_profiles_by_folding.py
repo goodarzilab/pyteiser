@@ -9,7 +9,7 @@
 
 # Here, I will use a similar filter. However, there will be a few distinctions
 # - first of all, I don't think that MFE of the whole transcript is informative. Folding algorithms work well only in local context so I will use a window of 100 nt
-# - second of all, I will try using ViennaRNA; if it turns out to be too slow, I will use a dynamic algorithm as well
+# - second of all, I will be using ViennaRNA instead of dynamic programming algorithm
 
 import os
 import sys
@@ -50,7 +50,6 @@ def handler():
         window_size=100,
         n_profiles_check=0,
         MFE_ratio_thresh=0.5,
-
     )
 
     args = parser.parse_args()
@@ -306,15 +305,14 @@ def filter_profiles_by_folding(w_motifs_list, w_seqs_list,
 
             n_motif = n_motifs_list[i]
             current_profile = profiles_array[i, :]
-            # filtered_profile = process_one_profile_one_seed(w_motif, n_motif,
-            #                              w_seqs_list, n_seqs_list,
-            #                              current_profile, window_size, is_degenerate,
-            #                              MFE_ratio_thresh,
-            #                              do_print=do_print,
-            #                              do_print_subs_matches=do_print_subs_matches,
-            #                              do_print_progress=do_print_progress,
-            #                              how_often_print=how_often_print)
-            filtered_profile = np.zeros_like(current_profile)
+            filtered_profile = process_one_profile_one_seed(w_motif, n_motif,
+                                         w_seqs_list, n_seqs_list,
+                                         current_profile, window_size, is_degenerate,
+                                         MFE_ratio_thresh,
+                                         do_print=do_print,
+                                         do_print_subs_matches=do_print_subs_matches,
+                                         do_print_progress=do_print_progress,
+                                         how_often_print=how_often_print)
 
             filtered_profile_w = structures.w_profile(N_seq)
             filtered_profile_w.values = filtered_profile

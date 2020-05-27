@@ -44,35 +44,26 @@ def handler():
     return args
 
 
-
-
-
-def test_compressing_decompressing_indices(args, decompressed_profiles_array):
-    with open(args.compressed_profiles_file, 'wb') as wf:
-        transcriptome_length = decompressed_profiles_array.shape[1]
-        for i in range(decompressed_profiles_array.shape[0]):
-            curr_profile = structures.w_profile(transcriptome_length)
-            curr_profile.values = decompressed_profiles_array[i]
-            curr_profile.compress_indices()
-            wf.write(curr_profile.bytestring_indices)
-
-    with open(args.compressed_profiles_file, 'rb') as rf:
-        bitstring = rf.read()
-
-    read_out_profiles_array = IO.decompress_profiles_indices(bitstring)
-    assert (read_out_profiles_array == decompressed_profiles_array).all(), "decompression has changed the data!"
-
-
 def test_filtered_profiles(args):
-    profiles_filename = args.profiles_full_file
-    decompressed_profiles_array = IO.unpack_profiles_file(profiles_filename, do_print = True)
-    test_compressing_decompressing_indices(args, decompressed_profiles_array)
+    original_profiles_array = IO.unpack_profiles_file(args.profiles_full_file, do_print = True)
+    with open(args.profiles_filtered_file, 'rb') as rf:
+        bitstring = rf.read()
+    filtered_profiles_array = IO.decompress_profiles_indices(bitstring)
+
+    print(original_profiles_array.shape)
+    print(original_profiles_array)
+    print(original_profiles_array[6:16,].sum())
+    print(filtered_profiles_array.shape)
+    print(filtered_profiles_array)
+    print(filtered_profiles_array.sum())
+
+
 
 
 def main():
     args = handler()
     #test_bins_fasta(args)
-    profiles_wrapper(args)
+    test_filtered_profiles(args)
 
 
 if __name__ == "__main__":

@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyteiser/wrappers/rna.ps" afterPath="$PROJECT_DIR$/pyteiser/wrappers/rna.ps" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_filtering_by_folding.py" afterPath="$PROJECT_DIR$/tests/test_filtering_by_folding.py" />
     </list>
     <ignored path="pyteiser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,18 +28,18 @@
       <file leaf-file-name="filter_profiles_by_folding.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="42" column="24" selection-start-line="42" selection-start-column="24" selection-end-line="42" selection-end-column="24" />
+            <state relative-caret-position="187">
+              <caret line="11" column="85" selection-start-line="11" selection-start-column="85" selection-end-line="11" selection-end-column="85" />
               <folding>
-                <element signature="e#1135#1144#0" expanded="true" />
-                <element signature="e#3395#4156#0" expanded="false" />
-                <element signature="e#4185#4566#0" expanded="false" />
-                <element signature="e#4634#5023#0" expanded="false" />
-                <element signature="e#5316#5904#0" expanded="false" />
-                <element signature="e#6093#7125#0" expanded="false" />
-                <element signature="e#7170#7472#0" expanded="false" />
-                <element signature="e#7571#8716#0" expanded="false" />
-                <element signature="e#9216#13523#0" expanded="false" />
+                <element signature="e#1103#1112#0" expanded="true" />
+                <element signature="e#3362#4123#0" expanded="false" />
+                <element signature="e#4152#4533#0" expanded="false" />
+                <element signature="e#4601#4990#0" expanded="false" />
+                <element signature="e#5283#5871#0" expanded="false" />
+                <element signature="e#6060#7092#0" expanded="false" />
+                <element signature="e#7137#7439#0" expanded="false" />
+                <element signature="e#7538#8683#0" expanded="false" />
+                <element signature="e#9183#13490#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -68,8 +70,8 @@
       <file leaf-file-name="test_short_compression.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_short_compression.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+            <state relative-caret-position="98">
+              <caret line="80" column="33" selection-start-line="80" selection-start-column="33" selection-end-line="80" selection-end-column="60" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -80,8 +82,8 @@
       <file leaf-file-name="test_filtering_by_folding.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/test_filtering_by_folding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="65" column="26" selection-start-line="65" selection-start-column="26" selection-end-line="65" selection-end-column="26" />
+            <state relative-caret-position="140">
+              <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -92,8 +94,8 @@
       <file leaf-file-name="IO.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="315" column="44" selection-start-line="315" selection-start-column="44" selection-end-line="315" selection-end-column="44" />
+            <state relative-caret-position="80">
+              <caret line="313" column="45" selection-start-line="313" selection-start-column="45" selection-end-line="313" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -200,20 +202,20 @@
         <option value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_ped_control_samples_MuTect2.py" />
         <option value="$PROJECT_DIR$/../../collaborations/Ethan_Winkler/scripts/launch_MuTect2_WES_adults_PON.py" />
         <option value="$PROJECT_DIR$/pyteiser/wrappers/playground.py" />
-        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/pyteiser/type_conversions.py" />
         <option value="$PROJECT_DIR$/pyteiser/glob_var.py" />
         <option value="$PROJECT_DIR$/pyteiser/structures.py" />
-        <option value="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
         <option value="$PROJECT_DIR$/tests/test_short_compression.py" />
+        <option value="$PROJECT_DIR$/pyteiser/IO.py" />
         <option value="$PROJECT_DIR$/tests/test_filtering_by_folding.py" />
+        <option value="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="983" />
+    <option name="width" value="1280" />
+    <option name="height" value="703" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -246,24 +248,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_filtering_by_folding.py" />
   </component>
-  <component name="RunManager" selected="Python.filter_profiles_by_folding">
-    <configuration default="false" name="fold_refernce_transcriptome" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser/wrappers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pyteiser" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/fold_refernce_transcriptome.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.test_filtering_by_folding">
     <configuration default="false" name="filter_profiles_by_folding" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -328,6 +313,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pyteiser" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_short_compression.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_filtering_by_folding" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pyteiser" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_filtering_by_folding.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -467,19 +469,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
-      <item index="1" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
-      <item index="2" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
-      <item index="3" class="java.lang.String" itemvalue="Python.draw_reports_1" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_short_compression" />
+      <item index="0" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
+      <item index="1" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
+      <item index="2" class="java.lang.String" itemvalue="Python.draw_reports_1" />
+      <item index="3" class="java.lang.String" itemvalue="Python.test_short_compression" />
+      <item index="4" class="java.lang.String" itemvalue="Python.test_filtering_by_folding" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_short_compression" />
-        <item index="2" class="java.lang.String" itemvalue="Python.draw_reports_1" />
-        <item index="3" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
-        <item index="4" class="java.lang.String" itemvalue="Python.fold_refernce_transcriptome" />
+        <item index="0" class="java.lang.String" itemvalue="Python.test_filtering_by_folding" />
+        <item index="1" class="java.lang.String" itemvalue="Python.filter_profiles_by_folding" />
+        <item index="2" class="java.lang.String" itemvalue="Python.test_short_compression" />
+        <item index="3" class="java.lang.String" itemvalue="Python.draw_reports_1" />
+        <item index="4" class="java.lang.String" itemvalue="Python.launch_MuTest2_WES" />
       </list>
     </recent_temporary>
   </component>
@@ -870,15 +872,15 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="983" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1280" height="703" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35135135" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5131579" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1216,36 +1218,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="315" column="44" selection-start-line="315" selection-start-column="44" selection-end-line="315" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/glob_var.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="421">
           <caret line="50" column="9" selection-start-line="50" selection-start-column="9" selection-end-line="50" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyteiser/matchmaker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
           <folding />
         </state>
       </provider>
@@ -1268,38 +1244,64 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/IO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="313" column="45" selection-start-line="313" selection-start-column="45" selection-end-line="313" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/matchmaker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_short_compression.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+        <state relative-caret-position="98">
+          <caret line="80" column="33" selection-start-line="80" selection-start-column="33" selection-end-line="80" selection-end-column="60" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pyteiser/type_conversions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="42" column="24" selection-start-line="42" selection-start-column="24" selection-end-line="42" selection-end-column="24" />
+        <state relative-caret-position="187">
+          <caret line="11" column="85" selection-start-line="11" selection-start-column="85" selection-end-line="11" selection-end-column="85" />
           <folding>
-            <element signature="e#1135#1144#0" expanded="true" />
-            <element signature="e#3395#4156#0" expanded="false" />
-            <element signature="e#4185#4566#0" expanded="false" />
-            <element signature="e#4634#5023#0" expanded="false" />
-            <element signature="e#5316#5904#0" expanded="false" />
-            <element signature="e#6093#7125#0" expanded="false" />
-            <element signature="e#7170#7472#0" expanded="false" />
-            <element signature="e#7571#8716#0" expanded="false" />
-            <element signature="e#9216#13523#0" expanded="false" />
+            <element signature="e#1103#1112#0" expanded="true" />
+            <element signature="e#3362#4123#0" expanded="false" />
+            <element signature="e#4152#4533#0" expanded="false" />
+            <element signature="e#4601#4990#0" expanded="false" />
+            <element signature="e#5283#5871#0" expanded="false" />
+            <element signature="e#6060#7092#0" expanded="false" />
+            <element signature="e#7137#7439#0" expanded="false" />
+            <element signature="e#7538#8683#0" expanded="false" />
+            <element signature="e#9183#13490#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_filtering_by_folding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="65" column="26" selection-start-line="65" selection-start-column="26" selection-end-line="65" selection-end-column="26" />
+        <state relative-caret-position="140">
+          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
