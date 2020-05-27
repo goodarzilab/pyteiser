@@ -17,6 +17,8 @@ import numpy as np
 import argparse
 import numba
 import math
+import re
+import time
 from subprocess import PIPE, run, Popen
 
 
@@ -27,6 +29,7 @@ def handler():
     parser.add_argument("--rna_bin_file", help="", type=str)
     parser.add_argument("--seeds_file", help="", type=str)
     parser.add_argument("--profiles_full_file", help="", type=str)
+    parser.add_argument("--profiles_output_file", help="", type=str)
     parser.add_argument("--are_seeds_degenerate", help="", type=str)
     parser.add_argument("--n_profiles_check",
                         help="number of profiles to test to see if the profiles file corresponds to the seeds file",
@@ -41,6 +44,7 @@ def handler():
         rna_bin_file='/Users/student/Documents/hani/programs/pyteiser/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
         seeds_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin',
         profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
+        profiles_output_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique_fold_filtered.bin',
 
         are_seeds_degenerate='n',
         window_size=100,
@@ -54,17 +58,21 @@ def handler():
     return args
 
 
+def compile_global_patterns():
+    global energy_pattern_RNAeval
+    energy_pattern_RNAeval = re.compile("\(\s*\-*\d+\.\d+\)")
+
+
 def make_constraint_string(n_motif, w_motif, motif_linear_length,
                            subsequence_n, is_degenerate):
     # make one constraint string for each match
     constraint_strings = []
     # see -C parameter here: https://www.tbi.univie.ac.at/RNA/RNAfold.1.html
-    structure_array = np.full(shape=subsequence_n.length,
-                               fill_value=glob_var._loop,
-                               dtype=np.uint8)
-
     subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
     for subs_match in subs_instances:
+        structure_array = np.full(shape=subsequence_n.length,
+                                  fill_value=glob_var._loop,
+                                  dtype=np.uint8)
         structure_array[subs_match : subs_match + motif_linear_length] = w_motif.full_structure_encoding
         constraint_string = ''.join([glob_var._extended_structure_to_char[x] for x in structure_array])
         constraint_strings.append(constraint_string)
@@ -154,8 +162,9 @@ def parse_RNAfold_output(out_string):
         folded_properly = False
         return (folded_properly, energy_value)
     folded_properly = True
-    energy_term = out_string.split(' ')[-1].strip()
-    energy_value = float(energy_term[1:-1])
+    res = energy_pattern_RNAeval.search(out_string)
+    energy_value = float(res.group()[1:-1])
+
     return (folded_properly, energy_value)
 
 
@@ -170,6 +179,8 @@ def compare_folding_energies(default_result, constraint_result, ratio_threshold,
         return ratio_is_proper
     if def_energy > 0:
         print("The selected sequence does not fold properly!")
+        print(default_result)
+        print(def_energy)
         sys.exit(1)
     if constr_energy > 0:
         if do_print:
@@ -190,12 +201,15 @@ def process_one_profile_one_seed(w_motif, n_motif,
                                  profile, window_size,
                                  is_degenerate,
                                  MFE_ratio_thresh,
-                                 do_print = True,
-                                 do_print_subs_matches = True):
+                                 do_print = False,
+                                 do_print_subs_matches = False,
+                                 do_print_progress = True,
+                                 how_often_print=100):
     # prepare
-    new_profile = 
+    new_profile = np.zeros_like(profile)
     motif_linear_length = w_motif.linear_length
     w_motif.encode_linear_structure()
+    tic = time.time()
     if do_print:
         motif_linear_sequence = w_motif.print_linear_sequence(return_string = True)
         motif_linear_structure = w_motif.print_linear_structure(return_string = True)
@@ -221,6 +235,7 @@ def process_one_profile_one_seed(w_motif, n_motif,
             subsequence_string = subsequence_w.print(return_string=True)
             constraint_strings = make_constraint_string(n_motif, w_motif, motif_linear_length,
                                                        subsequence_n, is_degenerate)
+
             for constraint_string in constraint_strings:
                 # print matches for debugging
                 if do_print:
@@ -251,41 +266,70 @@ def process_one_profile_one_seed(w_motif, n_motif,
                 ratio_is_proper = compare_folding_energies(default_result, constraint_result, MFE_ratio_thresh, do_print=do_print)
                 is_there_match = is_there_match or ratio_is_proper
 
+        if k % how_often_print == 0:
+            string_to_print = "%d out of %d matches processed" % (k, true_indices.shape[0])
+            if do_print_progress:
+                print(string_to_print)
+
+        new_profile[idx] = is_there_match
+
+    toc = time.time()
+    if do_print_progress:
+        print("time spent on this seed: %d" % (toc-tic))
+
+    return new_profile
 
 
-
-        # analog of get_dG_ratio_to_optimum
-
-        if k == 10:
-            break
-
-
-    # this function only works with n_motif and n_sequence classes,
-
-
-
-
-
-def fold_instances(w_motifs_list, w_seqs_list,
+def filter_profiles_by_folding(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
-                   profiles_array, window_size,
+                   profiles_array,
+                   output_filename,
+                   window_size,
                    MFE_ratio_thresh,
-                   is_degenerate):
-    # iterate over instances
-    #true_indices = np.where(self.values)  # get indices
-    #true_indices = true_indices[0]  # for some reason np.where returns a tuple
+                   is_degenerate,
+                   do_print=False,
+                   do_print_subs_matches=False,
+                   do_print_progress=True,
+                   how_often_print=100
+                   ):
+    N_seq = len(n_seqs_list)
+    with open(output_filename, 'wb') as wf:
+        # iterate over seeds
+        for i, w_motif in enumerate(w_motifs_list):
 
-    for i, w_motif in enumerate(w_motifs_list):
-        n_motif = n_motifs_list[i]
-        current_profile = profiles_array[i, :]
-        process_one_profile_one_seed(w_motif, n_motif, w_seqs_list, n_seqs_list,
-                                     current_profile, window_size, is_degenerate,
-                                     MFE_ratio_thresh)
-        break
+
+            if i <= 5:
+                continue
+            if i >= 16:
+                break
+
+
+            n_motif = n_motifs_list[i]
+            current_profile = profiles_array[i, :]
+            # filtered_profile = process_one_profile_one_seed(w_motif, n_motif,
+            #                              w_seqs_list, n_seqs_list,
+            #                              current_profile, window_size, is_degenerate,
+            #                              MFE_ratio_thresh,
+            #                              do_print=do_print,
+            #                              do_print_subs_matches=do_print_subs_matches,
+            #                              do_print_progress=do_print_progress,
+            #                              how_often_print=how_often_print)
+            filtered_profile = np.zeros_like(current_profile)
+
+            filtered_profile_w = structures.w_profile(N_seq)
+            filtered_profile_w.values = filtered_profile
+            filtered_profile_w.compress_indices()
+            wf.write(filtered_profile_w.bytestring_indices)
+
+            if do_print:
+                difference_u_f = np.logical_and(current_profile, np.invert(filtered_profile))
+                print("%d out of %d transcripts were filtered out: " % (difference_u_f.sum(), current_profile.sum()))
+
 
 
 def main():
     import_modules()
+    compile_global_patterns()
     args = handler()
 
     w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list  = read_input_files(args.seeds_file, args.rna_bin_file)
@@ -303,9 +347,10 @@ def main():
     else:
         are_seeds_degenerate = False
 
-    fold_instances(w_motifs_list, w_seqs_list,
+    filter_profiles_by_folding(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
                    decompressed_profiles_array,
+                   args.profiles_output_file,
                    window_size = args.window_size,
                    MFE_ratio_thresh = args.MFE_ratio_thresh,
                    is_degenerate = are_seeds_degenerate)
