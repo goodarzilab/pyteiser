@@ -15,6 +15,7 @@ import os
 import sys
 import numpy as np
 import argparse
+import numba
 import math
 import subprocess
 
@@ -27,7 +28,10 @@ def handler():
     parser.add_argument("--seeds_file", help="", type=str)
     parser.add_argument("--profiles_full_file", help="", type=str)
     parser.add_argument("--are_seeds_degenerate", help="", type=str)
-    parser.add_argument("--n_profiles_check", help="number of profiles to test to see if the profiles file corresponds to the seeds file", type=str)
+    parser.add_argument("--n_profiles_check",
+                        help="number of profiles to test to see if the profiles file corresponds to the seeds file",
+                        type=str)
+    parser.add_argument("--window_size", help="the window surrounding a match that we are folding", type=int)
 
     parser.set_defaults(
         rna_bin_file='/Users/student/Documents/hani/programs/pyteiser/data/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
@@ -35,6 +39,7 @@ def handler():
         profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
 
         are_seeds_degenerate='n',
+        window_size=100,
         n_profiles_check=0,
 
     )
@@ -94,10 +99,45 @@ def process_one_transcript_one_seed():
     pass
 
 
+@numba.jit(cache=False, nopython=True, nogil=True)
+def extract_subsequence(inp_seq, match_coord, motif_linear_length, window_size):
+    # if a sequence is shorter than a window size, return all of it
+    if inp_seq.length < window_size:
+        start_coord = 0
+        end_coord = inp_seq.length
+    else:
+        # center the window on the middle of motif; however, if motif is longer than a window, take all of it
+        motif_middle = motif_linear_length // 2
+        center_coord = match_coord + motif_middle
+        start_coord = min((center_coord - window_size // 2), match_coord)
+        end_coord = max((center_coord + window_size // 2), (center_coord + motif_middle))
+
+        # if we are out of the transcript boundaries, shift
+        if start_coord < 0:
+            end_coord += (0 - start_coord)
+            start_coord = 0
+        elif end_coord > inp_seq.length:
+            start_coord -= (end_coord - inp_seq.length)
+            end_coord = inp_seq.length
+
+    # take the subsequence
+    subsequence = structures.n_sequence((end_coord - start_coord),
+                                        inp_seq.nts[start_coord: end_coord])
+    return subsequence
+
 
 def process_one_profile_one_seed(w_motif, n_motif,
                                  w_seqs_list, n_seqs_list,
-                                 profile, is_degenerate):
+                                 profile, window_size,
+                                 is_degenerate,
+                                 do_print = True,
+                                 do_print_subs_matches = True):
+    # prepare
+    motif_linear_length = w_motif.linear_length
+    if do_print:
+        motif_linear_sequence = w_motif.print_linear_sequence(return_string = True)
+        motif_linear_structure = w_motif.print_linear_structure(return_string = True)
+
     # get indices of all the matched transcripts
     assert len(w_seqs_list) == profile.shape[0], "transcriptome length doesn't correspond to the profile length"
     true_indices = np.where(profile)  # get indices
@@ -109,8 +149,24 @@ def process_one_profile_one_seed(w_motif, n_motif,
     # iterate through all sequences that have a match
     for k, idx in enumerate(true_indices):
         curr_motif_instances = matchmaker.find_all_motif_instances(n_motif, n_seqs_list[idx], is_degenerate=is_degenerate)
-        print("Sequence %d, length %d" % (idx,n_seqs_list[idx].length))
-        print("Match indices: ", ", ".join([str(x) for x in curr_motif_instances]))
+        if do_print:
+            print("Sequence %d, length %d" % (idx,n_seqs_list[idx].length))
+            print("Match indices: ", ", ".join([str(x) for x in curr_motif_instances]))
+        for match_coord in curr_motif_instances:
+            subsequence_n = extract_subsequence(n_seqs_list[idx], match_coord, motif_linear_length, window_size)
+            subsequence_w = type_conversions.n_to_w_sequence(subsequence_n)
+            subsequence_string = subsequence_w.print(return_string=True)
+            if do_print:
+                print("Sequence: ", subsequence_string)
+            if do_print and do_print_subs_matches:
+                subs_instances = matchmaker.find_all_motif_instances(n_motif, subsequence_n, is_degenerate=is_degenerate)
+                for subs_match in subs_instances:
+                    print("Match (coord %d): %s" % (subs_match, subsequence_string[subs_match : subs_match + motif_linear_length]))
+                    print("Motif:            %s" % motif_linear_sequence)
+                    print("Structure:        %s" % motif_linear_structure)
+
+
+
 
         # analog of get_dG_ratio_to_optimum
 
@@ -126,7 +182,8 @@ def process_one_profile_one_seed(w_motif, n_motif,
 
 def fold_instances(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
-                   profiles_array, is_degenerate):
+                   profiles_array, window_size,
+                   is_degenerate):
     # iterate over instances
     #true_indices = np.where(self.values)  # get indices
     #true_indices = true_indices[0]  # for some reason np.where returns a tuple
@@ -135,7 +192,7 @@ def fold_instances(w_motifs_list, w_seqs_list,
         n_motif = n_motifs_list[i]
         current_profile = profiles_array[i, :]
         process_one_profile_one_seed(w_motif, n_motif, w_seqs_list, n_seqs_list,
-                                     current_profile, is_degenerate)
+                                     current_profile, window_size, is_degenerate)
         break
 
 
@@ -161,6 +218,7 @@ def main():
     fold_instances(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
                    decompressed_profiles_array,
+                   window_size = args.window_size,
                    is_degenerate = are_seeds_degenerate)
 
 
