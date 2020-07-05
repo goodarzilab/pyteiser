@@ -517,10 +517,10 @@ def read_np_array_from_bitstring(bitstring, dtype, return_length = False):
                             1 + 4 * n_dimentions + dtype.itemsize * flatten_length + 16]
     output_array = np.frombuffer(output_bitstring, dtype=dtype)
     reshaped_array = np.reshape(output_array, shape_array, order='C')
-
-    print(reshaped_array.shape)
-    print(reshaped_array)
-    print(md5_checksum)
+    #
+    # print(reshaped_array.shape)
+    # print(reshaped_array)
+    # print(md5_checksum)
 
     array_bitstring = reshaped_array.tobytes()
     md5 = hashlib.md5()
