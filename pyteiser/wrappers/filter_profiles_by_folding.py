@@ -38,6 +38,7 @@ def handler():
     parser.add_argument("--MFE_ratio_thresh",
                         help="minimal ratio of Minimal Folding Energies for a structure with or without fixed seed match",
                         type=float)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
 
     parser.set_defaults(
@@ -50,6 +51,7 @@ def handler():
         window_size=100,
         n_profiles_check=0,
         MFE_ratio_thresh=0.5,
+        indices_mode=False,
     )
 
     args = parser.parse_args()
@@ -331,7 +333,9 @@ def main():
     args = handler()
 
     w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list  = read_input_files(args.seeds_file, args.rna_bin_file)
-    decompressed_profiles_array = IO.unpack_profiles_file(args.profiles_full_file, do_print=True)
+    decompressed_profiles_array = IO.unpack_profiles_file(args.profiles_full_file,
+                                                          args.indices_mode,
+                                                          do_print=True)
 
     if args.n_profiles_check > 0:
         make_sure_the_profile_is_correct(n_motifs_list, n_seqs_list,

@@ -24,6 +24,9 @@ def handler():
                                             "information test for seed novelty", type=int)
     parser.add_argument("--do_print", help="should it print the output or not", type=bool)
 
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
+
     parser.set_defaults(
         # combined_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/seeds_passed_100k_tarbp2_utrs.bin",
         # combined_profiles_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/profiles_passed_100k_tarbp2_utrs.bin",
@@ -40,6 +43,9 @@ def handler():
         nbins=15,
         min_ratio=5,
         do_print=False,
+
+        indices_mode=False,
+        index_bit_width = 24,
 
     )
 
@@ -160,7 +166,7 @@ def main():
     index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
     seeds_passed = IO.read_motif_file(args.combined_seeds_filename)
-    profiles_passed = IO.unpack_profiles_file(args.combined_profiles_filename)
+    profiles_passed = IO.unpack_profiles_file(args.combined_profiles_filename, args.indices_mode)
 
     classification_array, N_families = filter_CMI(seeds_passed, profiles_passed,
                                                discr_exp_profile, index_array,
@@ -175,7 +181,8 @@ def main():
                                   MI_values_array, do_print=args.do_print)
 
     IO.write_list_of_seeds(seeds_unique, args.unique_seeds_filename)
-    IO.write_array_of_profiles(profiles_unique, args.unique_profiles_filename)
+    IO.write_array_of_profiles(profiles_unique, args.unique_profiles_filename,
+                               args.indices_mode, args.index_bit_width)
     IO.write_classification_array(classification_array, args.families_classification_filename)
 
 

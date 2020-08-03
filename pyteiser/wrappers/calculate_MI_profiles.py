@@ -27,6 +27,7 @@ def handler():
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
                                                  " for a seed to be considered", type=int)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
     parser.set_defaults(
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
@@ -43,6 +44,7 @@ def handler():
 
         nbins = 15,
         min_occurences = 5,
+        indices_mode=False,
     )
 
     args = parser.parse_args()
@@ -114,7 +116,9 @@ def main():
     profiles_filename_full, MI_values_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
 
     decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
-                                                                                         args.exp_mask_file, do_print=True)
+                                                                                         args.exp_mask_file,
+                                                                                         args.indices_mode,
+                                                                                         do_print=True)
 
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
 

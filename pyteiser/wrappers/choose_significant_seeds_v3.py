@@ -63,6 +63,9 @@ def handler():
 
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=bool)
+
 
 
     parser.set_defaults(
@@ -93,6 +96,8 @@ def handler():
 
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y',
+        indices_mode=False,
+        index_bit_width=24,
 
     )
 
@@ -391,7 +396,7 @@ def write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
 
 
 def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
-                        passed_profiles_filename):
+                        passed_profiles_filename, indices_mode, index_bit_width):
     if last_positive_seed < 0:
         total_bitstring = np.uint32(0).tobytes()
     else:
@@ -404,7 +409,15 @@ def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
         for i in range(profiles_passed_list.shape[0]):
             current_profile = structures.w_profile(profiles_passed_list[i].shape[0])
             current_profile.values = profiles_passed_list[i]
-            current_profile.compress()
+
+            if indices_mode:
+                current_profile.compress_indices(width = index_bit_width)
+                profiles_bitstrings.append(current_profile.bytestring_indices)
+            else:
+                current_profile.compress()
+                profiles_bitstrings.append(current_profile.bytestring)
+
+
             profiles_bitstrings.append(current_profile.bytestring)
 
         total_bitstring = np.uint32(len(profiles_bitstrings)).tobytes() + b''.join(profiles_bitstrings)
@@ -434,7 +447,9 @@ def main():
 
     # read motifs, their profiles and MI values
     profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
-                                                                         exp_mask_filename, do_print=True)
+                                                                         exp_mask_filename,
+                                                                         args.indices_mode,
+                                                                         do_print=True)
     w_motifs_list = IO.read_motif_file(seed_filename_full)
     MI_values_array, nbins = IO.read_MI_values(MI_values_filename_full)
 
@@ -446,7 +461,7 @@ def main():
     write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
                        passed_seed_filename_full)
     write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
-                          passed_profiles_filename)
+                          passed_profiles_filename, args.indices_mode, args.index_bit_width)
 
 
     if args.print_qstat == 'y':

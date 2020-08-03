@@ -2,10 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helper_scripts/find_incomplete_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/helper_scripts/find_incomplete_profiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/IO.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/IO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/structures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_MI_profiles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v3.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/choose_significant_seeds_v3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/combine_optimized_seeds.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/combine_optimized_seeds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/combine_passed_seeds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/draw_reports_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/draw_reports_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_passed_seeds_with_CMI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/filter_profiles_by_folding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/optimize_seeds_single_chunk.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_filtering_by_folding.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_filtering_by_folding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_short_compression.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_short_compression.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_timing.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_timing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,9 +46,9 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="web.server" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.deploy.options" />
   </component>
-  <component name="RunManager" selected="Python.aaa">
+  <component name="RunManager" selected="Python.test_timing">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,28 +82,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/aaa.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="draw_reports_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="pyteiser" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pyteiser/wrappers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pyteiser/wrappers/draw_reports_1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -166,20 +156,42 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_timing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pyteiser" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_timing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.aaa" />
-      <item itemvalue="Python.draw_reports_1" />
       <item itemvalue="Python.filter_profiles_by_folding" />
       <item itemvalue="Python.test_filtering_by_folding" />
       <item itemvalue="Python.test_short_compression" />
+      <item itemvalue="Python.test_timing" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_timing" />
         <item itemvalue="Python.aaa" />
         <item itemvalue="Python.test_filtering_by_folding" />
         <item itemvalue="Python.filter_profiles_by_folding" />
         <item itemvalue="Python.test_short_compression" />
-        <item itemvalue="Python.draw_reports_1" />
       </list>
     </recent_temporary>
   </component>
@@ -201,7 +213,7 @@
       <workItem from="1594401111017" duration="113000" />
       <workItem from="1594401396562" duration="4765000" />
       <workItem from="1595003764439" duration="3634000" />
-      <workItem from="1596424805859" duration="1592000" />
+      <workItem from="1596424805859" duration="9633000" />
     </task>
     <task id="LOCAL-00111" summary="print discretization result">
       <created>1568509431719</created>
@@ -593,33 +605,34 @@
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state x="864" y="346" key="#SSH_Configurations/0.23.2560.1343@0.23.2560.1343" timestamp="1591469896750" />
-    <state width="1238" height="403" key="GridCell.Tab.0.bottom" timestamp="1594008851400">
+    <state width="2518" height="251" key="GridCell.Tab.0.bottom" timestamp="1596476144976">
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.bottom/0.23.1280.703@0.23.1280.703" timestamp="1593919929766" />
-    <state width="1238" height="403" key="GridCell.Tab.0.bottom/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851400" />
-    <state width="1238" height="403" key="GridCell.Tab.0.center" timestamp="1594008851399">
+    <state width="2518" height="251" key="GridCell.Tab.0.bottom/0.23.2560.1343@0.23.2560.1343" timestamp="1596476144976" />
+    <state width="2518" height="251" key="GridCell.Tab.0.center" timestamp="1596476144975">
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.center/0.23.1280.703@0.23.1280.703" timestamp="1593919929765" />
-    <state width="1238" height="403" key="GridCell.Tab.0.center/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851399" />
-    <state width="1238" height="403" key="GridCell.Tab.0.left" timestamp="1594008851399">
+    <state width="2518" height="251" key="GridCell.Tab.0.center/0.23.2560.1343@0.23.2560.1343" timestamp="1596476144975" />
+    <state width="2518" height="251" key="GridCell.Tab.0.left" timestamp="1596476144975">
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.left/0.23.1280.703@0.23.1280.703" timestamp="1593919929764" />
-    <state width="1238" height="403" key="GridCell.Tab.0.left/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851399" />
-    <state width="1238" height="403" key="GridCell.Tab.0.right" timestamp="1594008851400">
+    <state width="2518" height="251" key="GridCell.Tab.0.left/0.23.2560.1343@0.23.2560.1343" timestamp="1596476144975" />
+    <state width="2518" height="251" key="GridCell.Tab.0.right" timestamp="1596476144975">
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.right/0.23.1280.703@0.23.1280.703" timestamp="1593919929765" />
-    <state width="1238" height="403" key="GridCell.Tab.0.right/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851400" />
-    <state x="789" y="333" width="982" height="703" key="SettingsEditor" timestamp="1596429979632">
-      <screen x="0" y="23" width="2560" height="1343" />
+    <state width="2518" height="251" key="GridCell.Tab.0.right/0.23.2560.1343@0.23.2560.1343" timestamp="1596476144975" />
+    <state x="298" y="23" width="982" height="703" key="SettingsEditor" timestamp="1596471850854">
+      <screen x="0" y="23" width="1280" height="703" />
     </state>
-    <state x="298" y="23" width="982" height="703" key="SettingsEditor/0.23.1280.703@0.23.1280.703" timestamp="1591499367854" />
+    <state x="298" y="23" width="982" height="703" key="SettingsEditor/0.23.1280.703@0.23.1280.703" timestamp="1596471850854" />
     <state x="789" y="333" key="SettingsEditor/0.23.2560.1343@0.23.2560.1343" timestamp="1596429979632" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/pyteiser$test_timing.coverage" NAME="test_timing Coverage Results" MODIFIED="1596476119695" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/pyteiser$test_filtering_by_folding.coverage" NAME="test_filtering_by_folding Coverage Results" MODIFIED="1593446224170" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/pyteiser$aaa.coverage" NAME="aaa Coverage Results" MODIFIED="1593446235982" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

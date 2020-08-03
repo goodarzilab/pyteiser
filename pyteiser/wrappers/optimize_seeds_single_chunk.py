@@ -45,6 +45,8 @@ def handler():
                                                                 "pass to consider the motif robust", type=float)
 
     parser.add_argument("--size_of_chunks", help="how many seeds should 1 process take on", type=float)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
 
     parser.set_defaults(
         # unique_seeds_filename="/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin",
@@ -75,6 +77,8 @@ def handler():
         jackknife_min_fraction_passed = 0.6,
 
         size_of_chunks=10,
+        indices_mode=False,
+        index_bit_width = 24,
     )
 
     args = parser.parse_args()
@@ -332,7 +336,7 @@ def main():
     index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
     seeds_initial = IO.read_motif_file(args.unique_seeds_filename)
-    profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename)
+    profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename, args.indices_mode)
     seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
 
     # get the task id
@@ -350,7 +354,8 @@ def main():
                                             args, do_print=True)
 
     IO.write_list_of_seeds(seeds_optimized, seeds_filename_full)
-    IO.write_array_of_profiles(profiles_optimized, profiles_filename_full)
+    IO.write_array_of_profiles(profiles_optimized, profiles_filename_full,
+                               args.indices_mode, args.index_bit_width)
     IO.write_np_array(seed_charact_array, char_filename_full)
     IO.write_np_array(robustness_array, robustness_filename_full)
 

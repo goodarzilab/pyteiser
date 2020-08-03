@@ -17,13 +17,14 @@ def handler():
     parser.add_argument("--profiles_folder", help="", type=str)
     parser.add_argument("--outfile", help="", type=str)
     parser.add_argument("--expected_length", help="", type=int)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
     parser.set_defaults(
         #profiles_folder = '/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/profiles_4-7_4-9_4-6_14-20/profiles_per_file_30k',
         profiles_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/profiles/SNRNPA1/profiles_per_file_30k',
         #outfile = '/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/profiles_tarbp2.txt',
         outfile='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/profiles_snrnp1.txt',
         expected_length = 30000,
-
+        indices_mode = False
     )
 
     args = parser.parse_args()
@@ -40,14 +41,18 @@ def get_list_profile_files(profiles_folder):
 
 
 
-def report_incomplete_profiles(list_profile_filenames, output_file, expected_length):
+def report_incomplete_profiles(list_profile_filenames, output_file, expected_length,
+                               indices_mode = False):
     any_files_incomplete = False
     with open(output_file, 'w') as wf:
         counter = 0
         for fn in list_profile_filenames:
             with open(fn, 'rb') as rf:
                 bitstring = rf.read()
-                decompressed_profiles_array = IO.decompress_profiles(bitstring)
+                if indices_mode:
+                    decompressed_profiles_array = IO.decompress_profiles_indices(bitstring)
+                else:
+                    decompressed_profiles_array = IO.decompress_profiles(bitstring)
                 if len(decompressed_profiles_array) != expected_length:
                     any_files_incomplete = True
                     string_to_write = 'File %s contains %d profiles instead of %d\n' % \
@@ -64,7 +69,8 @@ def report_incomplete_profiles(list_profile_filenames, output_file, expected_len
 def main():
     args = handler()
     list_profile_filenames = get_list_profile_files(args.profiles_folder)
-    report_incomplete_profiles(list_profile_filenames, args.outfile, args.expected_length)
+    report_incomplete_profiles(list_profile_filenames, args.outfile, args.expected_length,
+                               args.indices_mode)
 
 
 

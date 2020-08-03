@@ -25,8 +25,12 @@ def handler():
     parser.add_argument("--combined_MI_pv_zscores_filename", help="output: ", type=str)
     parser.add_argument("--combined_robustness_filename", help="output: ", type=str)
 
-    parser.set_defaults(
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
 
+    parser.set_defaults(
+        indices_mode=False,
+        index_bit_width = 24,
     )
 
     args = parser.parse_args()
@@ -88,7 +92,7 @@ def get_list_files(args):
     return filenames_tuples_list
 
 
-def read_chunks(filenames_tuples_list):
+def read_chunks(filenames_tuples_list, indices_mode):
     seeds_optimized_list = []
     profiles_optimized_gen_list = []
     seed_charact_gen_list = []
@@ -99,7 +103,7 @@ def read_chunks(filenames_tuples_list):
         char_filename_full, robustness_filename_full = tup
 
         seeds_optimized = IO.read_motif_file(seeds_filename_full)
-        profiles_optimized = IO.unpack_profiles_file(profiles_filename_full)
+        profiles_optimized = IO.unpack_profiles_file(profiles_filename_full, indices_mode)
         seed_charact_curr = IO.read_np_array(char_filename_full, np.dtype('float64'))
         robustness_curr_array = IO.read_np_array(robustness_filename_full, np.dtype('bool'))
         robustness_curr_list = list(robustness_curr_array)
@@ -123,11 +127,12 @@ def main():
     filenames_tuples_list = get_list_files(args)
 
     seeds_optimized_list, profiles_optimized_array, \
-    seed_charact_array, robustness_array = read_chunks(filenames_tuples_list)
+    seed_charact_array, robustness_array = read_chunks(filenames_tuples_list, args.indices_mode)
 
 
     IO.write_list_of_seeds(seeds_optimized_list, args.combined_seeds_filename)
-    IO.write_array_of_profiles(profiles_optimized_array, args.combined_profiles_filename)
+    IO.write_array_of_profiles(profiles_optimized_array, args.combined_profiles_filename,
+                               args.indices_mode, args.index_bit_width)
     IO.write_np_array(seed_charact_array, args.combined_MI_pv_zscores_filename)
     IO.write_np_array(robustness_array, args.combined_robustness_filename)
 

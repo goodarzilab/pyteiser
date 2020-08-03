@@ -319,7 +319,7 @@ class w_profile:
         self.md5 = md5_checksum
 
 
-    def compress_indices(self, width = 20):
+    def compress_indices(self, width = 24):
         # compression that takes less space for sparse profiles
         # instead of saving each element of an array as 1 byte, we save indices of all the elements that are True
         # saving one index requires more than 16 bytes (since 16 bytes allow for 65536 values, and a transcriptome can be larger)

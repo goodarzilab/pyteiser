@@ -17,7 +17,8 @@ def handler():
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
     parser.add_argument("--are_seeds_degenerate", help="", type=str)
-    parser.add_argument("--do_compress_indices", help="", type=bool)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
 
 
 
@@ -35,7 +36,8 @@ def handler():
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y',
         are_seeds_degenerate='n',
-        do_compress_indices = True,
+        indices_mode=False,
+        index_bit_width = 24,
 
     )
 
@@ -75,7 +77,7 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
 def calculate_write_profiles(n_motifs_list, n_seqs_list,
                             out_filename, are_seeds_degenerate,
-                            do_compress_indices,
+                            indices_mode, index_bit_width,
                              do_print=False, do_return = False):
     if are_seeds_degenerate == 'yes' or are_seeds_degenerate == 'y':
         is_degenerate = True
@@ -89,11 +91,13 @@ def calculate_write_profiles(n_motifs_list, n_seqs_list,
         for i, motif in enumerate(n_motifs_list):
             current_profile, time_spent = matchmaker.calculate_profile_one_motif(motif, n_seqs_list,
                                                                                  is_degenerate = is_degenerate)
-            if do_compress_indices:
-                current_profile.compress_indices()
+            if indices_mode:
+                current_profile.compress_indices(width = index_bit_width)
+                wf.write(current_profile.bytestring_indices)
             else:
                 current_profile.compress()
-            wf.write(current_profile.bytestring)
+                wf.write(current_profile.bytestring)
+
 
             if do_return:
                 profiles_list[i] = current_profile.values
@@ -138,7 +142,8 @@ def main():
     calculate_write_profiles(n_motifs_list, n_seqs_list,
                              profiles_filename_full,
                              args.are_seeds_degenerate,
-                             args.do_compress_indices,
+                             args.indices_mode,
+                             args.index_bit_width,
                              do_print=True)
 
 

@@ -17,6 +17,9 @@ def handler():
 
     parser.add_argument("--input_indices_list_file", help="input: list of indices of files to process", type=str)
 
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+    parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
+
 
     parser.set_defaults(
         passed_seed_folder='/wynton/home/goodarzi/khorms/pyteiser_root/data/passed_seed/passed_seed_4-7_4-9_4-6_14-20_individual/passed_seed_30k',
@@ -29,6 +32,9 @@ def handler():
 
         #input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/test_2_files.txt',
         input_indices_list_file='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/full_range_2277.txt',
+
+        indices_mode=False,
+        index_bit_width = 24,
 
     )
 
@@ -72,13 +78,13 @@ def get_list_files(passed_seed_folder, passed_seed_filename_template,
     return filenames_list
 
 
-def collect_all_the_passing_seeds(filenames_list):
+def collect_all_the_passing_seeds(filenames_list, indices_mode):
     all_seeds_passed = []
     all_profiles_passed = []
     for tuple_fn in filenames_list:
         passed_seed_fn, passed_profiles_fn = tuple_fn
         current_seeds_passed = IO.read_seed_pass_individual_file(passed_seed_fn)
-        current_profiles_passed = IO.read_profile_pass_individual_file(passed_profiles_fn)
+        current_profiles_passed = IO.read_profile_pass_individual_file(passed_profiles_fn, indices_mode)
         all_seeds_passed += current_seeds_passed
         if len(current_profiles_passed) > 0: # skip the empty files
             all_profiles_passed.append(current_profiles_passed)
@@ -96,9 +102,10 @@ def main():
     filenames_list = get_list_files(args.passed_seed_folder, args.passed_seed_filename_template,
                                     args.passed_profiles_folder, args.passed_profiles_filename_template,
                                     args.input_indices_list_file)
-    seeds_passed_list, profiles_passed_array = collect_all_the_passing_seeds(filenames_list)
+    seeds_passed_list, profiles_passed_array = collect_all_the_passing_seeds(filenames_list, args.indices_mode)
     IO.write_list_of_seeds(seeds_passed_list, args.combined_seeds_filename)
-    IO.write_array_of_profiles(profiles_passed_array, args.combined_profiles_filename)
+    IO.write_array_of_profiles(profiles_passed_array, args.combined_profiles_filename,
+                               args.indices_mode, args.index_bit_width)
 
 
 if __name__ == "__main__":

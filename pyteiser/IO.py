@@ -310,17 +310,22 @@ def unpack_mask_file(exp_mask_file, do_print=False):
     return index_array, values_array
 
 
-def unpack_profiles_file(profiles_bin_file, do_print=False):
+def unpack_profiles_file(profiles_bin_file,
+                         indices_mode = False,
+                         do_print=False):
     with open(profiles_bin_file, 'rb') as rf:
         bitstring = rf.read()
-        decompressed_profiles_array = decompress_profiles(bitstring)
+        if indices_mode:
+            decompressed_profiles_array = decompress_profiles_indices(bitstring)
+        else:
+            decompressed_profiles_array = decompress_profiles(bitstring)
         if do_print:
             print("%d profiles have been loaded" % len(decompressed_profiles_array))
     return decompressed_profiles_array
 
 
-def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, do_print=False):
-    decompressed_profiles_array = unpack_profiles_file(profiles_bin_file, do_print)
+def unpack_profiles_and_mask(profiles_bin_file, exp_mask_file, indices_mode = False, do_print=False):
+    decompressed_profiles_array = unpack_profiles_file(profiles_bin_file, indices_mode, do_print)
     index_array, values_array = unpack_mask_file(exp_mask_file, do_print)
 
     try:
@@ -412,7 +417,8 @@ def read_seed_pass_individual_file(inp_filename):
     return motifs_list
 
 
-def read_profile_pass_individual_file(inp_filename):
+def read_profile_pass_individual_file(inp_filename,
+                                      indices_mode = False):
     with open(inp_filename, 'rb') as rf:
         bitstring = rf.read()
     length_bytes = bitstring[0: 4]
@@ -421,7 +427,10 @@ def read_profile_pass_individual_file(inp_filename):
         return []
 
     profiles_bitstring = bitstring[4: ]
-    profiles_array = decompress_profiles(profiles_bitstring)
+    if indices_mode:
+        profiles_array = decompress_profiles_indices(bitstring)
+    else:
+        profiles_array = decompress_profiles(profiles_bitstring)
     assert(len(profiles_array) == length_value)
     return profiles_array
 
@@ -440,13 +449,18 @@ def write_list_of_seeds(seeds_passed_list, combined_seeds_filename):
         wf.write(total_bitstring)
 
 
-def write_array_of_profiles(profiles_passed_array, combined_profiles_filename):
+def write_array_of_profiles(profiles_passed_array, combined_profiles_filename,
+                            indices_mode = False, index_bit_width = 24):
     with open(combined_profiles_filename, 'wb') as wf:
         for i in range(profiles_passed_array.shape[0]):
             current_profile = structures.w_profile(profiles_passed_array[i].shape[0])
             current_profile.values = profiles_passed_array[i]
-            current_profile.compress()
-            wf.write(current_profile.bytestring)
+            if indices_mode:
+                current_profile.compress_indices(width = index_bit_width)
+                wf.write(current_profile.bytestring_indices)
+            else:
+                current_profile.compress()
+                wf.write(current_profile.bytestring)
 
 
 def write_classification_array(classification_array, classification_filename):

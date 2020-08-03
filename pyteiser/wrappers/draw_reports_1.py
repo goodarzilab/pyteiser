@@ -14,11 +14,15 @@ def handler():
     parser.add_argument("--combined_MI_pv_zscores_filename", help="", type=str)
     parser.add_argument("--combined_robustness_filename", help="", type=str)
 
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
+
     parser.set_defaults(
         combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_optimized_100k_tarbp2_utrs_10k.bin',
         combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/profiles_optimized_100k_tarbp2_utrs_10k.bin',
         combined_MI_pv_zscores_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/seed_characteristics_optimized_100k_tarbp2_utrs_10k.bin',
         combined_robustness_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/tarbp2/robustness_optimized_100k_tarbp2_utrs_10k.bin',
+
+        indices_mode=False,
 
         # combined_seeds_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/seed_optimized_100k_snrnpa1_10k.bin',
         # combined_profiles_filename='/Users/student/Documents/hani/programs/pyteiser/data/combined_optimized_seeds/snrnpa1/profiles_optimized_100k_snrnpa1_10k.bin',
@@ -48,7 +52,7 @@ def import_modules():
 
 def read_seeds_and_characteristics(args):
     seeds_optimized = IO.read_motif_file(args.combined_seeds_filename)
-    profiles_optimized = IO.unpack_profiles_file(args.combined_profiles_filename)
+    profiles_optimized = IO.unpack_profiles_file(args.combined_profiles_filename, args.indices_mode)
     seed_charact_array = IO.read_np_array(args.combined_MI_pv_zscores_filename, np.dtype('float64'))
     robustness_array = IO.read_np_array(args.combined_robustness_filename, np.dtype('bool'))
 

@@ -31,6 +31,7 @@ def handler():
     parser.add_argument("--outfile", type=str)
     parser.add_argument("--profiles_full_file", type=str)
     parser.add_argument("--compressed_profiles_file", type=str)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
     parser.set_defaults(
         rna_fastafile = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/narrow_down_transcripts_list/Gencode_v28_GTEx_expressed_transcripts_fasta/utr_3_fasta/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.txt',
@@ -39,6 +40,7 @@ def handler():
         #profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/test_1_batch_tarbp2/profiles_4-7_4-9_4-6_14-20_30k_1.bin',
         profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
         compressed_profiles_file='/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/compressed_by_indices_profiles.bin',
+        indices_mode=False,
     )
 
     args = parser.parse_args()
@@ -84,7 +86,9 @@ def test_compressing_decompressing_indices(args, decompressed_profiles_array):
 
 def profiles_wrapper(args):
     profiles_filename = args.profiles_full_file
-    decompressed_profiles_array = IO.unpack_profiles_file(profiles_filename, do_print = True)
+    decompressed_profiles_array = IO.unpack_profiles_file(profiles_filename,
+                                                          args.indices_mode,
+                                                          do_print = True)
     test_compressing_decompressing_indices(args, decompressed_profiles_array)
 
 

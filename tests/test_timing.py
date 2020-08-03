@@ -30,11 +30,13 @@ def handler():
     parser.add_argument("--seedfile", type=str)
     parser.add_argument("--rna_fastafile", type=str)
     parser.add_argument("--outfile", type=str)
+    parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
 
     parser.set_defaults(
         rna_fastafile = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/narrow_down_transcripts_list/Gencode_v28_GTEx_expressed_transcripts_fasta/utr_3_fasta/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.txt',
         rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        indices_mode=False,
     )
 
     args = parser.parse_args()
@@ -138,7 +140,7 @@ def time_discretization():
     print("Discretization takes: ", time_discretization)
 
 
-def time_calculate_MI_profiles(calculate_with_numba):
+def time_calculate_MI_profiles(calculate_with_numba, indices_mode):
     test_batch_folder = '/Users/student/Documents/hani/programs/pyteiser/data/test_1_batch_snrnpa1'
     seeds_filename = os.path.join(test_batch_folder, 'seeds_4-7_4-9_4-6_14-20_30k_1.bin')
     profiles_filename = os.path.join(test_batch_folder, 'snrnpa_profiles_4-7_4-9_4-6_14-20_30k_1.bin')
@@ -148,7 +150,9 @@ def time_calculate_MI_profiles(calculate_with_numba):
 
 
     decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename,
-                                                                                         exp_mask_filename, do_print=True)
+                                                                                         exp_mask_filename,
+                                                                                         indices_mode,
+                                                                                         do_print=True)
 
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
 
@@ -168,7 +172,7 @@ def main():
     # time_compressing_profile()
     # time_discretization()
 
-    time_calculate_MI_profiles(calculate_with_numba = 'y')
+    time_calculate_MI_profiles(calculate_with_numba = 'y', indices_mode = args.indices_mode)
 
 
 
