@@ -41,7 +41,8 @@ def handler():
 
 
 def read_exp_values_file(args, return_meas_dict = True):
-    exp_df = pd.read_csv(args.exp_values_file, sep='\t')
+    exp_df = pd.read_csv(args.exp_values_file, sep='\t',
+                         dtype = {args.anno_name_column : str})
     exp_df.index = exp_df[args.anno_name_column]
 
     if return_meas_dict:

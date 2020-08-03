@@ -17,6 +17,7 @@ def handler():
     parser.add_argument("--print_qstat", help="", type=str)
     parser.add_argument("--path_to_qstat", help="", type=str)
     parser.add_argument("--are_seeds_degenerate", help="", type=str)
+    parser.add_argument("--do_compress_indices", help="", type=bool)
 
 
 
@@ -34,6 +35,7 @@ def handler():
         path_to_qstat='/opt/sge/bin/lx-amd64/qstat',
         print_qstat='y',
         are_seeds_degenerate='n',
+        do_compress_indices = True,
 
     )
 
@@ -73,6 +75,7 @@ def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
 
 def calculate_write_profiles(n_motifs_list, n_seqs_list,
                             out_filename, are_seeds_degenerate,
+                            do_compress_indices,
                              do_print=False, do_return = False):
     if are_seeds_degenerate == 'yes' or are_seeds_degenerate == 'y':
         is_degenerate = True
@@ -86,7 +89,10 @@ def calculate_write_profiles(n_motifs_list, n_seqs_list,
         for i, motif in enumerate(n_motifs_list):
             current_profile, time_spent = matchmaker.calculate_profile_one_motif(motif, n_seqs_list,
                                                                                  is_degenerate = is_degenerate)
-            current_profile.compress()
+            if do_compress_indices:
+                current_profile.compress_indices()
+            else:
+                current_profile.compress()
             wf.write(current_profile.bytestring)
 
             if do_return:
@@ -131,7 +137,9 @@ def main():
     # the main procedure - calculate profiles
     calculate_write_profiles(n_motifs_list, n_seqs_list,
                              profiles_filename_full,
-                             args.are_seeds_degenerate, do_print=True)
+                             args.are_seeds_degenerate,
+                             args.do_compress_indices,
+                             do_print=True)
 
 
     if args.print_qstat == 'y':

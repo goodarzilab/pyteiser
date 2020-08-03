@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42cf37db-f5c4-42d9-a419-bc70708278b1" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyteiser/IO.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/IO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/calculate_seed_profiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyteiser/wrappers/preprocess_custom_expression_profile.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,11 +167,11 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.aaa" />
       <item itemvalue="Python.draw_reports_1" />
       <item itemvalue="Python.filter_profiles_by_folding" />
       <item itemvalue="Python.test_filtering_by_folding" />
       <item itemvalue="Python.test_short_compression" />
-      <item itemvalue="Python.aaa" />
     </list>
     <recent_temporary>
       <list>
@@ -195,7 +195,13 @@
       <updated>1564534094214</updated>
       <workItem from="1591468665027" duration="54000" />
       <workItem from="1591468754954" duration="6899000" />
-      <workItem from="1593446180213" duration="8469000" />
+      <workItem from="1593446180213" duration="9653000" />
+      <workItem from="1594008888777" duration="2943000" />
+      <workItem from="1594228563637" duration="2917000" />
+      <workItem from="1594401111017" duration="113000" />
+      <workItem from="1594401396562" duration="4765000" />
+      <workItem from="1595003764439" duration="3634000" />
+      <workItem from="1596424805859" duration="1592000" />
     </task>
     <task id="LOCAL-00111" summary="print discretization result">
       <created>1568509431719</created>
@@ -587,31 +593,31 @@
       <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state x="864" y="346" key="#SSH_Configurations/0.23.2560.1343@0.23.2560.1343" timestamp="1591469896750" />
-    <state width="1238" height="403" key="GridCell.Tab.0.bottom" timestamp="1593919929766">
-      <screen x="0" y="23" width="1280" height="703" />
+    <state width="1238" height="403" key="GridCell.Tab.0.bottom" timestamp="1594008851400">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.bottom/0.23.1280.703@0.23.1280.703" timestamp="1593919929766" />
-    <state width="2518" height="403" key="GridCell.Tab.0.bottom/0.23.2560.1343@0.23.2560.1343" timestamp="1593446236050" />
-    <state width="1238" height="403" key="GridCell.Tab.0.center" timestamp="1593919929765">
-      <screen x="0" y="23" width="1280" height="703" />
+    <state width="1238" height="403" key="GridCell.Tab.0.bottom/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851400" />
+    <state width="1238" height="403" key="GridCell.Tab.0.center" timestamp="1594008851399">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.center/0.23.1280.703@0.23.1280.703" timestamp="1593919929765" />
-    <state width="2518" height="403" key="GridCell.Tab.0.center/0.23.2560.1343@0.23.2560.1343" timestamp="1593446236048" />
-    <state width="1238" height="403" key="GridCell.Tab.0.left" timestamp="1593919929764">
-      <screen x="0" y="23" width="1280" height="703" />
+    <state width="1238" height="403" key="GridCell.Tab.0.center/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851399" />
+    <state width="1238" height="403" key="GridCell.Tab.0.left" timestamp="1594008851399">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.left/0.23.1280.703@0.23.1280.703" timestamp="1593919929764" />
-    <state width="2518" height="403" key="GridCell.Tab.0.left/0.23.2560.1343@0.23.2560.1343" timestamp="1593446236047" />
-    <state width="1238" height="403" key="GridCell.Tab.0.right" timestamp="1593919929765">
-      <screen x="0" y="23" width="1280" height="703" />
+    <state width="1238" height="403" key="GridCell.Tab.0.left/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851399" />
+    <state width="1238" height="403" key="GridCell.Tab.0.right" timestamp="1594008851400">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state width="1238" height="403" key="GridCell.Tab.0.right/0.23.1280.703@0.23.1280.703" timestamp="1593919929765" />
-    <state width="2518" height="403" key="GridCell.Tab.0.right/0.23.2560.1343@0.23.2560.1343" timestamp="1593446236049" />
-    <state x="298" y="23" width="982" height="703" key="SettingsEditor" timestamp="1591499367854">
-      <screen x="0" y="23" width="1280" height="703" />
+    <state width="1238" height="403" key="GridCell.Tab.0.right/0.23.2560.1343@0.23.2560.1343" timestamp="1594008851400" />
+    <state x="789" y="333" width="982" height="703" key="SettingsEditor" timestamp="1596429979632">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state x="298" y="23" width="982" height="703" key="SettingsEditor/0.23.1280.703@0.23.1280.703" timestamp="1591499367854" />
-    <state x="789" y="333" key="SettingsEditor/0.23.2560.1343@0.23.2560.1343" timestamp="1591470261776" />
+    <state x="789" y="333" key="SettingsEditor/0.23.2560.1343@0.23.2560.1343" timestamp="1596429979632" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pyteiser$test_filtering_by_folding.coverage" NAME="test_filtering_by_folding Coverage Results" MODIFIED="1593446224170" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
