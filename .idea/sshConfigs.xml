@@ -3,7 +3,7 @@
   <component name="SshConfigs">
     <configs>
       <sshConfig authType="PASSWORD" id="c150115e-238e-48f4-b1b7-1d57d1ecbf09" port="22" customName="rumi" nameFormat="CUSTOM" />
-      <sshConfig authType="PASSWORD" id="8df297ec-7318-43e3-824a-013b55be8ae3" port="22" customName="bkp" nameFormat="CUSTOM" />
+      <sshConfig authType="PASSWORD" host="localhost" id="8df297ec-7318-43e3-824a-013b55be8ae3" port="22" customName="bkp" nameFormat="CUSTOM" />
     </configs>
   </component>
 </project>

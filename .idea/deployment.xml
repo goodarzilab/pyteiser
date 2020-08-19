@@ -10,6 +10,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="wynton">
+        <serverdata>
+          <mappings>
+            <mapping deploy="pyteiser_root/pyteiser" local="$PROJECT_DIR$" web="/" />
+            <mapping local="" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
     <option name="myAutoUpload" value="ALWAYS" />
   </component>

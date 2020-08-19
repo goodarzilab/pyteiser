@@ -428,7 +428,7 @@ def read_profile_pass_individual_file(inp_filename,
 
     profiles_bitstring = bitstring[4: ]
     if indices_mode:
-        profiles_array = decompress_profiles_indices(bitstring)
+        profiles_array = decompress_profiles_indices(profiles_bitstring)
     else:
         profiles_array = decompress_profiles(profiles_bitstring)
     assert(len(profiles_array) == length_value)

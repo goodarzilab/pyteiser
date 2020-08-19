@@ -417,9 +417,6 @@ def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
                 current_profile.compress()
                 profiles_bitstrings.append(current_profile.bytestring)
 
-
-            profiles_bitstrings.append(current_profile.bytestring)
-
         total_bitstring = np.uint32(len(profiles_bitstrings)).tobytes() + b''.join(profiles_bitstrings)
 
     with open(passed_profiles_filename, 'wb') as wf:

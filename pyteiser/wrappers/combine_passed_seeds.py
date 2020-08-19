@@ -44,15 +44,18 @@ def handler():
 
 
 def import_modules():
-    current_script_path = sys.argv[0]
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
+    # current_script_path = sys.argv[0]
+    # package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    # if package_home_path not in sys.path:
+    #     sys.path.append(package_home_path)
 
-    global structures
+    current_wd = os.getenv('SGE_O_WORKDIR')
+    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
+    if subpackage_folder_path not in sys.path:
+        sys.path.append(subpackage_folder_path)
+
     global IO
 
-    import structures
     import IO
 
 

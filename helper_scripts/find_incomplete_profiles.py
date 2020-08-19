@@ -24,13 +24,13 @@ def handler():
         #outfile = '/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/profiles_tarbp2.txt',
         outfile='/wynton/home/goodarzi/khorms/pyteiser_root/testing_data/are_profiles_complete/profiles_snrnp1.txt',
         expected_length = 30000,
-        indices_mode = False
+        indices_mode = False,
+        identify_broken_ones_only = False,
     )
 
     args = parser.parse_args()
 
     return args
-
 
 
 def get_list_profile_files(profiles_folder):
@@ -42,24 +42,40 @@ def get_list_profile_files(profiles_folder):
 
 
 def report_incomplete_profiles(list_profile_filenames, output_file, expected_length,
-                               indices_mode = False):
+                               indices_mode = False, identify_broken_ones_only = False):
     any_files_incomplete = False
     with open(output_file, 'w') as wf:
         counter = 0
         for fn in list_profile_filenames:
             with open(fn, 'rb') as rf:
                 bitstring = rf.read()
+                is_broken = False
                 if indices_mode:
-                    decompressed_profiles_array = IO.decompress_profiles_indices(bitstring)
+                    try:
+                        decompressed_profiles_array = IO.decompress_profiles_indices(bitstring)
+                    except:
+                        decompressed_profiles_array = []
+                        is_broken = True
                 else:
-                    decompressed_profiles_array = IO.decompress_profiles(bitstring)
-                if len(decompressed_profiles_array) != expected_length:
-                    any_files_incomplete = True
-                    string_to_write = 'File %s contains %d profiles instead of %d\n' % \
-                                    (fn, len(decompressed_profiles_array), expected_length)
-                    wf.write(string_to_write)
+                    try:
+                        decompressed_profiles_array = IO.decompress_profiles(bitstring)
+                    except:
+                        decompressed_profiles_array = []
+                        is_broken = True
+                if not identify_broken_ones_only:
+                    if len(decompressed_profiles_array) != expected_length:
+                        any_files_incomplete = True
+                        string_to_write = 'File %s contains %d profiles instead of %d\n' % \
+                                        (fn, len(decompressed_profiles_array), expected_length)
+                        wf.write(string_to_write)
+                else:
+                    if is_broken:
+                        string_to_write = 'File %s contains is broken\n' % fn
+                        wf.write(string_to_write)
+
+
             counter += 1
-            print("Processed file number ", counter)
+            # print("Processed file number ", counter)
 
         if any_files_incomplete:
             wf.write("Some incomplete files have been identified!\n")
@@ -70,9 +86,7 @@ def main():
     args = handler()
     list_profile_filenames = get_list_profile_files(args.profiles_folder)
     report_incomplete_profiles(list_profile_filenames, args.outfile, args.expected_length,
-                               args.indices_mode)
-
-
+                               args.indices_mode, args.identify_broken_ones_only)
 
 
 if __name__ == "__main__":

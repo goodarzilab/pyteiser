@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8e76f6d2-b44e-4994-8592-a11011177c97" name="wynton">
+        <fileTransfer rootFolder="/wynton/home/goodarzi/khorms" accessType="SFTP" host="log1.wynton.ucsf.edu" port="22" sshConfigId="96896cc4-7f3c-4e30-9a10-299029dbfa18" sshConfig="khorms@log1.wynton.ucsf.edu:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
