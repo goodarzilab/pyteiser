@@ -1,7 +1,10 @@
 import numpy as np
+import pandas as pd
 import os
 import sys
 import hashlib
+import io
+import pickle
 
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
@@ -571,6 +574,23 @@ def read_multiple_np_arrays(inp_filename, dtype):
     return arrays_list
 
 
+def read_shape_file_for_many_sequences(infile):
+    shape_profiles_dict = {}
+    with open(infile, 'r') as f:
+        split_string = f.read().split('>')
+        for ind, entry in enumerate(split_string):
+            if entry == '':
+                continue
+            seq_start = entry.find('\n')
+            annotation = entry[:seq_start]
+            shape_table_string = entry[seq_start + 1:]
+            shape_df = pd.read_csv(io.StringIO(shape_table_string), sep='\t', header = None)
+            shape_profiles_dict[annotation] = shape_df
+    return shape_profiles_dict
 
+
+def write_individual_shape_file(shape_dataframe,
+                                outfile):
+    shape_dataframe.to_csv(outfile, sep='\t', index=False, header=False)
 
 

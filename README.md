@@ -77,6 +77,9 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 ### Input files formats
 The user is expected to provide 2 input files: a table with the genome-wide measurements of interest and a fasta file with sequences of reference transcriptome.
 
+It is possible to guide the folding of 
+Format:
+
 
 ### Preprocessing of input files
 

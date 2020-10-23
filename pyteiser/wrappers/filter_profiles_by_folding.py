@@ -19,6 +19,8 @@ import numba
 import math
 import re
 import time
+import random
+import string
 from subprocess import PIPE, run, Popen
 
 
@@ -30,6 +32,9 @@ def handler():
     parser.add_argument("--seeds_file", help="", type=str)
     parser.add_argument("--profiles_full_file", help="", type=str)
     parser.add_argument("--profiles_output_file", help="", type=str)
+    parser.add_argument("--temp_folder", help="", type=str)
+    parser.add_argument("--shape_profile", help="", type=str)
+
     parser.add_argument("--are_seeds_degenerate", help="", type=str)
     parser.add_argument("--n_profiles_check",
                         help="number of profiles to test to see if the profiles file corresponds to the seeds file",
@@ -46,6 +51,8 @@ def handler():
         seeds_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_seeds/passed_seed_4-7_4-9_4-6_14-20_combined/test_1_2_seeds_unique.bin',
         profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
         profiles_output_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique_fold_filtered.bin',
+        temp_folder='/Users/student/Documents/hani/temp',
+        shape_profile='',
 
         are_seeds_degenerate='n',
         window_size=100,
@@ -98,14 +105,31 @@ def import_modules():
     import matchmaker
 
 
-def read_input_files(seeds_filename_full, rna_bin_filename):
+def read_input_files(seeds_filename_full,
+                     rna_bin_filename,
+                     shape_profile):
     seqs_dict, seqs_order = IO.read_rna_bin_file(rna_bin_filename)
     w_motifs_list = IO.read_motif_file(seeds_filename_full)
     w_seqs_list = [seqs_dict[name] for name in seqs_order]
     n_motifs_list = type_conversions.w_to_n_motifs_list(w_motifs_list)
     n_seqs_list = type_conversions.w_to_n_sequences_list(w_seqs_list)
 
-    return w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list
+    # make a list of shape profiles
+    if shape_profile != '':
+        shape_dict = IO.read_shape_file_for_many_sequences(shape_profile)
+    else:
+        shape_dict = {}
+    shape_profiles_list = []
+    for name in seqs_order:
+        current_profile = None
+        if name in shape_dict:
+            current_profile = shape_dict[name]
+        shape_profiles_list.append(current_profile)
+
+    return w_motifs_list, w_seqs_list, \
+           n_motifs_list, n_seqs_list, \
+           seqs_dict, seqs_order, \
+           shape_profiles_list
 
 
 def make_sure_the_profile_is_correct(n_motifs_list, n_seqs_list,
@@ -199,9 +223,12 @@ def compare_folding_energies(default_result, constraint_result, ratio_threshold,
 
 def process_one_profile_one_seed(w_motif, n_motif,
                                  w_seqs_list, n_seqs_list,
-                                 profile, window_size,
+                                 profile,
+                                 shape_profile,
+                                 window_size,
                                  is_degenerate,
                                  MFE_ratio_thresh,
+                                 temp_folder,
                                  do_print = False,
                                  do_print_subs_matches = False,
                                  do_print_progress = True,
@@ -249,15 +276,31 @@ def process_one_profile_one_seed(w_motif, n_motif,
                         print("Motif:            %s" % motif_linear_sequence)
                         print("Structure:        %s" % motif_linear_structure)
 
+                # prepare shape profile
+                if not shape_profile is None:
+                    rand_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                    shape_filename = os.path.join(temp_folder, "%s.shape" % (rand_string))
+                    IO.write_individual_shape_file(shape_profile, shape_filename)
+                    shape_arguments_list = ['--shape', shape_filename]
+                else:
+                    shape_arguments_list = []
+
                 # fold with ViennaRNA
                 # to pipe two processes, I first need to use Popen like here: https://stackoverflow.com/questions/50682514/when-python3-chain-two-subprocess-run-such-as-bash-pipe-get-error-attributeer
                 # overall following the syntax from here: https://stackoverflow.com/questions/13332268/how-to-use-subprocess-command-with-pipes
+                constrained_arguments_list = ["RNAfold"]
+                if not shape_profile is None:
+                    constrained_arguments_list += shape_arguments_list
+
                 printf_default = Popen(args=["printf", "%s" % subsequence_string], stdout=PIPE, stderr=PIPE)
-                RNAfold_default = run(["RNAfold"], stdin=printf_default.stdout, stdout=PIPE, stderr=PIPE, text=True)
+                RNAfold_default = run(constrained_arguments_list, stdin=printf_default.stdout, stdout=PIPE, stderr=PIPE, text=True)
                 printf_default.terminate()
                 default_result = RNAfold_default.stdout
 
                 constrained_arguments_list = ["RNAfold", "--enforceConstraint", "-C"]
+                if not shape_profile is None:
+                    constrained_arguments_list += shape_arguments_list
+
                 printf_constraint = Popen(args=["printf", "%s\n%s" % (subsequence_string, constraint_string)], stdout=PIPE, stderr=PIPE)
                 RNAfold_constraint = run(constrained_arguments_list, stdin=printf_constraint.stdout, stdout=PIPE, stderr=PIPE, text=True)
                 printf_constraint.terminate()
@@ -285,6 +328,8 @@ def filter_profiles_by_folding(w_motifs_list, w_seqs_list,
                    n_motifs_list, n_seqs_list,
                    profiles_array,
                    output_filename,
+                   shape_profiles_list,
+                   temp_folder,
                    window_size,
                    MFE_ratio_thresh,
                    is_degenerate,
@@ -307,10 +352,13 @@ def filter_profiles_by_folding(w_motifs_list, w_seqs_list,
 
             n_motif = n_motifs_list[i]
             current_profile = profiles_array[i, :]
+            shape_profile = shape_profiles_list[i]
             filtered_profile = process_one_profile_one_seed(w_motif, n_motif,
                                          w_seqs_list, n_seqs_list,
-                                         current_profile, window_size, is_degenerate,
+                                         current_profile, shape_profile,
+                                         window_size, is_degenerate,
                                          MFE_ratio_thresh,
+                                         temp_folder,
                                          do_print=do_print,
                                          do_print_subs_matches=do_print_subs_matches,
                                          do_print_progress=do_print_progress,
@@ -332,7 +380,12 @@ def main():
     compile_global_patterns()
     args = handler()
 
-    w_motifs_list, w_seqs_list, n_motifs_list, n_seqs_list  = read_input_files(args.seeds_file, args.rna_bin_file)
+    w_motifs_list, w_seqs_list, \
+    n_motifs_list, n_seqs_list, \
+    seqs_dict, seqs_order, \
+    shape_profiles_list = read_input_files(args.seeds_file,
+                                             args.rna_bin_file,
+                                             args.shape_profile)
     decompressed_profiles_array = IO.unpack_profiles_file(args.profiles_full_file,
                                                           args.indices_mode,
                                                           do_print=True)
@@ -353,6 +406,8 @@ def main():
                    n_motifs_list, n_seqs_list,
                    decompressed_profiles_array,
                    args.profiles_output_file,
+                   shape_profiles_list,
+                   args.temp_folder,
                    window_size = args.window_size,
                    MFE_ratio_thresh = args.MFE_ratio_thresh,
                    is_degenerate = are_seeds_degenerate)
