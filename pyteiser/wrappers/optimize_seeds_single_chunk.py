@@ -1,10 +1,17 @@
 import numpy as np
 import argparse
 import os
-import sys
 import math
 import copy
 
+from .. import MI
+from .. import IO
+from .. import sge
+from .. import structures
+from .. import modify_seed
+from .. import type_conversions
+from .. import matchmaker
+from .. import statistic_tests
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -84,33 +91,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global MI
-    global IO
-    global sge
-    global structures
-    global modify_seed
-    global type_conversions
-    global matchmaker
-    global statistic_tests
-
-    import MI
-    import IO
-    import sge
-    import structures
-    import modify_seed
-    import type_conversions
-    import matchmaker
-    import statistic_tests
-
 
 
 def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks):
@@ -329,7 +309,6 @@ def make_output_filenames(env_variables_dict, args):
 
 
 def main():
-    import_modules()
     args = handler()
 
     n_seqs_list = read_sequences(args.rna_bin_file)

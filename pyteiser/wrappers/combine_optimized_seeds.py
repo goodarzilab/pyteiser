@@ -3,9 +3,8 @@ import argparse
 import math
 
 import os
-import sys
 
-
+from .. import IO
 
 
 def handler():
@@ -36,22 +35,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-
-def import_modules():
-    current_script_path = sys.argv[0]
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global structures
-    global IO
-    global type_conversions
-
-    import structures
-    import IO
-    import type_conversions
 
 
 def get_list_files(args):
@@ -121,7 +104,6 @@ def read_chunks(filenames_tuples_list, indices_mode):
 
 
 def main():
-    import_modules()
     args = handler()
 
     filenames_tuples_list = get_list_files(args)

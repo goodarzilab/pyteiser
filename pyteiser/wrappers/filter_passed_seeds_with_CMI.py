@@ -3,6 +3,8 @@ import os
 import sys
 import numpy as np
 
+from .. import MI
+from .. import IO
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -52,19 +54,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global MI
-    global IO
-
-    import MI
-    import IO
-
 
 
 # loop through existing profiles. For each existing profile:
@@ -160,7 +149,6 @@ def choose_best_reps_for_families(seeds_passed, profiles_passed,
 
 
 def main():
-    import_modules()
     args = handler()
 
     index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)

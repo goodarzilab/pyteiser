@@ -16,12 +16,17 @@ import sys
 import numpy as np
 import argparse
 import numba
-import math
 import re
 import time
 import random
 import string
 from subprocess import PIPE, run, Popen
+
+from .. import structures
+from .. import IO
+from .. import type_conversions
+from .. import glob_var
+from .. import matchmaker
 
 
 def handler():
@@ -85,24 +90,6 @@ def make_constraint_string(n_motif, w_motif, motif_linear_length,
         constraint_string = ''.join([glob_var._extended_structure_to_char[x] for x in structure_array])
         constraint_strings.append(constraint_string)
     return constraint_strings
-
-
-def import_modules():
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global structures
-    global IO
-    global type_conversions
-    global glob_var
-    global matchmaker
-
-    import structures
-    import IO
-    import type_conversions
-    import glob_var
-    import matchmaker
 
 
 def read_input_files(seeds_filename_full,
@@ -378,7 +365,6 @@ def filter_profiles_by_folding(w_motifs_list, w_seqs_list,
 def main():
     import_modules()
     compile_global_patterns()
-    args = handler()
 
     w_motifs_list, w_seqs_list, \
     n_motifs_list, n_seqs_list, \

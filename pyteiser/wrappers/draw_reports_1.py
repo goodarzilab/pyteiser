@@ -5,6 +5,8 @@ import math
 import os
 import sys
 
+from .. import structures
+from .. import IO
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -33,21 +35,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-
-def import_modules():
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global structures
-    global IO
-    global type_conversions
-
-    import structures
-    import IO
-
 
 
 def read_seeds_and_characteristics(args):
@@ -81,7 +68,6 @@ def print_read_out_arrays(seeds_optimized, profiles_optimized,
 
 
 def main():
-    import_modules()
     args = handler()
 
     seeds_optimized, profiles_optimized, \

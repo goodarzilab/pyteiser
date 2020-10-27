@@ -30,8 +30,6 @@ import os
 # it automatically given the list of files that need to be processed
 
 
-# maybe http://45.76.113.195/?a/44467174 ?
-
 def handler():
     parser = argparse.ArgumentParser()
 

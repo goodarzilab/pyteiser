@@ -1,9 +1,8 @@
 import argparse
-import random
 import os
-import sys
 import math
 
+from .. import IO
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -58,19 +57,6 @@ def handler():
     args, unknown = parser.parse_known_args()
 
     return args, unknown
-
-
-def import_modules():
-    current_script_path = sys.argv[0]
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global structures
-    global IO
-
-    import structures
-    import IO
 
 
 def determine_number_of_chunks(args):
@@ -140,7 +126,6 @@ def submit_job(wording_dir, command, do_print):
 
 def main():
     args, unknown_args = handler()
-    import_modules()
 
     number_of_tasks = determine_number_of_chunks(args)
 

@@ -1,9 +1,14 @@
 import numpy as np
 import argparse
 import math
-
 import os
 import sys
+
+from .. import structures
+from .. import MI
+from .. import IO
+from .. import sge
+from .. import statistic_tests
 
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
@@ -104,25 +109,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global structures
-    global MI
-    global IO
-    global sge
-    global statistic_tests
-
-    import structures
-    import MI
-    import IO
-    import sge
-    import statistic_tests
 
 
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
@@ -424,11 +410,6 @@ def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
 
 
 def main():
-    # I only import things if I run this script itself
-    # do relative import based on current working directory
-    # otherwise I have to install the package for relative import to work
-    import_modules()
-
     args = handler()
 
     # get mapping of task ids to input files

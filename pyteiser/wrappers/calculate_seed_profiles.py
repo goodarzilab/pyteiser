@@ -3,6 +3,10 @@ import argparse
 import os
 import sys
 
+from .. import IO
+from .. import matchmaker
+from .. import type_conversions
+from .. import sge
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -44,23 +48,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global IO
-    global matchmaker
-    global type_conversions
-    global sge
-
-    import IO
-    import matchmaker
-    import type_conversions
-    import sge
 
 
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
@@ -121,11 +108,6 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
 
 
 def main():
-    # I only import things if I run this script itself
-    # do relative import based on current working directory
-    # otherwise I have to install the package for relative import to work
-    import_modules()
-
     args = handler()
 
     # get mapping of task ids to input files

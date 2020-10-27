@@ -4,6 +4,10 @@ import argparse
 import os
 import sys
 
+from .. import MI
+from .. import IO
+from .. import sge
+
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 
@@ -52,21 +56,6 @@ def handler():
     return args
 
 
-def import_modules():
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global MI
-    global IO
-    global sge
-
-    import MI
-    import IO
-    import sge
-
-
 def get_current_in_out_filenames(args, env_variables_dict, mapping_dict):
     file_index_to_use =  mapping_dict[env_variables_dict["task_id"]]
     inp_filename_short = "%s_%s.bin" % (args.inp_filename_template, file_index_to_use)
@@ -101,11 +90,6 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
 
 
 def main():
-    # I only import things if I run this script itself
-    # do relative import based on current working directory
-    # otherwise I have to install the package for relative import to work
-    import_modules()
-
     args = handler()
 
     # get mapping of task ids to input files

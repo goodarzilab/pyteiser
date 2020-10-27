@@ -3,6 +3,7 @@ import os
 import sys
 import numpy as np
 
+from .. import IO
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -41,22 +42,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    # current_script_path = sys.argv[0]
-    # package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    # if package_home_path not in sys.path:
-    #     sys.path.append(package_home_path)
-
-    current_wd = os.getenv('SGE_O_WORKDIR')
-    subpackage_folder_path = os.path.abspath(os.path.join(current_wd, '..'))
-    if subpackage_folder_path not in sys.path:
-        sys.path.append(subpackage_folder_path)
-
-    global IO
-
-    import IO
 
 
 def get_list_files(passed_seed_folder, passed_seed_filename_template,
@@ -100,7 +85,6 @@ def collect_all_the_passing_seeds(filenames_list, indices_mode):
 
 
 def main():
-    import_modules()
     args = handler()
     filenames_list = get_list_files(args.passed_seed_folder, args.passed_seed_filename_template,
                                     args.passed_profiles_folder, args.passed_profiles_filename_template,

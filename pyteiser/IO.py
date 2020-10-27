@@ -1,18 +1,8 @@
 import numpy as np
 import pandas as pd
-import os
 import sys
 import hashlib
 import io
-import pickle
-
-# to make sure relative imports work when some of the wrappers is being implemented as a script
-# see more detailed explanation in the test files
-
-current_script_path = sys.argv[0]
-subpackage_folder_path = os.path.dirname( __file__ )
-if subpackage_folder_path not in sys.path:
-    sys.path.append(subpackage_folder_path)
 
 import glob_var
 import structures

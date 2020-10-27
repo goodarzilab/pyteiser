@@ -1,10 +1,10 @@
 import os
-import sys
 import numpy as np
 import argparse
-import math
 import subprocess
 
+from .. import IO
+from .. import glob_var
 
 # this script folds sequences from the reference transcriptome
 # most methods use dynamic programming algorithm that works in a cubic time
@@ -47,22 +47,6 @@ def handler():
     args = parser.parse_args()
 
     return args
-
-
-def import_modules():
-    package_home_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if package_home_path not in sys.path:
-        sys.path.append(package_home_path)
-
-    global structures
-    global IO
-    global type_conversions
-    global glob_var
-
-    import structures
-    import IO
-    import type_conversions
-    import glob_var
 
 
 def calculate_window_length(args, do_print = True):
@@ -140,9 +124,6 @@ def chunk_up_one_sequence(w_sequence, window_length, args):
     return folded_structures_array
 
 
-
-
-
 def fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args):
     bytestrings_list = [b''] * len(seqs_order)
 
@@ -163,7 +144,6 @@ def fold_all_sequences_wrapper(seqs_dict, seqs_order, window_length, args):
 
 
 def main():
-    import_modules()
     args = handler()
 
     seqs_dict, seqs_order = IO.read_rna_bin_file(args.rna_bin_filename)
