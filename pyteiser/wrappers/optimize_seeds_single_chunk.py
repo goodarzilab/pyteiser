@@ -93,11 +93,15 @@ def handler():
     return args
 
 
-def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks):
+def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks,
+                         do_chunk_seeds):
     seeds_number = len(seeds_initial)
     print("Starting with %d initial seeds" % seeds_number)
 
-    number_of_chunks = math.ceil(seeds_number / size_of_chunks)
+    if do_chunk_seeds:
+        number_of_chunks = math.ceil(seeds_number / size_of_chunks)
+    else:
+        number_of_chunks = 1
 
     profiles_chunks = np.array_split(profiles_initial, number_of_chunks)
     seed_array = np.array(seeds_initial)
@@ -109,8 +113,8 @@ def chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks):
     return seed_chunks, profiles_chunks
 
 
-def pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict):
-    chunk_number = int(env_variables_dict["task_id"]) - 1
+def pick_one_chunk(task_id, seed_chunks, profiles_chunks):
+    chunk_number = int(task_id) - 1
     print("Processing the chunk number ", chunk_number)
     seed_right_chunk = seed_chunks[chunk_number]
     profiles_right_chunk = profiles_chunks[chunk_number]
@@ -119,7 +123,8 @@ def pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict):
 
 
 def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profile, nbins,
-                            bestmi, n_bestmotif, lastmyfreq, args, do_print = True):
+                            bestmi, n_bestmotif, lastmyfreq,
+                            min_occurences, maxfreq, do_print = True):
 
     for curr_motif in n_modified_motifs:
         current_profile, time_spent = matchmaker.calculate_profile_one_motif(curr_motif,
@@ -128,7 +133,7 @@ def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profi
         myfreq = current_profile.values.sum() / float(len(seqs_of_interest))
         tempmi = MI.mut_info(current_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
 
-        if tempmi > bestmi and current_profile.sum() > args.min_occurences and (myfreq < args.maxfreq or myfreq < lastmyfreq):
+        if tempmi > bestmi and current_profile.sum() > min_occurences and (myfreq < maxfreq or myfreq < lastmyfreq):
             n_bestmotif = structures.copy_n_motif(curr_motif)
             w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
             bestmi = tempmi
@@ -143,7 +148,8 @@ def are_there_better_motifs(n_modified_motifs, seqs_of_interest, discr_exp_profi
 
 # optimize sequence of all the positions individually in random order
 def optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
-                            discr_exp_profile, nbins, lastmyfreq, args,
+                            discr_exp_profile, nbins, lastmyfreq,
+                            min_occurences, maxfreq,
                             do_print = False, random_noseed=False):
     bestmi = init_best_MI
 
@@ -163,14 +169,15 @@ def optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
         n_modified_motifs = type_conversions.w_to_n_motifs_list(w_modified_motifs)
         bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_modified_motifs,
                                                     seqs_of_interest, discr_exp_profile, nbins,
-                                                    bestmi, n_bestmotif, lastmyfreq, args,
+                                                    bestmi, n_bestmotif, lastmyfreq,
+                                                    min_occurences, maxfreq,
                                                     do_print = do_print)
     return bestmi, lastmyfreq, n_bestmotif
 
 
 def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
                    discr_exp_profile, nbins, lastmyfreq,
-                   args, do_print = False):
+                   min_occurences, maxfreq, do_print = False):
     bestmi = init_best_MI
 
     keep_elongating = True
@@ -184,7 +191,8 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
 
         new_bestmi, lastmyfreq, n_bestmotif = are_there_better_motifs(n_elongated_motifs,
                                                     seqs_of_interest, discr_exp_profile, nbins,
-                                                    bestmi, n_bestmotif, lastmyfreq, args,
+                                                    bestmi, n_bestmotif, lastmyfreq,
+                                                    min_occurences, maxfreq,
                                                     do_print = do_print)
 
         keep_elongating = ((new_bestmi >= old_best_mi) and
@@ -194,30 +202,35 @@ def elongate_motif(n_bestmotif, init_best_MI, seqs_of_interest,
 
 
 def get_characteristics(n_bestmotif, seqs_of_interest,
-                        discr_exp_profile, nbins, args,
+                        discr_exp_profile, nbins, n_permutations,
                         do_print = False):
     bestmotif_profile, _time = matchmaker.calculate_profile_one_motif(n_bestmotif, seqs_of_interest,
                                                                       is_degenerate = True)
     bestmotif_mi = MI.mut_info(bestmotif_profile.values, discr_exp_profile, x_bins=2, y_bins=nbins)
     pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(bestmotif_profile.values, discr_exp_profile, nbins,
-                                                               bestmotif_mi, args.n_permutations)
+                                                               bestmotif_mi, n_permutations)
     if do_print:
         print("The final p-value is: %.4f, z-score is: %.3f" % (pvalue, z_score))
     return bestmotif_profile, bestmotif_mi, pvalue, z_score
 
 
 def check_robustness(bestmotif_profile,
-                    discr_exp_profile, nbins, args,
+                    discr_exp_profile, nbins,
+                    jackknife_n_permutations,
+                    jackknife_max_pvalue,
+                    jackknife_n_samples,
+                    jackknife_fraction_retain,
+                    jackknife_min_fraction_passed,
                     do_print = False):
 
 
     passed_jacknife = statistic_tests.jackknife_test(
                         bestmotif_profile.values, discr_exp_profile, nbins,
-                        args.jackknife_n_permutations,
-                        args.jackknife_max_pvalue,
-                        args.jackknife_n_samples,
-                        args.jackknife_fraction_retain,
-                        args.jackknife_min_fraction_passed,
+                        jackknife_n_permutations,
+                        jackknife_max_pvalue,
+                        jackknife_n_samples,
+                        jackknife_fraction_retain,
+                        jackknife_min_fraction_passed,
                         do_print = do_print)
 
 
@@ -227,7 +240,14 @@ def check_robustness(bestmotif_profile,
 
 def optimize_motifs(seeds_initial, profiles_initial,
                     discr_exp_profile, nbins, index_array, seqs_of_interest,
-                    args, do_print = True):
+                    min_occurences, maxfreq,
+                    n_permutations, random_noseed,
+                    jackknife_n_permutations,
+                    jackknife_max_pvalue,
+                    jackknife_n_samples,
+                    jackknife_fraction_retain,
+                    jackknife_min_fraction_passed,
+                    do_print = True):
     seeds_optimized = copy.deepcopy(seeds_initial)
     profiles_optimized = np.zeros((len(seeds_initial), discr_exp_profile.shape[0]), dtype=bool)
     # seed_charact_array keeps MI values, p-values and z-scores
@@ -250,19 +270,21 @@ def optimize_motifs(seeds_initial, profiles_initial,
             #print("Initial frequency: %.4f" % lastmyfreq)
 
         bestmi, lastmyfreq, n_bestmotif = optimize_motif_sequence(n_bestmotif, init_best_MI, seqs_of_interest,
-                            discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print,
-                            random_noseed = args.random_noseed)
+                            discr_exp_profile, nbins, lastmyfreq,
+                            min_occurences, maxfreq, do_print = do_print,
+                            random_noseed = random_noseed)
 
         if do_print:
             print("Elongating motif %d" % i)
 
         bestmi, lastmyfreq, n_bestmotif = elongate_motif(n_bestmotif, bestmi, seqs_of_interest,
-                            discr_exp_profile, nbins, lastmyfreq, args, do_print = do_print)
+                            discr_exp_profile, nbins, lastmyfreq,
+                            min_occurences, maxfreq, do_print = do_print)
 
         w_bestmotif = type_conversions.n_to_w_motif(n_bestmotif)
         bestmotif_profile, bestmotif_mi, pvalue, z_score = get_characteristics(
                                                             n_bestmotif, seqs_of_interest,
-                                                            discr_exp_profile, nbins, args,
+                                                            discr_exp_profile, nbins, n_permutations,
                                                             do_print=do_print)
 
         if do_print:
@@ -270,7 +292,12 @@ def optimize_motifs(seeds_initial, profiles_initial,
                   (i, w_bestmotif.print_sequence(return_string=True)))
 
         is_robust = check_robustness(bestmotif_profile,
-                                    discr_exp_profile, nbins, args,
+                                    discr_exp_profile, nbins,
+                                    jackknife_n_permutations,
+                                    jackknife_max_pvalue,
+                                    jackknife_n_samples,
+                                    jackknife_fraction_retain,
+                                    jackknife_min_fraction_passed,
                                     do_print = do_print)
 
         seeds_optimized[i] = w_bestmotif
@@ -290,69 +317,133 @@ def read_sequences(rna_bin_filename):
     return n_seqs_list
 
 
-def make_output_filenames(env_variables_dict, args):
-    file_index_to_use =  env_variables_dict["task_id"]
+def make_output_filenames(task_id,
+                            optimized_seeds_filename_template,
+                            optimized_profiles_filename_template,
+                            optimized_MI_pv_zscores_filename_template,
+                            robustness_array_filename_template,
+                            optimized_seeds_folder,
+                            optimized_profiles_folder,
+                            optimized_MI_pv_zscores_folder,
+                            robustness_array_folder
+                          ):
+    seed_filename_short = "%s_%s.bin" % (optimized_seeds_filename_template, task_id)
+    profiles_filename_short = "%s_%s.bin" % (optimized_profiles_filename_template, task_id)
+    char_filename_short = "%s_%s.bin" % (optimized_MI_pv_zscores_filename_template, task_id)
+    robustness_filename_short = "%s_%s.bin" % (robustness_array_filename_template, task_id)
 
-    seed_filename_short = "%s_%s.bin" % (args.optimized_seeds_filename_template, file_index_to_use)
-    profiles_filename_short = "%s_%s.bin" % (args.optimized_profiles_filename_template, file_index_to_use)
-    char_filename_short = "%s_%s.bin" % (args.optimized_MI_pv_zscores_filename_template, file_index_to_use)
-    robustness_filename_short = "%s_%s.bin" % (args.robustness_array_filename_template, file_index_to_use)
-
-    seeds_filename_full = os.path.join(args.optimized_seeds_folder, seed_filename_short)
-    profiles_filename_full = os.path.join(args.optimized_profiles_folder, profiles_filename_short)
-    char_filename_full = os.path.join(args.optimized_MI_pv_zscores_folder, char_filename_short)
-    robustness_filename_full = os.path.join(args.robustness_array_folder, robustness_filename_short)
+    seeds_filename_full = os.path.join(optimized_seeds_folder, seed_filename_short)
+    profiles_filename_full = os.path.join(optimized_profiles_folder, profiles_filename_short)
+    char_filename_full = os.path.join(optimized_MI_pv_zscores_folder, char_filename_short)
+    robustness_filename_full = os.path.join(robustness_array_folder, robustness_filename_short)
 
     return seeds_filename_full, profiles_filename_full, \
            char_filename_full, robustness_filename_full
 
 
-def non_sge_dependent_main(seed_filename_full,
-                            profiles_filename_full,
-                            MI_values_filename_full,
-                            passed_seed_filename_full,
-                            passed_profiles_filename,
-                            exp_mask_filename,
-                            max_pvalue, min_zscore, n_permutations,
-                            step_1_min_fraction, step_1_jump, step_2_min_interval,
-                            step_3_min_fraction,
-                            indices_mode,
-                            index_bit_width,
-                            do_print = True):
+def non_sge_dependent_main(
+                    task_id,
+                    rna_bin_file,
+                    exp_mask_file,
+                    unique_seeds_filename,
+                    nbins,
+                    unique_profiles_filename,
+                    indices_mode,
+                    index_bit_width,
+                    size_of_chunks,
+                    optimized_seeds_filename_template,
+                    optimized_profiles_filename_template,
+                    optimized_MI_pv_zscores_filename_template,
+                    robustness_array_filename_template,
+                    optimized_seeds_folder,
+                    optimized_profiles_folder,
+                    optimized_MI_pv_zscores_folder,
+                    robustness_array_folder,
+                    min_occurences, maxfreq,
+                    n_permutations, random_noseed,
+                    jackknife_n_permutations,
+                    jackknife_max_pvalue,
+                    jackknife_n_samples,
+                    jackknife_fraction_retain,
+                    jackknife_min_fraction_passed,
+                    do_chunk_seeds = True
+                    ):
+    n_seqs_list = read_sequences(rna_bin_file)
+    index_array, values_array = IO.unpack_mask_file(exp_mask_file)
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins=nbins)
+    seeds_initial = IO.read_motif_file(unique_seeds_filename)
+    profiles_initial = IO.unpack_profiles_file(unique_profiles_filename, indices_mode)
+    seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
+    seed_chunks, profiles_chunks = chunk_up_input_files(seeds_initial, profiles_initial, size_of_chunks,
+                                                        do_chunk_seeds = do_chunk_seeds)
+    seed_right_chunk, profiles_right_chunk = pick_one_chunk(task_id, seed_chunks, profiles_chunks)
+
+    seeds_filename_full, profiles_filename_full, \
+    char_filename_full, robustness_filename_full = make_output_filenames(task_id,
+                                                                         optimized_seeds_filename_template,
+                                                                         optimized_profiles_filename_template,
+                                                                         optimized_MI_pv_zscores_filename_template,
+                                                                         robustness_array_filename_template,
+                                                                         optimized_seeds_folder,
+                                                                         optimized_profiles_folder,
+                                                                         optimized_MI_pv_zscores_folder,
+                                                                         robustness_array_folder
+                                                                         )
+
     seeds_optimized, profiles_optimized, \
     seed_charact_array, robustness_array  = optimize_motifs(seed_right_chunk, profiles_right_chunk,
-                                            discr_exp_profile, args.nbins, index_array, seqs_of_interest,
-                                            args, do_print=True)
+                                            discr_exp_profile, nbins, index_array, seqs_of_interest,
+                                            min_occurences, maxfreq,
+                                            n_permutations, random_noseed,
+                                            jackknife_n_permutations,
+                                            jackknife_max_pvalue,
+                                            jackknife_n_samples,
+                                            jackknife_fraction_retain,
+                                            jackknife_min_fraction_passed,
+                                            do_print=True)
 
     IO.write_list_of_seeds(seeds_optimized, seeds_filename_full)
     IO.write_array_of_profiles(profiles_optimized, profiles_filename_full,
-                               args.indices_mode, args.index_bit_width)
+                               indices_mode, index_bit_width)
     IO.write_np_array(seed_charact_array, char_filename_full)
     IO.write_np_array(robustness_array, robustness_filename_full)
 
 
 def main():
     args = handler()
-
-    n_seqs_list = read_sequences(args.rna_bin_file)
-    index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
-    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
-    seeds_initial = IO.read_motif_file(args.unique_seeds_filename)
-    profiles_initial = IO.unpack_profiles_file(args.unique_profiles_filename, args.indices_mode)
-    seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
-
     # get the task id
     env_variables_dict = sge.get_env_variables()
-    seed_chunks, profiles_chunks = chunk_up_input_files(seeds_initial, profiles_initial, args.size_of_chunks)
-    seed_right_chunk, profiles_right_chunk = pick_one_chunk(seed_chunks, profiles_chunks, env_variables_dict)
 
-    seeds_filename_full, profiles_filename_full, \
-    char_filename_full, robustness_filename_full = make_output_filenames(env_variables_dict, args)
-
-
-
-
-
+    # run the optimization
+    non_sge_dependent_main(
+        env_variables_dict["task_id"],
+        args.rna_bin_file,
+        args.exp_mask_file,
+        args.unique_seeds_filename,
+        args.nbins,
+        args.unique_profiles_filename,
+        args.indices_mode,
+        args.index_bit_width,
+        args.size_of_chunks,
+        args.optimized_seeds_filename_template,
+        args.optimized_profiles_filename_template,
+        args.optimized_MI_pv_zscores_filename_template,
+        args.robustness_array_filename_template,
+        args.optimized_seeds_folder,
+        args.optimized_profiles_folder,
+        args.optimized_MI_pv_zscores_folder,
+        args.robustness_array_folder,
+        args.min_occurences,
+        args.maxfreq,
+        args.n_permutations,
+        args.random_noseed,
+        args.jackknife_n_permutations,
+        args.jackknife_max_pvalue,
+        args.jackknife_n_samples,
+        args.jackknife_fraction_retain,
+        args.jackknife_min_fraction_passed,
+        do_chunk_seeds = True
+    )
 
 
 if __name__ == "__main__":

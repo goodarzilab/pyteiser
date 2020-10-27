@@ -10,6 +10,7 @@ import choose_significant_seeds_v3
 import filter_passed_seeds_with_CMI
 import combine_passed_seeds
 import optimize_seeds_single_chunk
+import draw_reports_1
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -25,6 +26,7 @@ def handler():
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
                                                  " for a seed to be considered", type=int)
+    parser.add_argument("--maxfreq", help="maximal seed frequency in the sequences analyzed", type=float)
     parser.add_argument("--n_permutations", help="number of permutations for the rank test for a seed", type=int)
     parser.add_argument("--max_pvalue", help="p-value threshold", type=float)
     parser.add_argument("--min_zscore", help="z-score threshold", type=float)
@@ -39,6 +41,17 @@ def handler():
     parser.add_argument("--are_input_seeds_degenerate", help="do input seeds contain degenerate nucleotides", type=bool)
     parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
     parser.add_argument("--index_bit_width", help="number of bits per one index when compressing", type=int)
+    parser.add_argument("--random_noseed", help="when choosing the order of positions to optimize, "
+                                                "do not set the random number generator to a specific seed", type=bool)
+    parser.add_argument("--jackknife_n_permutations", help="number of permutations for pvalue calculation in "
+                                                           "jackknife test", type=int)
+    parser.add_argument("--jackknife_max_pvalue", help="maximal pvalue for jackknife test", type=float)
+    parser.add_argument("--jackknife_n_samples", help="how many permutations to do in jackknife test", type=int)
+    parser.add_argument("--jackknife_fraction_retain", help="what fraction of the sample to retain for each test",
+                                                                                    type=float)
+    parser.add_argument("--jackknife_min_fraction_passed", help="what fraction of all iterations should"
+                                                                "pass to consider the motif robust", type=float)
+    parser.add_argument("--job_id", help="job id", type=int)
 
 
     parser.set_defaults(
@@ -51,6 +64,7 @@ def handler():
         out='/Users/student/Documents/hani/programs/pyteiser/data/test_output.txt',
         nbins=5,
         min_occurences=5,
+        maxfreq=0.5,
         are_input_seeds_degenerate = False,
         n_permutations=1000,
         max_pvalue=0.01,
@@ -62,9 +76,16 @@ def handler():
         step_2_min_fraction=0.8,
         step_3_min_fraction=0.9,
         min_ratio=5,
+        random_noseed=0,
+        jackknife_n_samples=10,
+        jackknife_fraction_retain=0.66,
+        jackknife_n_permutations=1000,
+        jackknife_max_pvalue=0.0001,
+        jackknife_min_fraction_passed=0.6,
 
         indices_mode = True,
         index_bit_width = 24,
+        job_id = 1,
     )
 
     args = parser.parse_args()
@@ -81,8 +102,8 @@ def generate_filenames(args):
     profiles_filename = os.path.join(interm_folder, "profiles.bin")
     MI_filename = os.path.join(interm_folder, "MI_values.bin")
     indices_filename = os.path.join(interm_folder, "indices.bin")
-    passed_seeds_filename = os.path.join(interm_folder, "passed_seeds_1.bin")
-    passed_profiles_filename = os.path.join(interm_folder, "passed_profiles_1.bin")
+    passed_seeds_filename = os.path.join(interm_folder, "passed_seeds_%d.bin" % args.job_id)
+    passed_profiles_filename = os.path.join(interm_folder, "passed_profiles_%d.bin" % args.job_id)
     combined_passed_seeds_filename = os.path.join(interm_folder, "combined_passed_seeds.bin")
     combined_passed_profiles_filename = os.path.join(interm_folder, "combined_passed_profiles.bin")
     unique_seeds_filename = os.path.join(interm_folder, "unique_seeds.bin")
@@ -95,7 +116,7 @@ def generate_filenames(args):
     IO.create_folder(inputs_folder)
     IO.create_folder(interm_folder)
     with open(indices_filename, 'w') as wf:
-        wf.write("1")
+        wf.write(str(args.job_id))
 
     filenames_dict = {
         "rna_bin" : rna_bin_filename,
@@ -111,7 +132,7 @@ def generate_filenames(args):
         "unique_profiles" : unique_profiles_filename,
         "families_classification" : families_classification_filename,
         "inputs_folder" : inputs_folder,
-        "interm_folder" : interm_folder
+        "interm_folder" : interm_folder,
         #_filename
     }
 
@@ -168,6 +189,36 @@ def main():
                            do_print=True)
     combine_passed_seeds.main(combine_passed_seeds_args)
     filter_passed_seeds_with_CMI.main(filter_passed_seeds_with_CMI_args)
+    optimize_seeds_single_chunk.non_sge_dependent_main(
+        str(args.job_id),
+        filenames_dict['rna_bin'],
+        filenames_dict['exp_mask'],
+        filenames_dict['unique_seeds'],
+        args.nbins,
+        filenames_dict['unique_profiles'],
+        args.indices_mode,
+        args.index_bit_width,
+        0,
+        "optimized_seeds",
+        "optimized_profiles",
+        "optimized_MI_pv_zscores",
+        "robustness_array",
+        filenames_dict['interm_folder'],
+        filenames_dict['interm_folder'],
+        filenames_dict['interm_folder'],
+        filenames_dict['interm_folder'],
+        args.min_occurences,
+        args.maxfreq,
+        args.n_permutations,
+        args.random_noseed,
+        args.jackknife_n_permutations,
+        args.jackknife_max_pvalue,
+        args.jackknife_n_samples,
+        args.jackknife_fraction_retain,
+        args.jackknife_min_fraction_passed,
+        do_chunk_seeds = False
+    )
+    draw_reports_1
 
 
 if __name__ == '__main__':

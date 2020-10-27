@@ -1,12 +1,7 @@
 import numpy as np
 import argparse
-import math
 
-import os
-import sys
-
-from .. import structures
-from .. import IO
+import IO
 
 def handler():
     parser = argparse.ArgumentParser()
