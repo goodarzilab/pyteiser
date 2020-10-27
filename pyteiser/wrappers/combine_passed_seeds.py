@@ -1,11 +1,10 @@
 import argparse
 import os
-import sys
 import numpy as np
 
-from .. import IO
+import IO
 
-def handler():
+def handler(raw_args = None):
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--passed_seed_folder", help="", type=str)
@@ -39,7 +38,7 @@ def handler():
 
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
 
     return args
 
@@ -84,8 +83,8 @@ def collect_all_the_passing_seeds(filenames_list, indices_mode):
 
 
 
-def main():
-    args = handler()
+def main(raw_args = None):
+    args = handler(raw_args)
     filenames_list = get_list_files(args.passed_seed_folder, args.passed_seed_filename_template,
                                     args.passed_profiles_folder, args.passed_profiles_filename_template,
                                     args.input_indices_list_file)

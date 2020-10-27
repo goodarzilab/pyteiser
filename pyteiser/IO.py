@@ -589,3 +589,26 @@ def create_folder(folder):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
+
+def read_fasta_no_compression(infile):
+    tr_dict_loc = {}
+    seqs_order = []
+    with open(infile, 'r') as f:
+        split_string = f.read().split('>')
+        for entry in split_string:
+            if entry == '':
+                continue
+            seq_start = entry.find('\n')
+            annotation = entry[:seq_start]
+            sequence = entry[seq_start + 1:].replace('\n', '')
+            tr_dict_loc[annotation] = sequence
+            seqs_order.append(annotation)
+
+    return tr_dict_loc, seqs_order
+
+
+def write_fasta_no_compression(inp_dict, filename):
+    with open(filename, 'w') as wf:
+        for i in sorted(list(inp_dict.keys())):
+            string_to_write = ">%s\n%s\n" % (i, inp_dict[i])
+            wf.write(string_to_write)

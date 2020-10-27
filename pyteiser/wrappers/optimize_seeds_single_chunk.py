@@ -4,14 +4,14 @@ import os
 import math
 import copy
 
-from .. import MI
-from .. import IO
-from .. import sge
-from .. import structures
-from .. import modify_seed
-from .. import type_conversions
-from .. import matchmaker
-from .. import statistic_tests
+import MI
+import IO
+import sge
+import structures
+import modify_seed
+import type_conversions
+import matchmaker
+import statistic_tests
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -307,6 +307,29 @@ def make_output_filenames(env_variables_dict, args):
            char_filename_full, robustness_filename_full
 
 
+def non_sge_dependent_main(seed_filename_full,
+                            profiles_filename_full,
+                            MI_values_filename_full,
+                            passed_seed_filename_full,
+                            passed_profiles_filename,
+                            exp_mask_filename,
+                            max_pvalue, min_zscore, n_permutations,
+                            step_1_min_fraction, step_1_jump, step_2_min_interval,
+                            step_3_min_fraction,
+                            indices_mode,
+                            index_bit_width,
+                            do_print = True):
+    seeds_optimized, profiles_optimized, \
+    seed_charact_array, robustness_array  = optimize_motifs(seed_right_chunk, profiles_right_chunk,
+                                            discr_exp_profile, args.nbins, index_array, seqs_of_interest,
+                                            args, do_print=True)
+
+    IO.write_list_of_seeds(seeds_optimized, seeds_filename_full)
+    IO.write_array_of_profiles(profiles_optimized, profiles_filename_full,
+                               args.indices_mode, args.index_bit_width)
+    IO.write_np_array(seed_charact_array, char_filename_full)
+    IO.write_np_array(robustness_array, robustness_filename_full)
+
 
 def main():
     args = handler()
@@ -327,16 +350,7 @@ def main():
     char_filename_full, robustness_filename_full = make_output_filenames(env_variables_dict, args)
 
 
-    seeds_optimized, profiles_optimized, \
-    seed_charact_array, robustness_array  = optimize_motifs(seed_right_chunk, profiles_right_chunk,
-                                            discr_exp_profile, args.nbins, index_array, seqs_of_interest,
-                                            args, do_print=True)
 
-    IO.write_list_of_seeds(seeds_optimized, seeds_filename_full)
-    IO.write_array_of_profiles(profiles_optimized, profiles_filename_full,
-                               args.indices_mode, args.index_bit_width)
-    IO.write_np_array(seed_charact_array, char_filename_full)
-    IO.write_np_array(robustness_array, robustness_filename_full)
 
 
 

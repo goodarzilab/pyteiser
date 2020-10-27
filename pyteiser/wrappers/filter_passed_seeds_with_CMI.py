@@ -1,12 +1,10 @@
 import argparse
-import os
-import sys
 import numpy as np
 
-from .. import MI
-from .. import IO
+import MI
+import IO
 
-def handler():
+def handler(raw_args = None):
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--combined_seeds_filename", help="file with seeds that passed the thresholding phase", type=str)
@@ -51,7 +49,7 @@ def handler():
 
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
 
     return args
 
@@ -148,8 +146,8 @@ def choose_best_reps_for_families(seeds_passed, profiles_passed,
 
 
 
-def main():
-    args = handler()
+def main(raw_args = None):
+    args = handler(raw_args)
 
     index_array, values_array = IO.unpack_mask_file(args.exp_mask_file)
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
