@@ -10,7 +10,7 @@ import choose_significant_seeds_v3
 import filter_passed_seeds_with_CMI
 import combine_passed_seeds
 import optimize_seeds_single_chunk
-import draw_reports_1
+import report_csvs
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -21,7 +21,7 @@ def handler():
     parser.add_argument("--measur_column", help="column name in exp_values file that contains expression measurements", type=str)
     parser.add_argument("--seeds_file", help="file with seeds in binary format", type=str)
     parser.add_argument("--temp_folder", help="folder to write temporary files to", type=str)
-    parser.add_argument("--out", help="output file", type=str)
+    parser.add_argument("--out", help="output folder", type=str)
 
     parser.add_argument("--nbins", help="number of bins for discretization of expression profile", type=int)
     parser.add_argument("--min_occurences", help="minimal number of seed occurence in the transcriptome"
@@ -61,7 +61,7 @@ def handler():
         measur_column='measurement',
         seeds_file='/Users/student/Documents/hani/programs/pyteiser/data/tutorial_example_files/test_seeds_20.bin',
         temp_folder='/Users/student/Documents/hani/programs/pyteiser/data/temp',
-        out='/Users/student/Documents/hani/programs/pyteiser/data/test_output.txt',
+        out='/Users/student/Documents/hani/programs/pyteiser/data/test_output',
         nbins=5,
         min_occurences=5,
         maxfreq=0.5,
@@ -95,6 +95,7 @@ def handler():
 def generate_filenames(args):
     # list filenames
     temp_folder = args.temp_folder
+    out_folder = args.out
     inputs_folder = os.path.join(temp_folder, "inputs")
     interm_folder = os.path.join(temp_folder, "interm")
     rna_bin_filename = os.path.join(inputs_folder, "rna.bin")
@@ -109,12 +110,18 @@ def generate_filenames(args):
     unique_seeds_filename = os.path.join(interm_folder, "unique_seeds.bin")
     unique_profiles_filename = os.path.join(interm_folder, "unique_profiles.bin")
     families_classification_filename = os.path.join(interm_folder, "families_classification.bin")
-    # _filename = os.path.join(interm_folder, ".bin")
-
+    optimized_passed_seeds_filename = os.path.join(interm_folder, "optimized_seeds_%d.bin" % args.job_id)
+    optimized_passed_profiles_filename = os.path.join(interm_folder, "optimized_profiles_%d.bin" % args.job_id)
+    combined_MI_pv_zscores_filename = os.path.join(interm_folder, "optimized_MI_pv_zscores_%d.bin" % args.job_id)
+    combined_robustness_filename = os.path.join(interm_folder, "robustness_array_%d.bin" % args.job_id)
+    out_info_filename = os.path.join(out_folder, "pyteiser_info.bin")
+    out_matches_filename = os.path.join(out_folder, "pyteiser_matches.bin")
 
     # make directories
+    IO.create_folder(temp_folder)
     IO.create_folder(inputs_folder)
     IO.create_folder(interm_folder)
+    IO.create_folder(out_folder)
     with open(indices_filename, 'w') as wf:
         wf.write(str(args.job_id))
 
@@ -131,12 +138,24 @@ def generate_filenames(args):
         "unique_seeds" : unique_seeds_filename,
         "unique_profiles" : unique_profiles_filename,
         "families_classification" : families_classification_filename,
+        "optimized_passed_seeds": optimized_passed_seeds_filename,
+        "optimized_passed_profiles": optimized_passed_profiles_filename,
+        "combined_MI_pv_zscores" : combined_MI_pv_zscores_filename,
+        "combined_robustness" : combined_robustness_filename,
+        "out_info" : out_info_filename,
+        "out_matches" : out_matches_filename,
         "inputs_folder" : inputs_folder,
-        "interm_folder" : interm_folder,
-        #_filename
+        "interm_folder" : interm_folder
     }
 
     return filenames_dict
+
+def clean_temp_files(filenames_dict):
+    for fn in filenames_dict:
+        if fn not in ["out_info", "out_matches", "inputs_folder", "interm_folder"]:
+            os.remove(filenames_dict[fn])
+        elif fn in ["inputs_folder", "interm_folder"]:
+            os.rmdir(filenames_dict[fn])
 
 def main():
     args = handler()
@@ -161,6 +180,13 @@ def main():
         filenames_dict['exp_mask'], "--nbins", str(args.nbins), "--min_ratio", str(args.min_ratio),
         "--indices_mode", str(args.indices_mode), "--index_bit_width", str(args.index_bit_width),
         "--do_print", str(True)
+    ]
+    report_csvs_args = ["--rna_fastafile", args.rna_fastafile, "--rna_bin_file", filenames_dict['rna_bin'],
+        "--exp_mask_file", filenames_dict['exp_mask'], "--combined_seeds_filename", filenames_dict['optimized_passed_seeds'],
+        "--combined_profiles_filename", filenames_dict['optimized_passed_profiles'], "--combined_MI_pv_zscores_filename",
+        filenames_dict['combined_MI_pv_zscores'], "--combined_robustness_filename",
+        filenames_dict['combined_robustness'], "--out_info_table", filenames_dict['out_info'],
+        "--out_matches_table", filenames_dict['out_matches'], "--indices_mode", str(args.indices_mode)
     ]
 
     binarize_sequences.main(binarize_sequences_args)
@@ -218,7 +244,8 @@ def main():
         args.jackknife_min_fraction_passed,
         do_chunk_seeds = False
     )
-    draw_reports_1
+    report_csvs.main(report_csvs_args)
+    clean_temp_files(filenames_dict)
 
 
 if __name__ == '__main__':
