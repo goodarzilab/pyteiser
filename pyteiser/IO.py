@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import hashlib
 import io
+import os
 
 import glob_var
 import structures
@@ -583,4 +584,8 @@ def write_individual_shape_file(shape_dataframe,
                                 outfile):
     shape_dataframe.to_csv(outfile, sep='\t', index=False, header=False)
 
+
+def create_folder(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 

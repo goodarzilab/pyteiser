@@ -4,10 +4,9 @@ import argparse
 import os
 import sys
 
-from .. import MI
-from .. import IO
-from .. import sge
-
+import MI
+import IO
+import sge
 
 MASK_OUT_SEED_VALUE = np.float64(-1)
 

@@ -5,10 +5,10 @@ import sys
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
 
-from .. import IO
+import IO
 
-
-def handler():
+# like here https://stackoverflow.com/questions/44734858/python-calling-a-module-that-uses-argparser
+def handler(raw_args = None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--rna_fastafile", type=str)
     parser.add_argument("--rna_bin_file", type=str)
@@ -20,14 +20,14 @@ def handler():
         # rna_bin_file='/Users/student/Documents/hani/temp/temp_bins/test_bin.bin',
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
 
     return args
 
 
 
-def main():
-    args = handler()
+def main(raw_args = None):
+    args = handler(raw_args)
     sequences_dict, seqs_order = IO.read_fasta(args.rna_fastafile, do_print=True)
     seq_batch_byte_string = IO.compress_named_sequences(sequences_dict, seqs_order, do_print=True)
     with open(args.rna_bin_file, 'wb') as wf:

@@ -2,13 +2,10 @@ import numpy as np
 import pandas as pd
 import argparse
 
-import os
-import sys
-
-from .. import IO
+import IO
 
 
-def handler():
+def handler(raw_args = None):
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--rna_bin_file", help="binarized sequence file", type=str)
@@ -28,7 +25,7 @@ def handler():
         measur_column='diff',
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
     return args
 
 
@@ -75,8 +72,8 @@ def compress_write_mask_arrays(index_array, values_array, args):
         wb.write(full_bytes_string)
 
 
-def main():
-    args = handler()
+def main(raw_args = None):
+    args = handler(raw_args)
     array_indices_occuring, array_measurement_values = construct_mask_arrays(args)
     compress_write_mask_arrays(array_indices_occuring, array_measurement_values, args)
 
