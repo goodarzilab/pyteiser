@@ -2,13 +2,12 @@ import numpy as np
 import argparse
 
 import os
-import sys
 
 import MI
 import IO
 import sge
+import glob_var
 
-MASK_OUT_SEED_VALUE = np.float64(-1)
 
 
 def handler():
@@ -74,7 +73,7 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
         active_profile = profile[index_array]
 
         if active_profile.sum() <= min_occurences:
-            MI_values_array[i] = MASK_OUT_SEED_VALUE
+            MI_values_array[i] = glob_var.mask_out_seed_value
             # print("The seed number %d binds only %d transcripts" % (i, active_profile.sum()))
             continue
 
@@ -88,6 +87,23 @@ def calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_p
     return MI_values_array
 
 
+def non_sge_dependent_main(profiles_filename_full,
+                            MI_values_filename_full,
+                            exp_mask_file,
+                            indices_mode,
+                            nbins,
+                            min_occurences,
+                            do_print = True):
+    decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
+                                                                                         exp_mask_file,
+                                                                                         indices_mode,
+                                                                                         do_print = do_print)
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
+                                             nbins, min_occurences, do_print = True)
+    IO.write_MI_values(MI_values_array, nbins, MI_values_filename_full)
+
+
 def main():
     args = handler()
 
@@ -98,16 +114,13 @@ def main():
     # get the names of input and output files
     profiles_filename_full, MI_values_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
 
-    decompressed_profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
-                                                                                         args.exp_mask_file,
-                                                                                         args.indices_mode,
-                                                                                         do_print=True)
-
-    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, args.nbins)
-
-    MI_values_array = calculate_MI_for_seeds(decompressed_profiles_array, index_array, discr_exp_profile,
-                                             args.nbins, args.min_occurences, do_print = True)
-    IO.write_MI_values(MI_values_array, args.nbins, MI_values_filename_full)
+    non_sge_dependent_main(profiles_filename_full,
+                           MI_values_filename_full,
+                           args.exp_mask_file,
+                           args.indices_mode,
+                           args.nbins,
+                           args.min_occurences,
+                           do_print=True)
 
     if args.print_qstat == 'y':
         sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)

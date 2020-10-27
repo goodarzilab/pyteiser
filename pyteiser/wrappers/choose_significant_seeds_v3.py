@@ -4,16 +4,12 @@ import math
 import os
 import sys
 
-from .. import structures
-from .. import MI
-from .. import IO
-from .. import sge
-from .. import statistic_tests
+import structures
+import MI
+import IO
+import sge
+import statistic_tests
 
-# to make sure relative imports work when some of the wrappers is being implemented as a script
-# see more detailed explanation in the test files
-
-MASK_OUT_SEED_VALUE = np.float64(-1)
 
 # The original program works in this way
 # First, it keeps jumping down taking big steps (fastthreshold_jump) until it finds the first seed that doesn't pass
@@ -141,32 +137,35 @@ def find_fraction_denominator(x):
 
 
 def get_current_statistics(index, MI_values_array, profiles_array,
-                           index_array, discr_exp_profile, nbins, args):
+                           index_array, discr_exp_profile, nbins,
+                           max_pvalue, min_zscore, n_permutations):
     profile = profiles_array[index]
     active_profile = profile[index_array]
     current_MI = MI_values_array[index]
 
     if current_MI == -1:
-        return args.max_pvalue + 0.1, args.min_zscore - 0.1
+        return max_pvalue + 0.1, min_zscore - 0.1
 
     assert (np.isclose(current_MI, MI.mut_info(active_profile, discr_exp_profile, x_bins=2, y_bins=nbins), rtol=1e-10))
 
     pvalue, z_score = statistic_tests.MI_get_pvalue_and_zscore(active_profile, discr_exp_profile, nbins,
-                                                               current_MI, args.n_permutations)
+                                                               current_MI, n_permutations)
     return pvalue, z_score
 
 
 def check_one_seed(index, counter, seed_pass, MI_values_array,
                    profiles_array, index_array, discr_exp_profile, nbins,
-                   args, do_print):
+                   max_pvalue, min_zscore, n_permutations,
+                   do_print):
     pv_defined = False
     if seed_pass[index] != 0:  # if we have checked this seed before
         check = seed_pass[index]
     else:
         pvalue, z_score = get_current_statistics(index, MI_values_array, profiles_array,
-                                                 index_array, discr_exp_profile, nbins, args)
+                                                 index_array, discr_exp_profile, nbins,
+                                                 max_pvalue, min_zscore, n_permutations)
         pv_defined = True
-        if pvalue <= args.max_pvalue and z_score >= args.min_zscore:
+        if pvalue <= max_pvalue and z_score >= min_zscore:
             check = 1  # seed passed
         else:
             check = -1  # seed didn't pass
@@ -197,7 +196,8 @@ def check_one_seed(index, counter, seed_pass, MI_values_array,
 def check_N_consecutive(minimal_fraction, start_point,
         MI_values_array, seed_indices_sorted, seed_pass,
         discr_exp_profile, nbins, profiles_array, index_array,
-                                args, do_print = False):
+        max_pvalue, min_zscore, n_permutations,
+        do_print = False):
     number_not_passed = 0
     denominator = find_fraction_denominator(minimal_fraction)
     go_until =  start_point + denominator
@@ -209,7 +209,8 @@ def check_N_consecutive(minimal_fraction, start_point,
         index = seed_indices_sorted[counter]
         did_seed_pass, seed_pass = check_one_seed(index, counter, seed_pass, MI_values_array,
                                        profiles_array, index_array, discr_exp_profile, nbins,
-                                       args, do_print)
+                                       max_pvalue, min_zscore, n_permutations,
+                                       do_print)
         if not did_seed_pass:
             # seed didn't pass, write it down to number_not_passed variable
             number_not_passed += 1
@@ -225,19 +226,22 @@ def check_N_consecutive(minimal_fraction, start_point,
 
 def step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                  discr_exp_profile, nbins, profiles_array, index_array,
-                                args, do_print = False):
+                                 max_pvalue, min_zscore, n_permutations,
+                                 step_1_min_fraction, step_1_jump,
+                                 do_print = False):
     first_negative_seed = -1
 
     counter = 0
     is_over_threshold = False
 
     while (counter < len(seed_indices_sorted)) and not is_over_threshold:
-        is_over_threshold, seed_pass = check_N_consecutive(args.step_1_min_fraction,
+        is_over_threshold, seed_pass = check_N_consecutive(step_1_min_fraction,
                             counter, MI_values_array, seed_indices_sorted, seed_pass,
                             discr_exp_profile, nbins, profiles_array, index_array,
-                            args, do_print)
+                            max_pvalue, min_zscore, n_permutations,
+                            do_print)
         first_negative_seed = counter
-        counter += args.step_1_jump
+        counter += step_1_jump
 
     if not is_over_threshold:
         print("No lower boundary for threshold found!")
@@ -248,24 +252,27 @@ def step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, se
 
 def step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indices_sorted,
                          profiles_array, index_array, discr_exp_profile, nbins, seed_pass,
-                         do_print, args):
-    last_positive_seed = first_negative_seed - args.step_1_jump # this is where the last positive seed was
+                        max_pvalue, min_zscore, n_permutations,
+                        step_1_min_fraction, step_1_jump, step_2_min_interval,
+                        do_print=False):
+    last_positive_seed = first_negative_seed - step_1_jump # this is where the last positive seed was
 
-    upper_boundary = first_negative_seed - args.step_1_jump # upper limit: first negative seed - one jump (just in case)
-    upper_boundary = min(upper_boundary, 0) # upper boundary shouldn't be less than zero
+    upper_boundary = first_negative_seed - step_1_jump # upper limit: first negative seed - one jump (just in case)
+    upper_boundary = max(upper_boundary, 0) # upper boundary shouldn't be less than zero
     lower_boundary = min(len(MI_values_array) - 1,
-                        first_negative_seed + args.step_1_jump) # lower limit
+                        first_negative_seed + step_1_jump) # lower limit
                             # the first negative seed + step_1_jump
                             # or, if there were none, the end of the profiles list
 
 
 
-    while (lower_boundary - upper_boundary) > args.step_2_min_interval:
+    while (lower_boundary - upper_boundary) > step_2_min_interval:
         counter = upper_boundary + (lower_boundary - upper_boundary) // 2
-        is_over_threshold, seed_pass = check_N_consecutive(args.step_1_min_fraction,
+        is_over_threshold, seed_pass = check_N_consecutive(step_1_min_fraction,
                                                            counter, MI_values_array, seed_indices_sorted, seed_pass,
                                                            discr_exp_profile, nbins, profiles_array, index_array,
-                                                           args, do_print)
+                                                           max_pvalue, min_zscore, n_permutations,
+                                                           do_print)
         if not is_over_threshold:
             # some seed passed, go down half interval
             upper_boundary = counter
@@ -286,8 +293,9 @@ def get_current_fraction_from_array(x):
 
 def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array, seed_indices_sorted,
                          profiles_array, index_array, discr_exp_profile, nbins, seed_pass,
-                         do_print, args):
-    denominator = find_fraction_denominator(args.step_3_min_fraction)
+                         max_pvalue, min_zscore, n_permutations, step_3_min_fraction,
+                         do_print):
+    denominator = find_fraction_denominator(step_3_min_fraction)
     if last_positive_seed + denominator > len(MI_values_array):
         print("Reached the end of file, no threshold found! Suppose that all the seeds are significant")
         sys.exit(1)
@@ -298,11 +306,12 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
         index = seed_indices_sorted[counter]
         did_seed_pass, seed_pass = check_one_seed(index, counter, seed_pass, MI_values_array,
                                        profiles_array, index_array, discr_exp_profile, nbins,
-                                       args, do_print)
+                                       max_pvalue, min_zscore, n_permutations,
+                                       do_print)
         current_passed_array[i] = did_seed_pass
 
     current_fraction = get_current_fraction_from_array(current_passed_array)
-    fraction_exceeded = (current_fraction > args.step_3_min_fraction)
+    fraction_exceeded = (current_fraction > step_3_min_fraction)
 
     counter = last_positive_seed + denominator
 
@@ -310,11 +319,12 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
         index = seed_indices_sorted[counter]
         did_seed_pass, seed_pass = check_one_seed(index, counter, seed_pass, MI_values_array,
                                                   profiles_array, index_array, discr_exp_profile, nbins,
-                                                  args, do_print)
+                                                  max_pvalue, min_zscore, n_permutations,
+                                                  do_print)
         current_passed_array = np.roll(current_passed_array, -1)
         current_passed_array[-1] = did_seed_pass
         current_fraction = get_current_fraction_from_array(current_passed_array)
-        fraction_exceeded = (current_fraction > args.step_3_min_fraction)
+        fraction_exceeded = (current_fraction > step_3_min_fraction)
         counter += 1
 
     if not fraction_exceeded:
@@ -327,7 +337,11 @@ def step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
 
 
 def determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
-                           profiles_array, index_array, args, do_print = False):
+                           profiles_array, index_array,
+                           max_pvalue, min_zscore, n_permutations,
+                           step_1_min_fraction, step_1_jump, step_2_min_interval,
+                           step_3_min_fraction,
+                           do_print = False):
 
     seed_indices_sorted = np.argsort(MI_values_array)[::-1]
 
@@ -337,20 +351,25 @@ def determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
         print("Find the lower boundary for the threshold")
     first_negative_seed, seed_pass = step_1_determine_thresh_lower_limit(MI_values_array, seed_indices_sorted, seed_pass,
                                                      discr_exp_profile, nbins, profiles_array, index_array,
-                                                    args, do_print)
+                                                     max_pvalue, min_zscore, n_permutations,
+                                                     step_1_min_fraction, step_1_jump,
+                                                     do_print)
     if do_print:
         print("The first seed that didn't pass is: ", first_negative_seed, '\n')
         print("Decreasing intervals phase")
     last_positive_seed, seed_pass = step_2_decreasing_intervals(first_negative_seed, MI_values_array, seed_indices_sorted,
                                                      profiles_array, index_array, discr_exp_profile, nbins,
-                                                     seed_pass, do_print, args)
+                                                     seed_pass, max_pvalue, min_zscore, n_permutations,
+                                                     step_1_min_fraction, step_1_jump, step_2_min_interval,
+                                                     do_print)
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
         print("Find 10 consecutive seeds that don't pass")
 
     last_positive_seed, seed_pass = step_3_confirm_consec_not_passing_seeds(last_positive_seed, MI_values_array,
                                             seed_indices_sorted, profiles_array, index_array, discr_exp_profile, nbins,
-                                            seed_pass, do_print, args)
+                                            seed_pass, max_pvalue, min_zscore, n_permutations, step_3_min_fraction,
+                                            do_print)
 
     if do_print:
         print("The last seed that passed is: ", last_positive_seed, '\n')
@@ -409,6 +428,41 @@ def write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
         wf.write(total_bitstring)
 
 
+def non_sge_dependent_main(seed_filename_full,
+                            profiles_filename_full,
+                            MI_values_filename_full,
+                            passed_seed_filename_full,
+                            passed_profiles_filename,
+                            exp_mask_filename,
+                            max_pvalue, min_zscore, n_permutations,
+                            step_1_min_fraction, step_1_jump, step_2_min_interval,
+                            step_3_min_fraction,
+                            indices_mode,
+                            index_bit_width,
+                            do_print = True):
+    # read motifs, their profiles and MI values
+    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
+                                                                         exp_mask_filename,
+                                                                         indices_mode,
+                                                                         do_print = do_print)
+    w_motifs_list = IO.read_motif_file(seed_filename_full)
+    MI_values_array, nbins = IO.read_MI_values(MI_values_filename_full)
+
+    # find the threshold
+    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
+    last_positive_seed = determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
+                           profiles_array, index_array,
+                           max_pvalue, min_zscore, n_permutations,
+                           step_1_min_fraction, step_1_jump, step_2_min_interval,
+                           step_3_min_fraction,
+                           do_print = True)
+
+    write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
+                       passed_seed_filename_full)
+    write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
+                          passed_profiles_filename, indices_mode, index_bit_width)
+
+
 def main():
     args = handler()
 
@@ -423,24 +477,18 @@ def main():
     seed_filename_full, \
     rna_bin_filename, exp_mask_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
 
-    # read motifs, their profiles and MI values
-    profiles_array, index_array, values_array = IO.unpack_profiles_and_mask(profiles_filename_full,
-                                                                         exp_mask_filename,
-                                                                         args.indices_mode,
-                                                                         do_print=True)
-    w_motifs_list = IO.read_motif_file(seed_filename_full)
-    MI_values_array, nbins = IO.read_MI_values(MI_values_filename_full)
-
-    # find the threshold
-    discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins)
-    last_positive_seed = determine_mi_threshold(MI_values_array, discr_exp_profile, nbins,
-                           profiles_array, index_array, args, do_print = True)
-
-    write_seeds_passed(last_positive_seed, MI_values_array, w_motifs_list,
-                       passed_seed_filename_full)
-    write_profiles_passed(last_positive_seed, MI_values_array, profiles_array,
-                          passed_profiles_filename, args.indices_mode, args.index_bit_width)
-
+    non_sge_dependent_main(seed_filename_full,
+                           profiles_filename_full,
+                           MI_values_filename_full,
+                           passed_seed_filename_full,
+                           passed_profiles_filename,
+                           exp_mask_filename,
+                           args.max_pvalue, args.min_zscore, args.n_permutations,
+                           args.step_1_min_fraction, args.step_1_jump, args.step_2_min_interval,
+                           args.step_3_min_fraction,
+                           args.indices_mode,
+                           args.index_bit_width,
+                           do_print=True)
 
     if args.print_qstat == 'y':
         sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)

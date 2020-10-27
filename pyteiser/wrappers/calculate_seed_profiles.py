@@ -1,12 +1,11 @@
 import numpy as np
 import argparse
 import os
-import sys
 
-from .. import IO
-from .. import matchmaker
-from .. import type_conversions
-from .. import sge
+import IO
+import matchmaker
+import type_conversions
+import sge
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -107,6 +106,25 @@ def read_input_files(seeds_filename_full, rna_bin_filename):
     return n_motifs_list, n_seqs_list
 
 
+def non_sge_dependent_main(seeds_filename_full, profiles_filename_full, rna_bin_filename,
+                           are_seeds_degenerate,
+                           indices_mode,
+                           index_bit_width
+                           ):
+    # get the names of input and output files
+
+    n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
+
+    # the main procedure - calculate profiles
+    calculate_write_profiles(n_motifs_list, n_seqs_list,
+                             profiles_filename_full,
+                             are_seeds_degenerate,
+                             indices_mode,
+                             index_bit_width,
+                             do_print=True)
+
+
+
 def main():
     args = handler()
 
@@ -116,18 +134,18 @@ def main():
     # get the task id
     env_variables_dict = sge.get_env_variables()
 
-    # get the names of input and output files
-    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args, env_variables_dict, mapping_dict)
-    n_motifs_list, n_seqs_list = read_input_files(seeds_filename_full, rna_bin_filename)
+    # get the input filenames
+    seeds_filename_full, profiles_filename_full, rna_bin_filename = get_current_in_out_filenames(args,
+                                                                                                 env_variables_dict,
+                                                                                                 mapping_dict)
 
-    # the main procedure - calculate profiles
-    calculate_write_profiles(n_motifs_list, n_seqs_list,
-                             profiles_filename_full,
-                             args.are_seeds_degenerate,
-                             args.indices_mode,
-                             args.index_bit_width,
-                             do_print=True)
-
+    # run the calculation
+    non_sge_dependent_main(seeds_filename_full, profiles_filename_full, rna_bin_filename,
+                           args.are_seeds_degenerate,
+                           args.indices_mode,
+                           args.index_bit_width,
+                           do_print=True
+                           )
 
     if args.print_qstat == 'y':
         sge.print_qstat_proc(env_variables_dict, args.path_to_qstat)

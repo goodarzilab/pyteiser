@@ -165,3 +165,4 @@ _paired_probabilities_dict = {_U : -3.0, # np.log2( 0.25 * 0.5), since U can cre
                             }
 
 MAX_SEQ_NAME_LENGTH = 50
+mask_out_seed_value = np.float64(-1)
