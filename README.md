@@ -2,8 +2,6 @@
 # Pyteiser
 A framework for identifying the structural motifs that are informative of whole-genome measurements across all the transcripts
 
-### Table of contents
-
 ### Introduction
 pyteiser identifies structural motifs that could explain genome-wide changes in gene expression, stability or other quantitative transcriptomic measures.
 pyteiser encodes structural motifs as context-free grammars (CFG) that represents short stem-loop structures along with a known primary sequence. <br>
@@ -37,9 +35,11 @@ Currently, pyteiser is distributed as a set of scripts rather than a pip-install
 You can either run a command `git clone https://github.com/goodarzilab/pyteiser.git` in your terminal or click "Clone or download" in the top right corner of this page.
 
 ## Usage
+
 The package consists of:
 - set of modules where the core functions are implemented (`pyteiser/pyteiser`)
 - set of wrapper scripts that implement individual steps of the pipeline (`pyteiser/pyteiser/wrappers`)
+- a single wrapper script that runs the whole pipeline (`pyteiser/pyteiser/wrappers`)
 
 Several steps of the pipeline are computationally demanding and therefore are recommended to be run on a High Performance Computing machine. Depending on the institution / company you are at the HPC you are using might have different job submission requirements. In particular, the keywords for memory or time requests might differ among individual HPC systems. We recommend running each step of the pipeline individually since it might be hard to reserve cores on HPC for long enough to be able to run the whole pipeline in a single run. <br>
 We provide frameworks for either running the scripts on your own machine or submitting it to SGE-based HPCs through `qsub` command. <br>
