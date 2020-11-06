@@ -3,8 +3,8 @@ import argparse
 import os
 import sys
 
-import glob_var
-import structures
+from . import glob_var
+from . import structures
 
 # this function generates all possible seeds with specified length of stem and loop
 # to reduce the search space, it only keeps the seeds that have a pre-specified number of informative bases (non-Ns)

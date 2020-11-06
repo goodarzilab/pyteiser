@@ -2,10 +2,10 @@ import numpy as np
 import argparse
 import os
 
-import IO
-import matchmaker
-import type_conversions
-import sge
+from .. import IO
+from .. import matchmaker
+from .. import type_conversions
+from .. import sge
 
 def handler():
     parser = argparse.ArgumentParser()

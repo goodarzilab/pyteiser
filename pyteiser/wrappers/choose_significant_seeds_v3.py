@@ -4,11 +4,11 @@ import math
 import os
 import sys
 
-import structures
-import MI
-import IO
-import sge
-import statistic_tests
+from .. import structures
+from .. import MI
+from .. import IO
+from .. import sge
+from .. import statistic_tests
 
 
 # The original program works in this way

@@ -5,7 +5,7 @@ import sys
 # to make sure relative imports work when some of the wrappers is being implemented as a script
 # see more detailed explanation in the test files
 
-import IO
+from .. import IO
 
 # like here https://stackoverflow.com/questions/44734858/python-calling-a-module-that-uses-argparser
 def handler(raw_args = None):

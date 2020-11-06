@@ -1,8 +1,8 @@
 import sys
 
-import glob_var
-import structures
-import type_conversions
+from . import glob_var
+from . import structures
+from . import type_conversions
 
 
 # this function creates an array of motifs having all possible combinations of bases at the specified position

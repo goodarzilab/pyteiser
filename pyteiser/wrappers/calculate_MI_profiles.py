@@ -3,10 +3,10 @@ import argparse
 
 import os
 
-import MI
-import IO
-import sge
-import glob_var
+from .. import MI
+from .. import IO
+from .. import sge
+from .. import glob_var
 
 
 

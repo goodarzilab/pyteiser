@@ -1,16 +1,16 @@
 import os
 import argparse
 
-import IO
-import binarize_sequences
-import preprocess_custom_expression_profile
-import calculate_seed_profiles
-import calculate_MI_profiles
-import choose_significant_seeds_v3
-import filter_passed_seeds_with_CMI
-import combine_passed_seeds
-import optimize_seeds_single_chunk
-import report_csvs
+from .. import IO
+from . import binarize_sequences
+from . import preprocess_custom_expression_profile
+from . import calculate_seed_profiles
+from . import calculate_MI_profiles
+from . import choose_significant_seeds_v3
+from . import filter_passed_seeds_with_CMI
+from . import combine_passed_seeds
+from . import optimize_seeds_single_chunk
+from . import report_csvs
 
 def handler():
     parser = argparse.ArgumentParser()

@@ -4,7 +4,7 @@ import numba
 import struct
 import sys
 
-import glob_var
+from . import glob_var
 
 
 class w_motif:

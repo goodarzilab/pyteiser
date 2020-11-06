@@ -1,8 +1,8 @@
 import argparse
 import numpy as np
 
-import MI
-import IO
+from .. import MI
+from .. import IO
 
 def handler(raw_args = None):
     parser = argparse.ArgumentParser()

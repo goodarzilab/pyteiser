@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-import glob_var
-import structures
+from . import glob_var
+from . import structures
 
 
 def parse_task_mapping_file(task_mapping_file):

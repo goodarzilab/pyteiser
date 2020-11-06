@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import argparse
 
-import IO
+from .. import IO
 
 
 def handler(raw_args = None):

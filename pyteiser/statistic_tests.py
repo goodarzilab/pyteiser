@@ -4,7 +4,7 @@ import sys
 import math
 import numba
 
-import MI
+from . import MI
 
 
 #@numba.jit(cache=True, nopython=True, nogil=True)

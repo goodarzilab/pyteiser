@@ -5,9 +5,9 @@ import hashlib
 import io
 import os
 
-import glob_var
-import structures
-import type_conversions
+from . import glob_var
+from . import structures
+from . import type_conversions
 
 
 

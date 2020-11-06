@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 
-import IO
+from .. import IO
 
 def handler():
     parser = argparse.ArgumentParser()

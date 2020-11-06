@@ -4,14 +4,14 @@ import os
 import math
 import copy
 
-import MI
-import IO
-import sge
-import structures
-import modify_seed
-import type_conversions
-import matchmaker
-import statistic_tests
+from .. import MI
+from .. import IO
+from .. import sge
+from .. import structures
+from .. import modify_seed
+from .. import type_conversions
+from .. import matchmaker
+from .. import statistic_tests
 
 def handler():
     parser = argparse.ArgumentParser()

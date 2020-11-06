@@ -1,7 +1,7 @@
 import os
 import sys
 
-import structures
+from . import structures
 
 def w_to_n_motif(curr_w_motif):
     curr_n_motif = structures.n_motif(curr_w_motif.stem_length,

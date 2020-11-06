@@ -2,7 +2,7 @@ import argparse
 import os
 import numpy as np
 
-import IO
+from .. import IO
 
 def handler(raw_args = None):
     parser = argparse.ArgumentParser()

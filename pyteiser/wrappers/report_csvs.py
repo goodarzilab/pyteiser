@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import argparse
 
-import IO
-import matchmaker
-import type_conversions
+from .. import IO
+from .. import matchmaker
+from .. import type_conversions
 
 def handler(raw_args = None):
     parser = argparse.ArgumentParser()

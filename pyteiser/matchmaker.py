@@ -1,8 +1,8 @@
 import numba
 import time
 
-import glob_var
-import structures
+from . import glob_var
+from . import structures
 
 
 
