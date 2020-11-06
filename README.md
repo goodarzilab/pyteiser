@@ -15,6 +15,8 @@ Finally, the seeds that have passed all the tests are ranked by how informative 
 
 pyteiser is a successor of TEISER (see [link](https://tavazoielab.c2b2.columbia.edu/TEISER/)). pyteiser is built around the same concept. The overall pipeline is similar, however, several changes and improvements were made. pyteiser performs additional testing of seed matches using *in silico* RNA secondary structure prediction. The statistical tests and optimization algorithms were improved. pyteiser is also capable of handling SHAPE RNA secondary structure probing data; such data provide additional information about RNA secondary structures that do or do not exist in the cell *in vivo*.
 
+pyteiser is intentionally designed in a way that allows storage of all the intermediate files in compressed binary format. The reason is that an academic lab is often focused on one model system; if using pyteiser for the same organism / the same transcriptome, there is no need to re-run time-consuming steps of seed occurence profile calculation over and over again; user can save computational resources by just storing intermediate files for a given transcriptome. We provide two different modes of compressing the seed occurence profiles: either store only indices of matching sequences (takes less space if running pyteiser on big number of short sequences); or store full profiles (takes less space if running pyteiser on small number of long sequences).
+
 pyteiser is written in Python 3.7. The computationally heavy funcions are implemented efficiently through extensive usage on [numpy](https://numpy.org/) arrays and [numba](http://numba.pydata.org/) Python compiler.
 
 ## Getting started
