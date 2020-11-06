@@ -5,11 +5,13 @@ import sys
 import math
 import copy
 
-
+# to make sure relative import works in order to import test data
 current_script_path = sys.argv[0]
 package_home_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if package_home_path not in sys.path:
     sys.path.append(package_home_path)
+os.chdir(package_home_path)
+
 
 import pyteiser.structures as structures
 import pyteiser.IO as IO
@@ -28,13 +30,13 @@ def handler():
                                                 "the reference transcriptome", type=str)
 
     parser.set_defaults(
-        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
-        exp_mask_file='/Users/student/Documents/hani/programs/pyteiser/data/mask_files/TARBP2_decay_t_score_mask.bin',
+        rna_bin_file='tests/data/test_seqs.bin',
+        exp_mask_file='tests/data/exp_mask.bin',
         nbins=15,
         number_example_matches_to_print = 5,
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     return args
 
@@ -59,7 +61,7 @@ def create_one_seed(do_print = True):
     return n_test_motif
 
 
-def test_elongated_seed(seqs_of_interest, discr_exp_profile, nbins, N, do_print=True):
+def run_test_elongated_seed(seqs_of_interest, discr_exp_profile, nbins, N, do_print=True):
     elong_seed = create_one_seed(do_print)
     current_profile, time_spent = matchmaker.calculate_profile_one_motif(elong_seed,
                                                                          seqs_of_interest,
@@ -85,7 +87,7 @@ def test_elongated_seed(seqs_of_interest, discr_exp_profile, nbins, N, do_print=
 
 
 
-def main():
+def test_main():
     args = handler()
 
     n_seqs_list = read_sequences(args.rna_bin_file)
@@ -93,18 +95,8 @@ def main():
     discr_exp_profile = MI.discretize_exp_profile(index_array, values_array, nbins = args.nbins)
     seqs_of_interest = [n_seqs_list[x] for x in range(index_array.shape[0]) if index_array[x]]
 
-    test_elongated_seed(seqs_of_interest, discr_exp_profile, args.nbins, args.number_example_matches_to_print)
-
-
-
-
-
+    run_test_elongated_seed(seqs_of_interest, discr_exp_profile, args.nbins, args.number_example_matches_to_print)
 
 
 if __name__ == "__main__":
-    main()
-
-
-# test matches of a seed:
-# BSHNVBCNU
-# .<<<<....
+    test_main()

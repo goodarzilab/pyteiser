@@ -179,11 +179,11 @@ def timing_letters_comparison():
 
 
 
-def main():
+def test_main():
     timing_letters_comparison()
 
 
 if __name__ == "__main__":
-    main()
+    test_main()
 
 

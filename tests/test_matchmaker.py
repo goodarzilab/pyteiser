@@ -17,10 +17,12 @@ import argparse
 # to find the path of python script currently being executed, see https://stackoverflow.com/questions/595305/how-do-i-get-the-path-of-the-python-script-i-am-running-in
 # to go up one folder, see https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
 
+# to make sure relative import works in order to import test data
 current_script_path = sys.argv[0]
 package_home_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if package_home_path not in sys.path:
     sys.path.append(package_home_path)
+os.chdir(package_home_path)
 
 import pyteiser.structures as structures
 import pyteiser.IO as IO
@@ -28,9 +30,6 @@ import pyteiser.glob_var as glob_var
 import pyteiser.matchmaker as matchmaker
 import pyteiser.type_conversions as type_conversions
 import pyteiser.wrappers.calculate_seed_profiles as calculate_seed_profiles
-
-
-
 
 def handler():
     parser = argparse.ArgumentParser()
@@ -41,19 +40,19 @@ def handler():
 
 
     parser.set_defaults(
-        seeds_bin_file = '/Users/student/Documents/hani/temp/seeds_temp/test_seeds/test_seeds.bin',
-        profiles_bin_file='/Users/student/Documents/hani/temp/profiles_temp/test_profiles/test_profiles.bin',
-        rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin'
+        seeds_bin_file = 'tests/data/test_seeds_20.bin',
+        profiles_bin_file='tests/data/profiles.bin',
+        rna_bin_file='tests/data/test_seqs.bin',
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     return args
 
 
 
 
-def test_matchmaker_non_degenerate():
+def run_test_matchmaker_non_degenerate():
     # test matchmaking algorithms
     # 3 strings listed here contain instances of 3 matches that are also listed here
 
@@ -96,7 +95,7 @@ def test_matchmaker_non_degenerate():
     assert(indices_matchmaker_res == indices_matchmaker_desired)
 
 
-def test_matchmaker_degenerate():
+def run_test_matchmaker_degenerate():
     test_motif_1 = structures.w_motif(4,6)
     test_motif_2 = structures.w_motif(4,6)
     test_motif_3 = structures.w_motif(4,6)
@@ -136,7 +135,7 @@ def test_matchmaker_degenerate():
 
 
 
-def test_matchmaker_elongated_seed():
+def run_test_matchmaker_elongated_seed():
     test_motif_1 = structures.w_motif(5, 6)
     test_motif_1.from_string("NNVBGNSBGNN")
     test_motif_1.change_structure_position(0, glob_var._loop)
@@ -176,7 +175,7 @@ def test_matchmaker_elongated_seed():
 
 
 
-def test_current_pair(stem = 4, loop = 7,
+def run_test_current_pair(stem = 4, loop = 7,
                       motif_str = "NGCAUNGNANN",
                       seq_str = "UGCAUUGUAUGUGUG"):
     test_motif = structures.w_motif(stem, loop)
@@ -247,12 +246,10 @@ def prepare_known_seeds(args):
     return n_motifs_list, n_seqs_list
 
 
-def test_calculate_seed_profiles(args):
+def run_test_calculate_seed_profiles(args):
     n_motifs_list, n_seqs_list = prepare_known_seeds(args)
     compress_test_seeds(args, n_motifs_list)
     matchmaker.calculate_profiles_list_motifs(n_motifs_list, n_seqs_list, do_print = True)
-
-
 
 
 def compress_test_seeds(args, n_motifs_list):
@@ -268,7 +265,7 @@ def compress_test_seeds(args, n_motifs_list):
 
 
 
-def test_profiles_compression_decompression(args, do_shorten_test = True):
+def run_test_profiles_compression_decompression(args, do_shorten_test = True):
     args.seedfile = args.seeds_bin_file
     n_motifs_list, n_seqs_list = calculate_seed_profiles.prepare_lists_for_calculations(args)
     if do_shorten_test:
@@ -290,22 +287,20 @@ def test_profiles_compression_decompression(args, do_shorten_test = True):
 
 
 
-def main():
+def test_main():
     args = handler()
 
     # test individual cases
-    test_matchmaker_non_degenerate()
-    test_matchmaker_degenerate()
-    test_matchmaker_elongated_seed()
+    run_test_matchmaker_non_degenerate()
+    run_test_matchmaker_degenerate()
+    run_test_matchmaker_elongated_seed()
 
     # test that the number of instances identified is correct
-    # test_calculate_seed_profiles(args)
+    run_test_calculate_seed_profiles(args)
 
-    # test that I can
-    # test_profiles_compression_decompression(args)
 
 
 if __name__ == "__main__":
-    main()
+    test_main()
 
 

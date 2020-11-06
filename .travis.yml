@@ -26,6 +26,10 @@ before_script:
 script:
   - pytest -v tests/test_short_compression.py
   - pytest -v tests/test_MI.py
+  - pytest -v tests/test_IO.py
+  - pytest -v tests/test_matchmaker.py  
+  - pytest -v tests/test_comparisons_timing.py
+  - pytest -v tests/test_elongated_seed_profile.py
 
 after_success:
   - codecov
