@@ -5,7 +5,7 @@ notifications:
     email: false
 
 python:
-  - "3.8"
+  - "3.7"
 
 # only run travis on the master branch
 branches:
@@ -19,10 +19,7 @@ install:
 
 # run tests
 script:
-  - flake8
-  - black --check .
-  - python setup.py check --restructuredtext
-  - pytest --cov-report=xml --cov=scvi -v tests/numba_parallel_diagnostics.py
+  - pytest --cov-report=xml --cov=pyteiser -v tests/numba_parallel_diagnostics.py
 
 after_success:
   - codecov
