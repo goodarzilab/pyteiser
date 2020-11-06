@@ -36,19 +36,13 @@ You can either run a command `git clone https://github.com/goodarzilab/pyteiser.
 
 ## Usage
 
-The package consists of:
-- set of modules where the core functions are implemented (`pyteiser/pyteiser`)
-- set of wrapper scripts that implement individual steps of the pipeline (`pyteiser/pyteiser/wrappers`)
-- a single wrapper script that runs the whole pipeline (`pyteiser/pyteiser/wrappers`)
+***Small number of seeds, automatic pipeline that could be run on a PC:*** <br>
+We provide a single wrapper script that runs the whole pipeline (`pyteiser/pyteiser/wrappers`) starting with a set of sequences, corresponding measurements (expression or other ones) and a set of seeds, and reports a list of top candidate seeds and their matches in the input sequences. See the specifications of input files and description of parameters below.
 
-Several steps of the pipeline are computationally demanding and therefore are recommended to be run on a High Performance Computing machine. Depending on the institution / company you are at the HPC you are using might have different job submission requirements. In particular, the keywords for memory or time requests might differ among individual HPC systems. We recommend running each step of the pipeline individually since it might be hard to reserve cores on HPC for long enough to be able to run the whole pipeline in a single run. <br>
-We provide frameworks for either running the scripts on your own machine or submitting it to SGE-based HPCs through `qsub` command. <br>
-For each computationally heavy step of the pipeline, we provide a script that runs on its own and also a script that is adjusted for submission through qsub.  <br>
-We also provide a universal script for qsub submission (named `qsub_universal_submission.py`) that lets you (i) specify the keywords the HPC machine you're using requires, (ii) request how much time, memory and cores do you want to use and (iii) submit any of the computationally heavy scripts from the pipeline. <br>
-For any script, you can list the required arguments with the command
-```
-python <script_name> --help
-```
+***Large number of seeds, a set of scripts that must be run on HPC:*** <br>
+Depending on the size of sequence set and on desired number of seeds to be analyzed, the pipeline might require a lot of computing resources; if searching among a large number of seeds (milliones), it might not be possible to run the pipeline on a PC, and a high-performance computing (HPC) machine might be required. Depending on the institution / company you are at the HPC you are using might have different job submission requirements. In particular, the keywords for memory or time requests might differ among individual HPC systems. Also, depending on cluster resources availability, it might be hard to reserve cores on HPC for long enough to be able to run the whole pipeline in a single run. In that case, we recommend running each step of the pipeline individually. We provide frameworks for either running the scripts on your own machine or submitting it to SGE-based HPCs through `qsub` command. For each computationally heavy step of the pipeline, we provide a script that runs on its own and also a script that is adjusted for submission through qsub. Most scripts can be submitted to HPC with a universal script for qsub submission (named `qsub_universal_submission.py`). It lets you (i) specify the keywords the HPC machine you're using requires, (ii) request how much time, memory and cores do you want to use and (iii) submit any of the computationally heavy scripts from the pipeline. A set of wrapper scripts that implement individual steps of the pipeline is provided in `pyteiser/pyteiser/wrappers`. <br>
+
+
 You will have to specify the input and output folders you want to use. All the numeric parameters have preset default values; changing them is not recommended unless you have a very specific reason to do so. <br>
 Below, the steps of the pipeline are listed along with the name of the corresponding script.
 
