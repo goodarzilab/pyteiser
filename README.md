@@ -87,24 +87,27 @@ Arguments for the automatic pipeline (parameters for all the individual steps in
 	- `jackknife_fraction_retain`: what fraction of the sample to retain for each test
 	- `jackknife_min_fraction_passed`: what fraction of all iterations should
 - arguments for `seed_generator.py` script
-	- `--outfolder`: output folder
-	- `--prefix`: prefix for naming the seed file
-	- `--num_motifs_per_file`: maximal number of seeds to write into a single file
-	- `--min_stem_length`: minimal stem length to consider
-	- `--max_stem_length`: maximal stem length to consider
-	- `--min_loop_length`: minimal loop length to consider
-	- `--max_loop_length`: maximal loop length to consider
-	- `--print_sequences`: print the sequences of generated seeds
-	- `--print_structures`: print the structures of generated seed
-	- `--print_first_motif`: print the first seed after each increase in stem or loop length
-	- `--min_inf_bases`: minimal number of informative (non-N) bases
-	- `--max_inf_bases`: maximal number of informative (non-N) bases
-	- `--minI`: minimal information content
-	- `--maxI`: maximal information content
+	- `outfolder`: output folder
+	- `prefix`: prefix for naming the seed file
+	- `num_motifs_per_file`: maximal number of seeds to write into a single file
+	- `min_stem_length`: minimal stem length to consider
+	- `max_stem_length`: maximal stem length to consider
+	- `min_loop_length`: minimal loop length to consider
+	- `max_loop_length`: maximal loop length to consider
+	- `print_sequences`: print the sequences of generated seeds
+	- `print_structures`: print the structures of generated seed
+	- `print_first_motif`: print the first seed after each increase in stem or loop length
+	- `min_inf_bases`: minimal number of informative (non-N) bases
+	- `max_inf_bases`: maximal number of informative (non-N) bases
+	- `minI`: minimal information content
+	- `maxI`: maximal information content
 
 
 You will have to specify the input and output folders you want to use. All the numeric parameters have preset default values; changing them is not recommended unless you have a very specific reason to do so. <br>
 Below, the steps of the pipeline are listed along with the name of the corresponding script.
+
+### Usage of the automatic pipeline
+We provide example input files; the automatic pipeline can be launched with the command  once the package has been installed. 
 
 ### Steps of the pipeline:
 #### 1. Generate seeds
@@ -117,6 +120,8 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 	Use either pyteiser/wrappers/preprocess_expression_profile_ensembl.py or pyteiser/wrappers/preprocess_custom_expression_profile.py
 #### 5. Calculate MI values for all the seeds
 	Use pyteiser/wrappers/calculate_MI_profiles.py - run on HPC!
+#### 5a. (optional) Filter possible seed matches with *in silico* RNA folding algorithm
+	Use pyteiser/wrappers/filter_profiles_by_folding.py
 #### 6. Choose significance thresholds
 	Use pyteiser/wrappers/choose_significant_seeds_v3.py - run on HPC!
 #### 7. Combine seeds that passed
@@ -128,21 +133,11 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 #### 10. Combine optimized seeds
 	Use pyteiser/wrappers/combine_optimized_seeds.py
 
-### Input files formats
-The user is expected to provide 2 input files: a table with the genome-wide measurements of interest and a fasta file with sequences of reference transcriptome.
-
-It is possible to guide the folding of 
-Format:
-
-
-### Preprocessing of input files
-
-
 ### License
 MIT license
 
 ### Citing
-See the preprint
+See the paper
 
 ### About pyteiser
 pyteiser has been developed in Goodarzi lab at UCSF by Matvei Khoroshkin and Hani Goodarzi
