@@ -25,6 +25,7 @@ before_script:
 # run tests
 script:
   - pytest -v tests/test_short_compression.py
+  - pytest -v tests/test_MI.py
 
 after_success:
   - codecov
