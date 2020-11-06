@@ -378,7 +378,7 @@ spec_profile = [
 ]
 
 
-@numba.jitclass(spec_profile)
+@numba.experimental.jitclass(spec_profile)
 class n_profile:
     # n stands for numba
     # this class is used for fast calculations with numba
@@ -398,7 +398,7 @@ spec_motif = [
     ('structure', numba.uint8[:])
 ]
 
-@numba.jitclass(spec_motif)
+@numba.experimental.jitclass(spec_motif)
 class n_motif:
     # n stands for numba
     # this class is used for fast calculations with numba
@@ -430,7 +430,7 @@ spec_sequence = [
     ('nts', numba.uint8[:])
 ]
 
-@numba.jitclass(spec_sequence)
+@numba.experimental.jitclass(spec_sequence)
 class n_sequence:
     # n stands for numba
     # this class is used for fast calculations with numba
