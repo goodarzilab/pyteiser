@@ -166,11 +166,11 @@ def time_calculate_MI_profiles(calculate_with_numba, indices_mode):
 def main():
     args = handler()
 
-    # time_reading_fasta(args.rna_fastafile)
-    # time_compressing_sequences(args.rna_fastafile)
-    # time_iterating()
-    # time_compressing_profile()
-    # time_discretization()
+    time_reading_fasta(args.rna_fastafile)
+    time_compressing_sequences(args.rna_fastafile)
+    time_iterating()
+    time_compressing_profile()
+    time_discretization()
 
     time_calculate_MI_profiles(calculate_with_numba = 'y', indices_mode = args.indices_mode)
 
