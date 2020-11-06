@@ -8,13 +8,13 @@ import numba
 import os
 import sys
 
-# to make sure relative import works
-# for a detailed explanation, see test_matchmaker.py
-
+# to make sure relative import works in order to import test data
 current_script_path = sys.argv[0]
 package_home_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if package_home_path not in sys.path:
     sys.path.append(package_home_path)
+os.chdir(package_home_path)
+
 
 import pyteiser.glob_var as glob_var
 import pyteiser.structures as structures
@@ -34,21 +34,19 @@ def handler():
     parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
     parser.set_defaults(
-        rna_fastafile = '/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/narrow_down_transcripts_list/Gencode_v28_GTEx_expressed_transcripts_fasta/utr_3_fasta/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.txt',
-        # rna_bin_file='/Users/student/Documents/hani/iTEISER/step_2_preprocessing/reference_files/reference_transcriptomes/binarized/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
-        rna_bin_file='/Users/student/Documents/hani/temp/temp_bins/test_bin.bin',
-        #profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/test_1_batch_tarbp2/profiles_4-7_4-9_4-6_14-20_30k_1.bin',
-        profiles_full_file='/Users/student/Documents/hani/programs/pyteiser/data/passed_profiles/passed_profiles_4-7_4-9_4-6_14-20_combined/test_1_2_profiles_unique.bin',
-        compressed_profiles_file='/Users/student/Documents/hani/programs/pyteiser/data/test_profiles/compressed_by_indices_profiles.bin',
-        indices_mode=False,
+        rna_fastafile='tests/data/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.txt',
+        rna_bin_file='tests/data/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        profiles_full_file='tests/data/test_1_2_profiles_unique.bin',
+        compressed_profiles_file='tests/data/compressed_by_indices_profiles.bin',
+        indices_mode=False
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     return args
 
 
-def test_bins_fasta(args):
+def run_test_bins_fasta(args):
     with open(args.rna_bin_file, 'rb') as rb:
         bitstring = rb.read()
         seq_objects_dict, seq_objects_order = IO.decompress_named_sequences(bitstring)
@@ -56,19 +54,15 @@ def test_bins_fasta(args):
     with open(args.rna_fastafile, 'r') as rf:
         full_fasta_string = rf.read()
 
-    with open("/Users/student/Documents/hani/temp/temp_fasta/1.txt",'w') as wf:
-        wf.write(full_string)
 
     full_fasta_string_Us = full_fasta_string.replace('T','U').replace('ENSU','ENST')
     assert(len(full_string) == len(full_fasta_string_Us))
-    #
-    # print(full_string[0:200])
-    # print(full_fasta_string_Us[0:200])
+
     assert(full_string == full_fasta_string_Us)
 
 
 
-def test_compressing_decompressing_indices(args, decompressed_profiles_array):
+def run_test_compressing_decompressing_indices(args, decompressed_profiles_array):
     with open(args.compressed_profiles_file, 'wb') as wf:
         transcriptome_length = decompressed_profiles_array.shape[1]
         for i in range(decompressed_profiles_array.shape[0]):
@@ -89,15 +83,15 @@ def profiles_wrapper(args):
     decompressed_profiles_array = IO.unpack_profiles_file(profiles_filename,
                                                           args.indices_mode,
                                                           do_print = True)
-    test_compressing_decompressing_indices(args, decompressed_profiles_array)
+    run_test_compressing_decompressing_indices(args, decompressed_profiles_array)
 
 
-def main():
+def test_main():
     args = handler()
-    #test_bins_fasta(args)
+    run_test_bins_fasta(args)
     profiles_wrapper(args)
 
 
 if __name__ == "__main__":
-    main()
+    test_main()
 

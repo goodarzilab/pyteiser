@@ -43,17 +43,14 @@ def diagnoze_single_pair_function():
     n_test_motif, n_test_sequence = create_single_pair()
 
     # Dizagnosing is_there_motif_instance
-    # _ = matchmaker.is_there_motif_instance(n_test_motif, n_test_sequence)
+    _ = matchmaker.is_there_motif_instance(n_test_motif, n_test_sequence)
     # matchmaker.is_there_motif_instance.parallel_diagnostics(level=4)
     # is_there_motif_instance can't be optimized by numba parallel
 
     # Diagnosing match_motif_seq
-    # _ = matchmaker.match_motif_seq(n_test_motif, n_test_sequence, 0)
+    _ = matchmaker.match_motif_seq(n_test_motif, n_test_sequence, 0)
     # matchmaker.match_motif_seq.parallel_diagnostics(level=4)
     # match_motif_seq can't be optimized by numba parallel
-
-
-
 
 
 if __name__ == "__main__":

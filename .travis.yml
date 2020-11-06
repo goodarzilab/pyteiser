@@ -5,7 +5,7 @@ notifications:
     email: false
 
 python:
-  - "3.8"
+  - "3.7"
 
 # only run travis on the master branch
 branches:
@@ -19,12 +19,12 @@ install:
 
 # fix of Travis deprecation warning
 # from here: https://stackoverflow.com/questions/55486248/deprecationwarning-in-python-3-6-and-3-7-with-pillow-distutils-imp
-#before_script:
-#  - python -c 'import os, virtualenv; virtualenv.install_distutils(os.environ["VIRTUAL_ENV"])'
+before_script:
+  - python -c 'import os, virtualenv; virtualenv.install_distutils(os.environ["VIRTUAL_ENV"])'
 
 # run tests
 script:
-  - pytest -v tests/numba_parallel_diagnostics.py
+  - pytest -v tests/test_short_compression.py
 
 after_success:
   - codecov
