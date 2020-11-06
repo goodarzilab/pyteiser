@@ -34,8 +34,8 @@ def handler():
     parser.add_argument("--indices_mode", help="compression in the index mode", type=bool)
 
     parser.set_defaults(
-        rna_fastafile='tests/data/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.txt',
-        rna_bin_file='tests/data/Gencode_v28_GTEx_expressed_transcripts_from_coding_genes_3_utrs_fasta.bin',
+        rna_fastafile='tests/data/test_seqs.fa',
+        rna_bin_file='tests/data/test_seqs.bin',
         profiles_full_file='tests/data/test_1_2_profiles_unique.bin',
         compressed_profiles_file='tests/data/compressed_by_indices_profiles.bin',
         indices_mode=False
