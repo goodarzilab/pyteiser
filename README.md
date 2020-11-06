@@ -37,10 +37,70 @@ You can either run a command `git clone https://github.com/goodarzilab/pyteiser.
 ## Usage
 
 ***Small number of seeds, automatic pipeline that could be run on a PC:*** <br>
-We provide a single wrapper script that runs the whole pipeline (`pyteiser/pyteiser/wrappers`) starting with a set of sequences, corresponding measurements (expression or other ones) and a set of seeds, and reports a list of top candidate seeds and their matches in the input sequences. See the specifications of input files and description of parameters below.
+We provide a single wrapper script that runs the whole pipeline (`pyteiser/pyteiser/wrappers/pyteiser_pipeline.py`) starting with a set of sequences, corresponding measurements (expression or other ones) and a set of seeds, and reports a list of top candidate seeds and their matches in the input sequences. See the specifications of input files and description of parameters below.
 
 ***Large number of seeds, a set of scripts that must be run on HPC:*** <br>
 Depending on the size of sequence set and on desired number of seeds to be analyzed, the pipeline might require a lot of computing resources; if searching among a large number of seeds (milliones), it might not be possible to run the pipeline on a PC, and a high-performance computing (HPC) machine might be required. Depending on the institution / company you are at the HPC you are using might have different job submission requirements. In particular, the keywords for memory or time requests might differ among individual HPC systems. Also, depending on cluster resources availability, it might be hard to reserve cores on HPC for long enough to be able to run the whole pipeline in a single run. In that case, we recommend running each step of the pipeline individually. We provide frameworks for either running the scripts on your own machine or submitting it to SGE-based HPCs through `qsub` command. For each computationally heavy step of the pipeline, we provide a script that runs on its own and also a script that is adjusted for submission through qsub. Most scripts can be submitted to HPC with a universal script for qsub submission (named `qsub_universal_submission.py`). It lets you (i) specify the keywords the HPC machine you're using requires, (ii) request how much time, memory and cores do you want to use and (iii) submit any of the computationally heavy scripts from the pipeline. A set of wrapper scripts that implement individual steps of the pipeline is provided in `pyteiser/pyteiser/wrappers`. <br>
+
+Input files:
+- Necessary:
+	- `rna_fastafile`: a fasta file with RNA sequences of interest
+	- `exp_values_file`: expression values in a csv format. It should have 2 or more columns, one column with names of of sequences, another column with values. The names of these two columns have to be specified with the `--anno_name_column` and `--measur_column` arguments. All the names of the sequences listed in this file must also have a corresponding sequence record in the fasta file provided with `rna_fastafile`. The measurement values might be integer or float numbers.
+	- `seeds_file`: a binary file containing the seeds to search through. Such file can be created with `seed_generator.py` script
+- Optional:
+	- user can include a file with RNA structure probing data (SHAPE or DMS-seq) to guide the possible match selection. There is no commonly used standard format for SHAPE RNA reactivity data; therefore, we are using the two-column SHAPE file format used by RNAstructure package ([link](https://rna.urmc.rochester.edu/Text/File_Formats.html#SHAPE)). SHAPE file provided by user should contain SHAPE profiles for multiple sequences, separated with `>`, like in fasta file. SHAPE file can be provided to the `filter_profiles_by_folding.py` script with the `--shape_profile` argument
+
+Output files:
+The pipeline generates two files:
+- `pyteiser_info.bin`: a table, each row corresponds to one motif that has been identified as significant. The columns include: the motif identifier, sequence and structure of the motif, mutual information of the seed occurence profile and the sequences expression data, pvalue for a permutation test, zscore, the result of robustness test and the number of sequences that contain this seed
+- `pyteiser_matches.bin`: a table, each row corresponds to one sequence from the user-provided fasta file. The first two columns contain the sequence and its name; every one of the following columns corresponds to one of the motifs that have been identified as significant; in these columns, cells contain sub-sequences matching the given motif
+
+Arguments for the automatic pipeline (parameters for all the individual steps included):
+- input / output files:
+	- `rna_fastafile`: fasta file with RNA sequences, see above
+	- `exp_values_file`: expression values in a csv format, see above
+	- `anno_name_column`: column name in exp_values file that contains annotations, see above
+	- `measur_column`: column name in exp_values file that contains expression measurements, see above
+	- `seeds_file`: file with seeds in binary format, see above
+	- `temp_folder`: folder to write temporary files to
+	- `out`: output folder
+- optional arguments:
+	- `nbins`: number of bins for discretization of expression profile
+	- `min_occurences`: minimal number of seed occurence in the transcriptome for a seed to be considered at all
+	- `maxfreq`: maximal seed frequency in the sequences analyzed for a seed to be considered
+	- `n_permutations`: number of permutations for the rank test for a seed
+	- `max_pvalue`: p-value threshold for filtering seeds
+	- `min_zscore`: z-score threshold for filtering seeds
+	- `step_1_jump`: step size at the 1st round of empirical threshold search
+	- `step_2_min_interval`: resolution of empirical threshold search
+	- `step_1_min_fraction`: minimal fraction of passing seeds for the 1st round of empirical threshold search
+	- `step_2_min_fraction`: minimal fraction of passing seeds for the 2nd round of empirical threshold search
+	- `step_3_min_fraction`: minimal fraction of passing seeds for the 3rd round of empirical threshold search
+	- `min_ratio`: threshold on ratio of CMI/MI for the conditional information test for seed novelty
+	- `are_input_seeds_degenerate`: do input seeds contain degenerate nucleotides (can be ignored in most cases)
+	- `indices_mode`: choice of compression mode for storing seed occurence profiles: if True, store only indices of matching sequences (takes less space if running pyteiser on big number of short sequences); if False, store full profiles (takes less space if running pyteiser on small number of long sequences)
+	- `index_bit_width`: number of bits per one index when compressing seed occurence profiles. Depends on the number of sequences provided. Default value 24, it's enough if number of sequences provided is smaller than 16.777.216
+	- `random_noseed`: when choosing the order of positions to optimize, do not set the random number generator to a specific seed
+	- `jackknife_n_permutations`: number of permutations for pvalue calculation in jackknife test
+	- `jackknife_max_pvalue`: maximal pvalue for jackknife test
+	- `jackknife_n_samples`: how many permutations to do in jackknife test
+	- `jackknife_fraction_retain`: what fraction of the sample to retain for each test
+	- `jackknife_min_fraction_passed`: what fraction of all iterations should
+- arguments for `seed_generator.py` script
+	- `--outfolder`: output folder
+	- `--prefix`: prefix for naming the seed file
+	- `--num_motifs_per_file`: maximal number of seeds to write into a single file
+	- `--min_stem_length`: minimal stem length to consider
+	- `--max_stem_length`: maximal stem length to consider
+	- `--min_loop_length`: minimal loop length to consider
+	- `--max_loop_length`: maximal loop length to consider
+	- `--print_sequences`: print the sequences of generated seeds
+	- `--print_structures`: print the structures of generated seed
+	- `--print_first_motif`: print the first seed after each increase in stem or loop length
+	- `--min_inf_bases`: minimal number of informative (non-N) bases
+	- `--max_inf_bases`: maximal number of informative (non-N) bases
+	- `--minI`: minimal information content
+	- `--maxI`: maximal information content
 
 
 You will have to specify the input and output folders you want to use. All the numeric parameters have preset default values; changing them is not recommended unless you have a very specific reason to do so. <br>
