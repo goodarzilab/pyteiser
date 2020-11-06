@@ -19,9 +19,7 @@ install:
 
 # run tests
 script:
-  - pytest --cov-report=xml --cov=pyteiser -v tests/numba_parallel_diagnostics.py
+  - pytest -v tests/numba_parallel_diagnostics.py
 
 after_success:
   - codecov
-  - pip list
-  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Python -r coverage.xml    

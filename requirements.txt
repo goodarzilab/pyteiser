@@ -1,3 +1,3 @@
-forgi
-seqlogo
-
+numba>=0.50.1
+numpy>=1.19.1
+pandas>=1.1.1
