@@ -6,10 +6,6 @@ A framework for identifying the structural motifs that are informative of whole-
 |:---:|
 |[![][travis-img]][travis-url]|
 
-| **Build Status** |
-|:---:|
-|[![][codecov-img]][codecov-url]|
-
 
 ### Introduction
 pyteiser identifies structural motifs that could explain genome-wide changes in gene expression, stability or other quantitative transcriptomic measures.
@@ -155,5 +151,4 @@ pyteiser has been developed in Goodarzi lab at UCSF by Matvei Khoroshkin and Han
 
 [travis-img]: https://travis-ci.com/goodarzilab/pyteiser.svg?branch=master
 [travis-url]: https://travis-ci.com/github/goodarzilab/pyteiser
-[codecov-img]: https://codecov.io/gh/goodarzilab/pyteiser/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/goodarzilab/pyteiser
+
