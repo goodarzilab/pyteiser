@@ -1,6 +1,11 @@
 ![Alt text](/images_github/pyteiser_logo_v2_hossein.png?raw=true)
 # Pyteiser
 A framework for identifying the structural motifs that are informative of whole-genome measurements across all the transcripts
+**Build Status**
+[![][travis-img]][travis-url]
+[travis-img]: https://travis-ci.com/goodarzilab/pyteiser.svg?branch=master
+[travis-url]: https://travis-ci.com/github/goodarzilab/pyteiser
+
 
 ### Introduction
 pyteiser identifies structural motifs that could explain genome-wide changes in gene expression, stability or other quantitative transcriptomic measures.
