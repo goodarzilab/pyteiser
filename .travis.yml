@@ -15,6 +15,7 @@ branches:
 # install dependencies listed in requirements
 install: 
   - pip install -r requirements.txt
+  - pip install pytest-cov
   - pip install .
 
 # fix of Travis deprecation warning
@@ -24,7 +25,8 @@ before_script:
 
 # run tests
 script:
-  - pytest -v tests/*
+  - pytest -v --cov-report=xml --cov=pyteiser tests/*
 
 after_success:
   - codecov
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Python -r coverage.xml
