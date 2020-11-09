@@ -2,10 +2,9 @@
 # Pyteiser
 A framework for identifying the structural motifs that are informative of whole-genome measurements across all the transcripts
 
-|Build Status|
-
-.. |Build Status| image:: https://travis-ci.com/goodarzilab/pyteiser.svg?branch=master
-    :target: https://travis-ci.com/github/goodarzilab/pyteiser
+| **Build Status** |
+|:---:|
+|[![][travis-img]][travis-url]|
 
 
 ### Introduction
@@ -150,3 +149,5 @@ See the paper
 ### About pyteiser
 pyteiser has been developed in Goodarzi lab at UCSF by Matvei Khoroshkin and Hani Goodarzi
 
+[travis-img]: https://travis-ci.com/goodarzilab/pyteiser.svg?branch=master
+[travis-url]: https://travis-ci.com/github/goodarzilab/pyteiser
