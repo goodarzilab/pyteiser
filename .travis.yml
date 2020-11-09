@@ -18,6 +18,9 @@ install:
   - pip install pytest-cov
   - pip install .
 
+env:
+  - CODECOV_TOKEN=e056388e-0c57-4af2-9366-d1b94bfd16a6
+
 # fix of Travis deprecation warning
 # from here: https://stackoverflow.com/questions/55486248/deprecationwarning-in-python-3-6-and-3-7-with-pillow-distutils-imp
 before_script:
@@ -29,4 +32,5 @@ script:
 
 after_success:
   - codecov
+  - bash <(curl -s https://codecov.io/bash)
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Python -r coverage.xml
