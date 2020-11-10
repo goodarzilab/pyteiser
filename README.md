@@ -62,6 +62,12 @@ The pipeline generates two files:
 - `pyteiser_info.bin`: a table, each row corresponds to one motif that has been identified as significant. The columns include: the motif identifier, sequence and structure of the motif, mutual information of the seed occurence profile and the sequences expression data, pvalue for a permutation test, zscore, the result of robustness test and the number of sequences that contain this seed
 - `pyteiser_matches.bin`: a table, each row corresponds to one sequence from the user-provided fasta file. The first two columns contain the sequence and its name; every one of the following columns corresponds to one of the motifs that have been identified as significant; in these columns, cells contain sub-sequences matching the given motif
 
+### Usage of the automatic pipeline
+First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) <br>
+Then, create folders for temporary files and for output files (you can do it with `mkdir temp` and `mkdir out`)<br>
+Finally, launch the pipeline with the command: <br>
+pyteiser_pipeline --rna_fastafile `path to test_seqs.fa` --exp_values_file `path to test_expression_values.csv` --seeds_file `path to test_seeds_20.bin` --temp_folder `path to the folder for temporary files` --out `path to the output folder`<br>
+
 Arguments for the automatic pipeline (parameters for all the individual steps included):
 - input / output files:
 	- `rna_fastafile`: fasta file with RNA sequences, see above
@@ -112,13 +118,6 @@ Arguments for the automatic pipeline (parameters for all the individual steps in
 
 You will have to specify the input and output folders you want to use. All the numeric parameters have preset default values; changing them is not recommended unless you have a very specific reason to do so. <br>
 Below, the steps of the pipeline are listed along with the name of the corresponding script.
-
-### Usage of the automatic pipeline
-First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) <br>
-Then, create folders for temporary files and for output files (you can do it with `mkdir temp` and `mkdir out`)<br>
-Finally, launch the pipeline with `bash `
-
-
 
 ### Usage of pipeline in manual step-by-step mode
 #### 1. Generate seeds
