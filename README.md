@@ -114,7 +114,7 @@ You will have to specify the input and output folders you want to use. All the n
 Below, the steps of the pipeline are listed along with the name of the corresponding script.
 
 ### Usage of the automatic pipeline
-First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin)<br>
+First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) ---- <a id="measurements" href="https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv">Download FILE</a>
 
 We provide example input files; the automatic pipeline can be launched with the command  once the package has been installed. 
 
