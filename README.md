@@ -114,11 +114,13 @@ You will have to specify the input and output folders you want to use. All the n
 Below, the steps of the pipeline are listed along with the name of the corresponding script.
 
 ### Usage of the automatic pipeline
-First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) ---- <a id="measurements" href="https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv">Download FILE</a>
+First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) <br>
+Then, create folders for temporary files and for output files (you can do it with `mkdir temp` and `mkdir out`)<br>
+Finally, launch the pipeline with `bash `
 
-We provide example input files; the automatic pipeline can be launched with the command  once the package has been installed. 
 
-### Steps of the pipeline:
+
+### Usage of pipeline in manual step-by-step mode
 #### 1. Generate seeds
 	Use pyteiser/seeds_generator.py
 #### 2. Convert sequences from fasta to binary format
