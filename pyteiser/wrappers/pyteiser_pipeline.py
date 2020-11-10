@@ -12,6 +12,7 @@ from . import combine_passed_seeds
 from . import optimize_seeds_single_chunk
 from . import report_csvs
 
+
 def handler():
     parser = argparse.ArgumentParser()
 
@@ -55,13 +56,13 @@ def handler():
 
 
     parser.set_defaults(
-        rna_fastafile='/Users/student/Documents/hani/programs/pyteiser/data/tutorial_example_files/test_seqs.fa',
-        exp_values_file='/Users/student/Documents/hani/programs/pyteiser/data/tutorial_example_files/test_expression_values.csv',
+        rna_fastafile='tests/data/test_seqs.fa',
+        exp_values_file='tests/data/test_expression_values.csv',
         anno_name_column='ensembl',
         measur_column='measurement',
-        seeds_file='/Users/student/Documents/hani/programs/pyteiser/data/tutorial_example_files/test_seeds_20.bin',
-        temp_folder='/Users/student/Documents/hani/programs/pyteiser/data/temp',
-        out='/Users/student/Documents/hani/programs/pyteiser/data/test_output',
+        seeds_file='tests/data/test_seeds_20.bin',
+        temp_folder='tests/temp',
+        out='tests/out',
         nbins=5,
         min_occurences=5,
         maxfreq=0.5,

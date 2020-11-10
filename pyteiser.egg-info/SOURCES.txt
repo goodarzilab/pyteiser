@@ -33,3 +33,10 @@ pyteiser/wrappers/pyteiser_pipeline.py
 pyteiser/wrappers/qsub_optimize_seeds.py
 pyteiser/wrappers/qsub_universal_submission.py
 pyteiser/wrappers/report_csvs.py
+tests/__init__.py
+tests/test_IO.py
+tests/test_MI.py
+tests/test_comparisons_timing.py
+tests/test_elongated_seed_profile.py
+tests/test_matchmaker.py
+tests/test_short_compression.py

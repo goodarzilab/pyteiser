@@ -3,3 +3,8 @@ data/
 random_scripts/
 pyteiser/wrappers/qsub_leftovers.py
 pyteiser/wrappers/qsub_snrnpa.py
+.idea
+.ipynb_checkpoints
+descriptions
+dist
+pyteiser.egg-info
