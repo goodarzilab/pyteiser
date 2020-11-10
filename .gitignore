@@ -1,6 +1,7 @@
 __pycache__
 data/
 random_scripts/
+build
 pyteiser/wrappers/qsub_leftovers.py
 pyteiser/wrappers/qsub_snrnpa.py
 .idea

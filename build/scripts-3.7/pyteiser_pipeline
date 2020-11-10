@@ -1,5 +1,0 @@
-#!python
-
-from pyteiser.wrappers import pyteiser_pipeline
-
-pyteiser_pipeline.main()
