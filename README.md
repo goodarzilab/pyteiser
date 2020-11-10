@@ -25,7 +25,12 @@ pyteiser is intentionally designed in a way that allows storage of all the inter
 pyteiser is written in Python 3.7. The computationally heavy funcions are implemented efficiently through extensive usage on [numpy](https://numpy.org/) arrays and [numba](http://numba.pydata.org/) Python compiler.
 
 ### Installation
-Install with pip:
+Install with pip: <br>
+First, install the requirements:
+```
+pip install numba==0.50.1 numpy>=1.19.1 pandas>=1.1.1
+```
+Then, install pyteiser:
 ```
 pip install pyteiser
 ```
