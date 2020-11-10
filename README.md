@@ -24,22 +24,11 @@ pyteiser is intentionally designed in a way that allows storage of all the inter
 
 pyteiser is written in Python 3.7. The computationally heavy funcions are implemented efficiently through extensive usage on [numpy](https://numpy.org/) arrays and [numba](http://numba.pydata.org/) Python compiler.
 
-## Getting started
-### Requirements
-pyteiser requires the following dependencies to be installed:
-- Python modules:
-	- numpy
-	- numba
-	- pandas
-- Other tools:
-	- ViennaRNA
-It is highly recommended to install the dependencies through conda.
-install miniconda
-
-
 ### Installation
-Currently, pyteiser is distributed as a set of scripts rather than a pip-installable package. Release of pip-installable version is scheduled for February 2020. <br>
-You can either run a command `git clone https://github.com/goodarzilab/pyteiser.git` in your terminal or click "Clone or download" in the top right corner of this page.
+Install with pip:
+```
+pip install pyteiser
+```
 
 ## Usage
 

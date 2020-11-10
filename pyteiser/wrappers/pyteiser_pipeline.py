@@ -246,7 +246,7 @@ def main():
         do_chunk_seeds = False
     )
     report_csvs.main(report_csvs_args)
-    # clean_temp_files(filenames_dict)
+    clean_temp_files(filenames_dict)
 
 
 if __name__ == '__main__':
