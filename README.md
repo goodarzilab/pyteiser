@@ -66,7 +66,10 @@ The pipeline generates two files:
 First, download the three example input files: [sequences](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seqs.fa), [measurements](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_expression_values.csv) and [seeds](https://github.com/goodarzilab/pyteiser/raw/master/example_data/test_seeds_20.bin) <br>
 Then, create folders for temporary files and for output files (you can do it with `mkdir temp` and `mkdir out`)<br>
 Finally, launch the pipeline with the command: <br>
-pyteiser_pipeline --rna_fastafile `path to test_seqs.fa` --exp_values_file `path to test_expression_values.csv` --seeds_file `path to test_seeds_20.bin` --temp_folder `path to the folder for temporary files` --out `path to the output folder`<br>
+```
+pyteiser_pipeline --rna_fastafile <path to test_seqs.fa> --exp_values_file <path to test_expression_values.csv> --seeds_file <path to test_seeds_20.bin> --temp_folder <path to the folder for temporary files> --out <path to the output folder>
+```
+
 
 Arguments for the automatic pipeline (parameters for all the individual steps included):
 - input / output files:
