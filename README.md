@@ -5,6 +5,7 @@ A framework for identifying the structural motifs that are informative of whole-
 | **Build Status** |
 |:---:|
 |[![][travis-img]][travis-url]|
+[![DOI](https://zenodo.org/badge/199738324.svg)](https://zenodo.org/badge/latestdoi/199738324)
 
 
 ### Introduction
