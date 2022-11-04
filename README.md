@@ -47,7 +47,7 @@ Depending on the size of sequence set and on desired number of seeds to be analy
 Input files:
 - Necessary:
 	- `rna_fastafile`: a fasta file with RNA sequences of interest
-	- `exp_values_file`: expression values in a csv format. It should have 2 or more columns, one column with names of of sequences, another column with values. The names of these two columns have to be specified with the `--anno_name_column` and `--measur_column` arguments. All the names of the sequences listed in this file must also have a corresponding sequence record in the fasta file provided with `rna_fastafile`. The measurement values might be integer or float numbers.
+	- `exp_values_file`: expression values in a tsv format. It should have 2 or more columns, one column with names of of sequences, another column with values. The names of these two columns have to be specified with the `--anno_name_column` and `--measur_column` arguments. All the names of the sequences listed in this file must also have a corresponding sequence record in the fasta file provided with `rna_fastafile`. The measurement values might be integer or float numbers.
 	- `seeds_file`: a binary file containing the seeds to search through. Such file can be created with `seeds_generator.py` script
 - Optional:
 	- user can include a file with RNA structure probing data (SHAPE or DMS-seq) to guide the possible match selection. There is no commonly used standard format for SHAPE RNA reactivity data; therefore, we are using the two-column SHAPE file format used by RNAstructure package ([link](https://rna.urmc.rochester.edu/Text/File_Formats.html#SHAPE)). SHAPE file provided by user should contain SHAPE profiles for multiple sequences, separated with `>`, like in fasta file. SHAPE file can be provided to the `filter_profiles_by_folding.py` script with the `--shape_profile` argument
@@ -69,7 +69,7 @@ pyteiser_pipeline --rna_fastafile <path to test_seqs.fa> --exp_values_file <path
 Arguments for the automatic pipeline (parameters for all the individual steps included):
 - input / output files:
 	- `rna_fastafile`: fasta file with RNA sequences, see above
-	- `exp_values_file`: expression values in a csv format, see above
+	- `exp_values_file`: expression values in a tsv format, see above
 	- `anno_name_column`: column name in exp_values file that contains annotations, see above
 	- `measur_column`: column name in exp_values file that contains expression measurements, see above
 	- `seeds_file`: file with seeds in binary format, see above
