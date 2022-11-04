@@ -3,15 +3,8 @@ import argparse
 import os
 import sys
 
- try:
-     from . import glob_var
- except:
-     import glob_var
-
- try:
-     from . import structures
- except:
-     import structures
+import glob_var
+import structures
 
 
 
