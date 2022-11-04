@@ -48,7 +48,7 @@ Input files:
 - Necessary:
 	- `rna_fastafile`: a fasta file with RNA sequences of interest
 	- `exp_values_file`: expression values in a csv format. It should have 2 or more columns, one column with names of of sequences, another column with values. The names of these two columns have to be specified with the `--anno_name_column` and `--measur_column` arguments. All the names of the sequences listed in this file must also have a corresponding sequence record in the fasta file provided with `rna_fastafile`. The measurement values might be integer or float numbers.
-	- `seeds_file`: a binary file containing the seeds to search through. Such file can be created with `seed_generator.py` script
+	- `seeds_file`: a binary file containing the seeds to search through. Such file can be created with `seeds_generator.py` script
 - Optional:
 	- user can include a file with RNA structure probing data (SHAPE or DMS-seq) to guide the possible match selection. There is no commonly used standard format for SHAPE RNA reactivity data; therefore, we are using the two-column SHAPE file format used by RNAstructure package ([link](https://rna.urmc.rochester.edu/Text/File_Formats.html#SHAPE)). SHAPE file provided by user should contain SHAPE profiles for multiple sequences, separated with `>`, like in fasta file. SHAPE file can be provided to the `filter_profiles_by_folding.py` script with the `--shape_profile` argument
 
@@ -97,7 +97,7 @@ Arguments for the automatic pipeline (parameters for all the individual steps in
 	- `jackknife_n_samples`: how many permutations to do in jackknife test
 	- `jackknife_fraction_retain`: what fraction of the sample to retain for each test
 	- `jackknife_min_fraction_passed`: what fraction of all iterations should
-- arguments for `seed_generator.py` script
+- arguments for `seeds_generator.py` script
 	- `outfolder`: output folder
 	- `prefix`: prefix for naming the seed file
 	- `num_motifs_per_file`: maximal number of seeds to write into a single file
