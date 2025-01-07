@@ -145,7 +145,7 @@ Below, the steps of the pipeline are listed along with the name of the correspon
 MIT license
 
 ### Citing
-See the paper
+[Fish, Khoroshkin, Navickas, 2021](https://www.science.org/doi/full/10.1126/science.abc7531)
 
 ### About pyteiser
 pyteiser has been developed in Goodarzi lab at UCSF by Matvei Khoroshkin and Hani Goodarzi
